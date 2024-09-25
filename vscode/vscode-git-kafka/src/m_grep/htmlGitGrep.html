@@ -12,6 +12,8 @@
                 <textarea id="searchTerm" rows="10" cols="50"></textarea>
                 
                 <button id="searchButton">Execute</button>
+                <br>
+                <button id="biggestDirs">Find biggest directories</button>
                 <script>
                     const vscode = acquireVsCodeApi();
                     const searchButton = document.getElementById('searchButton');
@@ -20,6 +22,12 @@
                         vscode.postMessage({
                             type: 'search',
                             searchTerm
+                        });
+                    });
+                    const biggestDirs = document.getElementById('biggestDirs');
+                    biggestDirs.addEventListener('click', () => {
+                        vscode.postMessage({
+                            type: 'biggestDirs'
                         });
                     });
                 </script>
