@@ -2,9 +2,11 @@
 //
 
 import * as vscode from "vscode";
-import { exec } from "child_process";
+const util = require("node:util");
+const exec = util.promisify(require("node:child_process").exec);
 const fs = require("fs");
 import * as path from "path";
+import { M_Dir } from "./m_dir";
 
 export class ProviderGitGrep implements vscode.WebviewViewProvider {
   public static readonly viewType = 'myExtension.myWebview';
@@ -32,7 +34,9 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
                     await this._search(data.searchTerm);
                     break;
                 case 'biggestDirs':
+                    vscode.window.showInformationMessage("Biggest Dirs Receive Msg...");
                     await this._biggestDirs();
+                    vscode.window.showInformationMessage("Biggest Dirs Receive Msg Done");
                     break;
             }
         });
@@ -51,22 +55,20 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
         }
 
         const command = `${searchTerm}`;
-        exec(
-            command,
-            { cwd: workspaceFolder.uri.fsPath },
-            (error, stdout, stderr) => {
-                if (error) {
-                    vscode.window.showErrorMessage(`Error: ${error.message}`);
-                    vscode.window.showErrorMessage(`Error: ${stderr}`);
-                    return;
-                }
+        const { stdout, stderr } = await exec(command, {
+            cwd: workspaceFolder.uri.fsPath,
+        });
 
-                const outputChannel = vscode.window.createOutputChannel("Git Grep Results");
-                outputChannel.append(stdout);
-                outputChannel.show();
-            }
-        );
+        if (stderr) {
+            vscode.window.showErrorMessage(`Error: ${stderr}`);
+            return;
+        }
+
+        const outputChannel = vscode.window.createOutputChannel("Git Grep Results");
+        outputChannel.append(stdout);
+        outputChannel.show();
     }
+        
 
     private _getHtmlForWebview(webview: vscode.Webview) {
       const styleUri = webview.asWebviewUri(
@@ -132,17 +134,7 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
 
 
     private async _biggestDirs() {
-                vscode.window.showInformationMessage("Biggest Dirs...");
-                vscode.window.showInformationMessage("message1");
-                vscode.window.showInformationMessage("message2");
-                vscode.window.showInformationMessage("message3");
-                vscode.window.showInformationMessage("message4");
-                vscode.window.showInformationMessage("message5");
-
-    }
-
-    private async _biggestDirs1() {
-
+        console.log("Biggest Dirs...");
 
         const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
         if (!workspaceFolder) {
@@ -150,87 +142,67 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
             return;
         }
 
-
-
-
-
-                             /* vscode.window.showInformationMessage(
-                          `Dir:` +
-                            fs
-                              .statSync(workspaceFolder.uri.fsPath)
-                              .isDirectory()
-                        );
-                        vscode.window.showInformationMessage(
-                          `Dir:` +
-                            fs.statSync(workspaceFolder.uri.fsPath).isFile()
-                        );
-                        */
-
         // do in steps
         // get first level files list with git grep -l --max-depth=1 ""
         // for files in list, get file size with fs.stat
         // for dirs in list, repeat with git grep -l --max_depth=1 "" in cwd/dir
 
+        const parentDir = "";
         const command = `git grep -l --max-depth=1 ""`;
+        const { stdout, stderr } = await exec(command, {
+            cwd: workspaceFolder.uri.fsPath,
+        });
+
+        if (stderr) {
+            vscode.window.showErrorMessage(`Error: ${stderr}`);
+            return;
+        }
 
         let sDirs = "";
-        let files: string[] = [];
-        exec(
-            command,
-            { cwd: workspaceFolder.uri.fsPath, timeout: 10000 },
-            (error, stdout, stderr) => {
-              if (error) {
-                vscode.window.showErrorMessage(`Error: ${error.message}`);
-                vscode.window.showErrorMessage(`Error: ${stderr}`);
-                return;
-              }
+        let files: string[] = stdout.split("\n");;
 
-              files = stdout.split("\n");
-               vscode.window.showInformationMessage(stdout);
+        files.pop(); // remove last empty line
 
-              const list = Array.from(
-                { length: files.length },
-                (_, index) => index
-              );
-              vscode.window.showInformationMessage(`List: ${list.length}`);
-              vscode.window.showInformationMessage(`List: ${list}`);
+        // make a dictionary of M_Dir objects
 
-             
+        const dirs: { [key: string]: M_Dir } = {};
 
-              //await Promise.all(
-              //  list.map((_, index) => {
-              //    return fs.promises.stat(filePath + `_${index}.md`);
-              //  })
-              // );
-
-              files.pop(); // remove last empty line
-
-              files.forEach((file) => {
-                const filePath = path.join(workspaceFolder.uri.fsPath, file);
-                vscode.window.showInformationMessage(`File:` + filePath);
-              });
+        files.forEach((file) => {
+            // dir name of file
+            const dir = path.dirname(file);
+            const fullPath = path.join(workspaceFolder.uri.fsPath, file);
+            const m_dir = new M_Dir(parentDir, dir, 0, 0);
+            const stats = fs.statSync(fullPath);
+            if (stats.isDirectory()) {
+                m_dir.size = 0;
+                m_dir.fileCount = 0;
+            } else {
+                m_dir.size = stats.size;
+                m_dir.fileCount = 1;
             }
-        );
+            // if m_dir.id not in dirs, add it, else update size and file count
+            if (m_dir.id in dirs) {
+                dirs[m_dir.id].size += m_dir.size;
+                dirs[m_dir.id].fileCount += m_dir.fileCount;
+            } else {
+                dirs[m_dir.id] = m_dir;
+            };
 
-                files.forEach((file) => {
-                  const filePath = path.join(workspaceFolder.uri.fsPath, file);
-                  vscode.window.showInformationMessage(`File:` + filePath);
+            
 
-                  try {
-                    const stats = fs.statSync(filePath);
-                    vscode.window.showInformationMessage("Stats: " + stats);
-                    if (stats.isDirectory()) {
-                      sDirs += `${filePath} is a directory\n`;
-                    } else {
-                      sDirs += `${filePath} is a file\n`;
-                    }
-                  } catch (err) {
-                    vscode.window.showErrorMessage(
-                      `Error: ${(err as Error).message}`
-                    );
-                  }
-                });
+        });
+        
 
+        // convert dictionary to array of M_Dir objects
+        const dirArray = Object.values(dirs);
+
+        // sort array by size
+        dirArray.sort((a, b) => b.size - a.size);
+
+        // convert array to string
+        dirArray.forEach((dir) => {
+            sDirs += `${dir.toString()}\n`;
+        });
 
 
         const outputChannel =
@@ -241,6 +213,72 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
 
 
     }
+
+    private async _countFiles(parentDir:string, dirs: { [key: string]: M_Dir }, workspaceFolder: vscode.WorkspaceFolder) {
+        console.log(`Count Files... ${parentDir}`);
+        // if parentDir is not in dirs, add it
+        if (!(parentDir+"/." in dirs)) {
+            dirs[parentDir+"/."] = new M_Dir("", parentDir+"/.", 0, 0);
+        }
+
+
+
+        const m_cwd = path.join(workspaceFolder.uri.fsPath, parentDir);
+
+        // do in steps
+        // get first level files list with git grep -l --max-depth=1 ""
+        // for files in list, get file size with fs.stat
+        // for dirs in list, repeat with git grep -l --max_depth=1 "" in cwd/dir
+
+        const command = `git grep -l --max-depth=1 ""`;
+        const { stdout, stderr } = await exec(command, {
+            cwd: m_cwd,
+        });
+
+        if (stderr) {
+            vscode.window.showErrorMessage(`Error: ${stderr}`);
+            return;
+        }
+
+
+        let files: string[] = stdout.split("\n");;
+
+        files.pop(); // remove last empty line
+
+        // make a dictionary of M_Dir objects
+
+        files.forEach((file) => {
+            // dir name of file
+            const dir = path.dirname(file);
+            const fullPath = path.join(workspaceFolder.uri.fsPath, file);
+            const m_dir = new M_Dir(parentDir, dir, 0, 0);
+            const stats = fs.statSync(fullPath);
+            if (stats.isDirectory()) {
+                m_dir.size = 0;
+                m_dir.fileCount = 0;
+            } else {
+                m_dir.size = stats.size;
+                m_dir.fileCount = 1;
+            }
+            // if m_dir.id not in dirs, add it, else update size and file count
+            if (m_dir.id in dirs) {
+                dirs[m_dir.id].size += m_dir.size;
+                dirs[m_dir.id].fileCount += m_dir.fileCount;
+            } else {
+                dirs[m_dir.id] = m_dir;
+            };
+
+            
+
+        });
+
+        // set hasCountedFiles to true for parentDir
+        dirs[parentDir+"/."].hasCountedFiles = true;
+    }
+        
+
+
+
 }
 
 
