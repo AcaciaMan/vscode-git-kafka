@@ -64,37 +64,28 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
     }
 
     private _getHtmlForWebview(webview: vscode.Webview) {
-        const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'media', 'style.css'));
-        const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'media', 'main.js'));
+      const styleUri = webview.asWebviewUri(
+        vscode.Uri.joinPath(this.context.extensionUri, "media", "style.css")
+      );
+      const scriptUri = webview.asWebviewUri(
+        vscode.Uri.joinPath(this.context.extensionUri, "media", "main.js")
+      );
 
-        return `<!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <link href="${styleUri}" rel="stylesheet">
-                <title>Git Grep</title>
-            </head>
-            <body>
-                <h1>Git Grep</h1>
-                <!-- enter search term in text area -->
-                <textarea id="searchTerm" rows="10" cols="50"></textarea>
-                
-                <button id="searchButton">Execute</button>
-                <script>
-                    const vscode = acquireVsCodeApi();
-                    const searchButton = document.getElementById('searchButton');
-                    searchButton.addEventListener('click', () => {
-                        const searchTerm = document.getElementById('searchTerm').value;
-                        vscode.postMessage({
-                            type: 'search',
-                            searchTerm
-                        });
-                    });
-                </script>
-                <script src="${scriptUri}"></script>
-            </body>
-            </html>`;
+
+      //load html from file htmlShopConfig.html
+      const fs = require("fs");
+      const htmlPath = vscode.Uri.joinPath(
+        this.context.extensionUri,
+        "src",
+        "m_grep",
+        "htmlGitGrep.html"
+      );
+
+      const html = fs.readFileSync(htmlPath.fsPath, "utf8");
+
+      return html
+        .replace(/{{styleUri}}/g, styleUri.toString())
+        .replace(/{{scriptUri}}/g, scriptUri.toString());
     }
 
     public dispose() {

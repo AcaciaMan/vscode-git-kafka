@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link href="${{styleUri}}" rel="stylesheet">
+                <title>Git Grep</title>
+            </head>
+            <body>
+                <h1>Git Grep</h1>
+                <!-- enter search term in text area -->
+                <textarea id="searchTerm" rows="10" cols="50"></textarea>
+                
+                <button id="searchButton">Execute</button>
+                <script>
+                    const vscode = acquireVsCodeApi();
+                    const searchButton = document.getElementById('searchButton');
+                    searchButton.addEventListener('click', () => {
+                        const searchTerm = document.getElementById('searchTerm').value;
+                        vscode.postMessage({
+                            type: 'search',
+                            searchTerm
+                        });
+                    });
+                </script>
+                <script src="${{scriptUri}}"></script>
+            </body>
+            </html>
