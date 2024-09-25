@@ -16,6 +16,10 @@
       {
         "command": "vscode-git-kafka.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "vscode-git-kafka.gitGrep",
+        "title": "git grep"
       }
     ]
   },
