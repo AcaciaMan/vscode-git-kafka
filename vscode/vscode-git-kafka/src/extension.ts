@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { exec } from "child_process";
+import { ProviderGitGrep } from './m_grep/providerGitGrep';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -64,6 +65,15 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(disposable);
 	context.subscriptions.push(disposable2);
+
+    const providerGitGrep = new ProviderGitGrep(context);
+	context.subscriptions.push(
+		vscode.window.registerWebviewViewProvider(
+			ProviderGitGrep.viewType,
+			providerGitGrep
+		)
+	);
+
 }
 
 // This method is called when your extension is deactivated
