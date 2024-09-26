@@ -1,6 +1,7 @@
 // webView provider class to enter Include Dirs, Exclude Dirs, Include Paths, Exclude Paths
 
 import * as vscode from "vscode";
+import { M_Global } from "../m_util/m_global";
 
 export class ProviderDirsPaths implements vscode.WebviewViewProvider {
     public static readonly viewType = 'myExtension.DirsPaths';
@@ -94,6 +95,9 @@ export class ProviderDirsPaths implements vscode.WebviewViewProvider {
     private async _setDirsPath(sDirsPaths: { includeDirs: string, excludeDirs: string, includePaths: string, excludePaths: string }) {
         console.log(`sDirsPaths: ${JSON.stringify(sDirsPaths)}`);
         console.log(`includeDirs: ${sDirsPaths.includeDirs}`);
+        const m_global = M_Global.getInstance();
+        m_global.setDirs(sDirsPaths.includeDirs, sDirsPaths.excludeDirs);
+        m_global.setFiles(sDirsPaths.includePaths, sDirsPaths.excludePaths);
     }
 
     public static revive(context: vscode.ExtensionContext) {

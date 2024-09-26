@@ -397,3 +397,5 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 /vscode/vscode-git-kafka/dist
+/vscode/vscode-git-kafka/.vscode-test
+/vscode/vscode-git-kafka/out
