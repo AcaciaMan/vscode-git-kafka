@@ -152,7 +152,9 @@ export class M_Calc_Dir {
                 }
                 unCountedDir.hasCountedFiles = true;
             }
-            unCountedDirs = this.getUnCountedDirs();
+            if (unCountedDirs.length === 0) {
+                unCountedDirs = this.getUnCountedDirs();
+            }
         }
     }
     
