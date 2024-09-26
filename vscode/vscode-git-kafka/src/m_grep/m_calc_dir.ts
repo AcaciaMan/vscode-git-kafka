@@ -5,6 +5,7 @@ const exec = util.promisify(require("node:child_process").exec);
 const fs = require("fs");
 import * as path from "path";
 import { M_Dir } from "./m_dir";
+import { M_Tree } from "./m_tree";
 
 export class M_Calc_Dir {
   // make a dictionary of M_Dir objects
@@ -46,6 +47,22 @@ export class M_Calc_Dir {
     });
 
   }
+
+  public calcDirsFromTree(trees: M_Tree[], calcDir: M_Dir): void {
+    trees.forEach((tree) => {
+
+      let m_dir: M_Dir;
+      if (tree.objectType === "tree") {
+        m_dir = new M_Dir(calcDir, tree.path, 0, 0);
+        this.dirs[m_dir.getId()] = m_dir;
+
+      } else if (tree.objectType === "blob") {
+        calcDir.size += tree.objectSize;
+        calcDir.fileCount += 1;
+      }
+    }
+    );
+    }
 
   public toString(): string {
     let sDirs = "";
@@ -96,14 +113,42 @@ export class M_Calc_Dir {
         return files;
     }
 
+    public async getTreeInDir(dir: M_Dir): Promise<M_Tree[] | undefined> {
+        const fullPath = path.join(this.workspaceFolder.uri.fsPath, dir.getId());
+        console.log(`fullPath: ${fullPath}`);
+        const command = `git ls-tree --format="%(objecttype);;;%(path);;;%(objectsize)" HEAD`;
+        const { stdout, stderr } = await exec(command, {
+            cwd: fullPath,
+        });
+
+        if (stderr) {
+            vscode.window.showErrorMessage(`Error: ${stderr}`);
+            // this promise rejected
+            return undefined;
+        }
+
+        console.log(`stdout: ${stdout}`);
+
+        const sTrees = stdout.split("\n");
+        sTrees.pop(); // remove last empty line
+
+        let trees: M_Tree[] = [];
+        sTrees.forEach((sTree: string) => {
+            trees.push(M_Tree.fromString(sTree));
+            console.log(M_Tree.fromString(sTree).toString());
+        });
+
+        return trees;
+    }
+
     public async calcUnCountedDirs(): Promise<void> {
         let unCountedDirs = this.getUnCountedDirs();
         while (unCountedDirs.length > 0) {
             let unCountedDir = unCountedDirs.pop();
             if (unCountedDir) {
-                let files = await this.getFilesInDir(unCountedDir);
-                if (files) {
-                    this.calcDirs(files, unCountedDir);
+                let trees = await this.getTreeInDir(unCountedDir);
+                if (trees) {
+                    this.calcDirsFromTree (trees, unCountedDir);
                 }
                 unCountedDir.hasCountedFiles = true;
             }
