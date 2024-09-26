@@ -6,11 +6,15 @@ const fs = require("fs");
 import * as path from "path";
 import { M_Dir } from "./m_dir";
 import { M_Tree } from "./m_tree";
+import { M_File } from "./m_file";
 
 export class M_Calc_Dir {
   // make a dictionary of M_Dir objects
   dirs: { [key: string]: M_Dir } = {};
+
   workspaceFolder: vscode.WorkspaceFolder;
+
+  m_files: M_File[] = [];
 
     constructor(workspaceFolder: vscode.WorkspaceFolder) {
         this.workspaceFolder = workspaceFolder;
@@ -59,6 +63,8 @@ export class M_Calc_Dir {
       } else if (tree.objectType === "blob") {
         calcDir.size += tree.objectSize;
         calcDir.fileCount += 1;
+        const m_file = new M_File(tree.path, tree.objectSize, calcDir);
+        this.m_files.push(m_file);
       }
     }
     );
@@ -157,6 +163,16 @@ export class M_Calc_Dir {
             }
         }
     }
-    
+
+    public toStringFiles(): string {
+        let sFiles = "";
+        // sort array by size and return 50 biggest files
+        this.m_files.sort((a, b) => b.size - a.size);
+        const m_files50 = this.m_files.slice(0, 50);
+        m_files50.forEach((file) => {
+            sFiles += `${file.toString()}\n`;
+        });
+        return sFiles;
+    }
 
 }

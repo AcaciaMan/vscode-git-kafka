@@ -39,6 +39,11 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
                     await this._biggestDirs();
                     vscode.window.showInformationMessage("Biggest Dirs Receive Msg Done");
                     break;
+                case 'biggestFiles':
+                    vscode.window.showInformationMessage("Biggest Files Receive Msg...");
+                    await this._biggestFiles();
+                    vscode.window.showInformationMessage("Biggest Files Receive Msg Done");
+                    break;
             }
         });
     }
@@ -151,6 +156,26 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
         const outputChannel =
             vscode.window.createOutputChannel("Biggest Dirs");
         outputChannel.append(mCalcDir.toString());
+        outputChannel.show();
+
+    }
+
+    private async _biggestFiles() {
+        console.log("Biggest Files...");
+
+        const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+        if (!workspaceFolder) {
+            vscode.window.showErrorMessage("No workspace folder found");
+            return;
+        }
+
+        const mCalcDir = new M_Calc_Dir(workspaceFolder);
+
+        await mCalcDir.calcUnCountedDirs();
+
+        const outputChannel =
+            vscode.window.createOutputChannel("Largest 50 Files");
+        outputChannel.append(mCalcDir.toStringFiles());
         outputChannel.show();
 
     }

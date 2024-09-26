@@ -14,6 +14,7 @@
                 <button id="searchButton">Execute</button>
                 <br>
                 <button id="biggestDirs">Find biggest directories</button>
+                <button id="biggestFiles">Find largest 50 files</button>
                 <script>
                     const vscode = acquireVsCodeApi();
                     const searchButton = document.getElementById('searchButton');
@@ -28,6 +29,12 @@
                     biggestDirs.addEventListener('click', () => {
                         vscode.postMessage({
                             type: 'biggestDirs'
+                        });
+                    });
+                    const biggestFiles = document.getElementById('biggestFiles');
+                    biggestFiles.addEventListener('click', () => {
+                        vscode.postMessage({
+                            type: 'biggestFiles'
                         });
                     });
                 </script>
