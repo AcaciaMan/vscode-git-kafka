@@ -6,26 +6,38 @@ export class M_Dir {
     // size of directory
     size: number;
     // parent directory
-    parent: string;
+    parent: M_Dir | undefined;
     // file count
     fileCount: number;
-    // directory name
-    id: string;
 
     // has counted files
     hasCountedFiles: boolean = false;
 
-    constructor(parent:string,  dir: string, size: number, fileCount: number) {
-        this.dir = dir;
+    constructor(parent:M_Dir | undefined,  dir: string, size: number, fileCount: number) {
+        // if dir is ".", set parent to undefined and dir to ""
+        if (dir === ".") {
+            this.dir = "";
+        } else {
+            this.dir = dir;
+        }
         this.size = size;
         this.parent = parent;
         this.fileCount = fileCount;
-        this.id = `${parent}/${dir}`;
-
     }
+
+    // id of directory
+    public getId(): string {
+        if (this.parent === undefined) {
+            return this.dir;
+        } else if (this.dir === "") {
+            return this.parent.getId();
+        }
+        return `${this.parent?.getId()}/${this.dir}`;
+    }
+
 
     // toString method
     toString(): string {
-        return `${this.id} ${this.size} ${this.fileCount}`;
+        return `${this.getId()} ${this.size} ${this.fileCount}`;
     }
 }
