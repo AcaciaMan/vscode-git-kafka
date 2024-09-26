@@ -35,6 +35,11 @@
       "myExtensionContainer": [
         {
           "type": "webview",
+          "id": "myExtension.DirsPaths",
+          "name": "Dirs Paths"
+        },
+        {
+          "type": "webview",
           "id": "myExtension.myWebview",
           "name": "Git grep"
         }

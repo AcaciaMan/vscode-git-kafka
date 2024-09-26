@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import { exec } from "child_process";
 import { ProviderGitGrep } from './m_grep/providerGitGrep';
+import { ProviderDirsPaths } from './m_dirs_paths/providerDirsPaths';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -71,6 +72,14 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.registerWebviewViewProvider(
 			ProviderGitGrep.viewType,
 			providerGitGrep
+		)
+	);
+
+	const providerDirsPaths = new ProviderDirsPaths(context);
+	context.subscriptions.push(
+		vscode.window.registerWebviewViewProvider(
+			ProviderDirsPaths.viewType,
+			providerDirsPaths
 		)
 	);
 

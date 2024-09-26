@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link href="${{styleUri}}" rel="stylesheet">
+                <title>Dirs Paths</title>
+            </head>
+            <body>
+                <h1>Dirs Paths</h1>
+                <label for="includeDirs">Include Dirs</label>
+                <input id="includeDirs" type="text" placeholder="e.g. **/dir_name/**,Python"/>
+                <br>
+                <label for="excludeDirs">Exclude Dirs</label> 
+                <input id="excludeDirs" type="text" placeholder="e.g. **/dir_name/**,VSCode" />
+                <br>
+                <label for="includeFiles">Include Files</label>
+                <input id="includeFiles" type="text" placeholder="e.g. *.ts,*.html" />
+                <br>
+                <label for="excludeFiles">Exclude Files</label>
+                <input id="excludeFiles" type="text" placeholder="e.g. *.js,*.py" />
+                <br>
+                <button id="setDirsPaths">Set</button>
+                <script>
+                    const vscode = acquireVsCodeApi();
+                    const setDirsPaths = document.getElementById('setDirsPaths');
+                    setDirsPaths.addEventListener('click', () => {
+                        const includeDirs = document.getElementById('includeDirs').value;
+                        const excludeDirs = document.getElementById('excludeDirs').value;
+                        const includeFiles = document.getElementById('includeFiles').value;
+                        const excludeFiles = document.getElementById('excludeFiles').value;
+                        vscode.postMessage({
+                            type: 'setDirsPaths',
+                            sDirsPaths: {
+                                "includeDirs": includeDirs,
+                                "excludeDirs": excludeDirs,
+                                "includeFiles": includeFiles,
+                                "excludeFiles": excludeFiles
+                            }
+                        });
+                    });
+                </script>
+                <script src="${{scriptUri}}"></script>
+            </body>
+            </html>

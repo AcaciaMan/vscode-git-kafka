@@ -46,8 +46,8 @@ export class ProviderDirsPaths implements vscode.WebviewViewProvider {
       const htmlPath = vscode.Uri.joinPath(
         this.context.extensionUri,
         "src",
-        "m_grep",
-        "htmlGitGrep.html"
+        "m_dirs_paths",
+        "htmlDirsPaths.html"
       );
 
       const html = fs.readFileSync(htmlPath.fsPath, "utf8");
@@ -91,11 +91,9 @@ export class ProviderDirsPaths implements vscode.WebviewViewProvider {
     }
     
 
-    private async _setDirsPath(sDirsPaths: string) {
-        const dirsPaths = JSON.parse(sDirsPaths);
-        console.log(`dirsPaths: ${dirsPaths}`);
-        // save dirsPaths to global state
-        await vscode.commands.executeCommand('setContext', 'dirsPaths', dirsPaths);
+    private async _setDirsPath(sDirsPaths: { includeDirs: string, excludeDirs: string, includePaths: string, excludePaths: string }) {
+        console.log(`sDirsPaths: ${JSON.stringify(sDirsPaths)}`);
+        console.log(`includeDirs: ${sDirsPaths.includeDirs}`);
     }
 
     public static revive(context: vscode.ExtensionContext) {
