@@ -71,6 +71,7 @@ export class M_Calc_Dir {
       }
     }
     );
+    calcDir.hasCountedFiles = true;
     }
 
   public checkShouldProcessDirs(): void {
@@ -123,7 +124,7 @@ export class M_Calc_Dir {
 
   public async getFilesInDir(dir: M_Dir): Promise<string[] | undefined> {
     const fullPath = path.join(this.workspaceFolder.uri.fsPath, dir.getId());
-    console.log(`fullPath: ${fullPath}`);
+    //console.log(`fullPath: ${fullPath}`);
             const command = `git grep -l --max-depth=1 ""`;
         const { stdout, stderr } = await exec(command, {
             cwd: fullPath,
@@ -145,7 +146,6 @@ export class M_Calc_Dir {
 
     public async getTreeInDir(dir: M_Dir): Promise<M_Tree[] | undefined> {
         const fullPath = path.join(this.workspaceFolder.uri.fsPath, dir.getId());
-        console.log(`fullPath: ${fullPath}`);
         const command = `git ls-tree --format="%(objecttype);;;%(path);;;%(objectsize)" HEAD`;
         const { stdout, stderr } = await exec(command, {
             cwd: fullPath,
@@ -157,15 +157,12 @@ export class M_Calc_Dir {
             return undefined;
         }
 
-        console.log(`stdout: ${stdout}`);
-
         const sTrees = stdout.split("\n");
         sTrees.pop(); // remove last empty line
 
         let trees: M_Tree[] = [];
         sTrees.forEach((sTree: string) => {
             trees.push(M_Tree.fromString(sTree));
-            console.log(M_Tree.fromString(sTree).toString());
         });
 
         return trees;
@@ -174,17 +171,18 @@ export class M_Calc_Dir {
     public async calcUnCountedDirs(): Promise<void> {
         let unCountedDirs = this.getUnCountedDirs();
         while (unCountedDirs.length > 0) {
-            let unCountedDir = unCountedDirs.pop();
-            if (unCountedDir) {
-                let trees = await this.getTreeInDir(unCountedDir);
+            // process unCountedDirs in parallel with Promise.all
+            await Promise.all(
+                unCountedDirs.map(async (dir) => {
+                let trees = await this.getTreeInDir(dir);
                 if (trees) {
-                    this.calcDirsFromTree (trees, unCountedDir);
+                  this.calcDirsFromTree(trees, dir);
                 }
-                unCountedDir.hasCountedFiles = true;
-            }
-            if (unCountedDirs.length === 0) {
+                })
+            );
+
+
                 unCountedDirs = this.getUnCountedDirs();
-            }
         }
         this.checkShouldProcessDirs();
     }
