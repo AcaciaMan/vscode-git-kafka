@@ -25,9 +25,24 @@ export class ProviderDirsPaths implements vscode.WebviewViewProvider {
     
             webviewView.webview.onDidReceiveMessage(async (data) => {
                 switch (data.type) {
-                    case 'setDirsPaths':
-                        await this._setDirsPath(data.sDirsPaths);
-                        break;
+                  case "setDirsPaths":
+                    await this._setDirsPath(data.sDirsPaths);
+                    break;
+                  case "webviewReady":
+                    // send includeDirs, excludeDirs, and pathSpec to webview
+                    const m_global = M_Global.getInstance();
+                    console.log(`includeDirs: ${m_global.includeDirs}`);
+                    console.log(`excludeDirs: ${m_global.excludeDirs}`);
+                    console.log(`pathSpec: ${m_global.pathSpec}`);
+                    this._view?.webview.postMessage({
+                      type: "setDirsPaths",
+                      sDirsPaths: {
+                        includeDirs: m_global.includeDirs,
+                        excludeDirs: m_global.excludeDirs,
+                        pathSpec: m_global.pathSpec,
+                      },
+                    });
+                    break;
                 }
             });
         }
@@ -98,6 +113,11 @@ export class ProviderDirsPaths implements vscode.WebviewViewProvider {
         const m_global = M_Global.getInstance();
         m_global.setDirs(sDirsPaths.includeDirs, sDirsPaths.excludeDirs);
         m_global.setPathSpec(sDirsPaths.pathSpec);
+        // save workspace settings
+        await vscode.workspace.getConfiguration("vscode-git-kafka").update("includeDirs", sDirsPaths.includeDirs, vscode.ConfigurationTarget.Workspace);
+        await vscode.workspace.getConfiguration("vscode-git-kafka").update("excludeDirs", sDirsPaths.excludeDirs, vscode.ConfigurationTarget.Workspace);
+        await vscode.workspace.getConfiguration("vscode-git-kafka").update("pathSpec", sDirsPaths.pathSpec, vscode.ConfigurationTarget.Workspace);
+
     }
 
     public static revive(context: vscode.ExtensionContext) {

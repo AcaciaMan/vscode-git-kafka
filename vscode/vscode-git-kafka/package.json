@@ -44,6 +44,27 @@
           "name": "Git grep"
         }
       ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "VSCode Git Kafka Configuration",
+      "properties": {
+        "vscode-git-kafka.includeDirs": {
+          "type": "string",
+          "default": "",
+          "description": "Include Dirs"
+        },
+        "vscode-git-kafka.excludeDirs": {
+          "type": "string",
+          "default": "",
+          "description": "Exclude Dirs"
+        },
+        "vscode-git-kafka.pathSpec": {
+          "type": "string",
+          "default": "",
+          "description": "PathSpec"
+        }
+      }
     }
   },
   "scripts": {

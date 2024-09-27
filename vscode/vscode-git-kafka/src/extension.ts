@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import { exec } from "child_process";
 import { ProviderGitGrep } from './m_grep/providerGitGrep';
 import { ProviderDirsPaths } from './m_dirs_paths/providerDirsPaths';
+import { M_Global } from './m_util/m_global';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -12,6 +13,15 @@ export function activate(context: vscode.ExtensionContext) {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "vscode-git-kafka" is now active!');
+
+	const m_global = M_Global.getInstance();
+
+	// get includeDirs, excludeDirs, and pathSpec from settings
+  const includeDirs = vscode.workspace.getConfiguration("vscode-git-kafka").get("includeDirs") as string;
+  const excludeDirs = vscode.workspace.getConfiguration("vscode-git-kafka").get("excludeDirs") as string;
+	const pathSpec = vscode.workspace.getConfiguration("vscode-git-kafka").get("pathSpec") as string;
+	m_global.setDirs(includeDirs, excludeDirs);
+	m_global.setPathSpec(pathSpec);
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand

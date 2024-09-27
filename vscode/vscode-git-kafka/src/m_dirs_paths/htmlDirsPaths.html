@@ -33,6 +33,25 @@
                             }
                         });
                     });
+
+                    // Handle messages sent from the extension to the webview
+                    window.addEventListener('message', event => {
+                        const message = event.data; // The JSON data our extension sent
+                        switch (message.type) {
+                            case 'setDirsPaths':
+                                document.getElementById('includeDirs').value = message.sDirsPaths.includeDirs;
+                                document.getElementById('excludeDirs').value = message.sDirsPaths.excludeDirs;
+                                document.getElementById('pathSpec').value = message.sDirsPaths.pathSpec;
+                                break;
+                        }
+                    });
+
+
+                                // Notify the extension that the webview is loaded
+            window.addEventListener('DOMContentLoaded', () => {
+                vscode.postMessage({ type: 'webviewReady' });
+            });
+
                 </script>
                 <script src="${{scriptUri}}"></script>
             </body>
