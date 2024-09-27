@@ -20,7 +20,11 @@ export function activate(context: vscode.ExtensionContext) {
   const includeDirs = vscode.workspace.getConfiguration("vscode-git-kafka").get("includeDirs") as string;
   const excludeDirs = vscode.workspace.getConfiguration("vscode-git-kafka").get("excludeDirs") as string;
 	const pathSpec = vscode.workspace.getConfiguration("vscode-git-kafka").get("pathSpec") as string;
-	m_global.setDirs(includeDirs, excludeDirs);
+	m_global.setDirs(
+    includeDirs,
+    excludeDirs,
+    vscode.workspace.workspaceFolders?.[0]
+  );
 	m_global.setPathSpec(pathSpec);
 
 	// The command has been defined in the package.json file

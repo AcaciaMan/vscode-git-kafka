@@ -8,11 +8,14 @@ const fs = require("fs");
 import * as path from "path";
 import { M_Dir } from "./m_dir";
 import { M_Calc_Dir } from "./m_calc_dir";
+import { M_Global } from "../m_util/m_global";
 
 export class ProviderGitGrep implements vscode.WebviewViewProvider {
   public static readonly viewType = 'myExtension.myWebview';
 
     private _view?: vscode.WebviewView;
+
+    m_global: M_Global = M_Global.getInstance();
 
     constructor(private readonly context: vscode.ExtensionContext) {}
 
@@ -148,9 +151,7 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
             return;
         }
 
-        const mCalcDir = new M_Calc_Dir(workspaceFolder);
-
-        await mCalcDir.calcUnCountedDirs();
+        const mCalcDir = await this.m_global.getCalcDirs();
 
 
         const outputChannel =
@@ -169,9 +170,7 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
             return;
         }
 
-        const mCalcDir = new M_Calc_Dir(workspaceFolder);
-
-        await mCalcDir.calcUnCountedDirs();
+        const mCalcDir = await this.m_global.getCalcDirs();
 
         const outputChannel =
             vscode.window.createOutputChannel("Largest 50 Files");

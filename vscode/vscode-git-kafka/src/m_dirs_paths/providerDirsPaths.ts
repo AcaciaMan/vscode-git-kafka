@@ -111,7 +111,11 @@ export class ProviderDirsPaths implements vscode.WebviewViewProvider {
         console.log(`sDirsPaths: ${JSON.stringify(sDirsPaths)}`);
         console.log(`includeDirs: ${sDirsPaths.includeDirs}`);
         const m_global = M_Global.getInstance();
-        m_global.setDirs(sDirsPaths.includeDirs, sDirsPaths.excludeDirs);
+        m_global.setDirs(
+          sDirsPaths.includeDirs,
+          sDirsPaths.excludeDirs,
+          vscode.workspace.workspaceFolders?.[0]
+        );
         m_global.setPathSpec(sDirsPaths.pathSpec);
         // save workspace settings
         await vscode.workspace.getConfiguration("vscode-git-kafka").update("includeDirs", sDirsPaths.includeDirs, vscode.ConfigurationTarget.Workspace);

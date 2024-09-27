@@ -1,58 +1,90 @@
 import { M_TestType, RegexpDir } from "../m_dirs_paths/regexpDir";
+import { M_Calc_Dir } from "../m_grep/m_calc_dir";
+import * as vscode from "vscode";
 
 // singleton class to store global variables
 export class M_Global {
-    // singleton instance
-    private static instance: M_Global;
+  // singleton instance
+  private static instance: M_Global;
 
-    // private constructor
-    private constructor() {
-        // do nothing
+  // private constructor
+  private constructor() {
+    // do nothing
+  }
+
+  // get singleton instance
+  public static getInstance(): M_Global {
+    if (!M_Global.instance) {
+      M_Global.instance = new M_Global();
     }
+    return M_Global.instance;
+  }
 
-    // get singleton instance
-    public static getInstance(): M_Global {
-        if (!M_Global.instance) {
-            M_Global.instance = new M_Global();
-        }
-        return M_Global.instance;
-    }
+  // global variables
+  includeDirs: string = "";
+  excludeDirs: string = "";
+  pathSpec: string = "";
 
-    // global variables
-    includeDirs: string = "";
-    excludeDirs: string = "";
-    pathSpec: string = "";
+  aIncludeDirs: RegexpDir[] = [];
+  aExcludeDirs: RegexpDir[] = [];
+  workspaceFolder: vscode.WorkspaceFolder | undefined;
+  promiseCalcDirs: Promise<void> | undefined;
+  m_calc_dir: M_Calc_Dir | undefined;
 
-    aIncludeDirs: RegexpDir[] = [];
-    aExcludeDirs: RegexpDir[] = [];
+  // set directories
+  public setDirs(
+    includeDirs: string,
+    excludeDirs: string,
+    workspaceFolder: vscode.WorkspaceFolder | undefined
+  ): void {
+    this.includeDirs = includeDirs;
+    this.aIncludeDirs = includeDirs.split(",").map((s) => new RegexpDir(s));
+    this.excludeDirs = excludeDirs;
+    this.aExcludeDirs = excludeDirs.split(",").map((s) => new RegexpDir(s));
 
-    // set directories
-    public setDirs(includeDirs: string, excludeDirs:string): void {
-        this.includeDirs = includeDirs;
-        this.aIncludeDirs = includeDirs.split(",").map((s) => new RegexpDir(s));
-        this.excludeDirs = excludeDirs;
-        this.aExcludeDirs = excludeDirs.split(",").map((s) => new RegexpDir(s));
-    }
+    this.workspaceFolder = workspaceFolder;
+    // run in background to load the directories
+    this.loadDirs();
+  }
 
-    // set files
-    public setPathSpec(pathSpec: string): void {
-        this.pathSpec = pathSpec;
-    }
+  // load directories
+  public loadDirs(): void {
+            if (!this.workspaceFolder) {
+              vscode.window.showErrorMessage("No workspace folder found");
+              return;
+            }
+    this.m_calc_dir = new M_Calc_Dir(this.workspaceFolder);
+    this.promiseCalcDirs = this.m_calc_dir.calcUnCountedDirs();
+  }
 
-    // test if dir is included and not excluded
-    public testDir(dir: string): boolean {
-        console.log(`dir: ${dir}`);
-        console.log(
-          `aIncludeDirs: ${this.aIncludeDirs.some((rd) =>
-            rd.test(dir, M_TestType.INCLUDE)
-          )}`
-        );
-        console.log(
-          `aExcludeDirs: ${this.aExcludeDirs.some((rd) =>
-            rd.test(dir, M_TestType.EXCLUDE)
-          )}`
-        );
-        return this.aIncludeDirs.some((rd) => rd.test(dir, M_TestType.INCLUDE)) && !this.aExcludeDirs.some((rd) => rd.test(dir, M_TestType.EXCLUDE));
-    }
+  public async getCalcDirs(): Promise<M_Calc_Dir> {
+    await this.promiseCalcDirs;
+    return this.m_calc_dir as M_Calc_Dir;
+  }
 
+
+
+  // set files
+  public setPathSpec(pathSpec: string): void {
+    this.pathSpec = pathSpec;
+  }
+
+  // test if dir is included and not excluded
+  public testDir(dir: string): boolean {
+    console.log(`dir: ${dir}`);
+    console.log(
+      `aIncludeDirs: ${this.aIncludeDirs.some((rd) =>
+        rd.test(dir, M_TestType.INCLUDE)
+      )}`
+    );
+    console.log(
+      `aExcludeDirs: ${this.aExcludeDirs.some((rd) =>
+        rd.test(dir, M_TestType.EXCLUDE)
+      )}`
+    );
+    return (
+      this.aIncludeDirs.some((rd) => rd.test(dir, M_TestType.INCLUDE)) &&
+      !this.aExcludeDirs.some((rd) => rd.test(dir, M_TestType.EXCLUDE))
+    );
+  }
 }
