@@ -63,6 +63,11 @@
           "type": "string",
           "default": "",
           "description": "PathSpec"
+        },
+        "vscode-git-kafka.workspaceUUID": {
+          "type": "string",
+          "default": "",
+          "description": "Workspace UUID"
         }
       }
     }
@@ -95,8 +100,10 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
+    "@types/sqlite3": "^3.1.11",
     "@vscode/vsce": "^3.1.0",
     "jest": "^29.7.0",
+    "sqlite3": "^5.1.7",
     "ts-jest": "^29.2.5",
     "vsce": "^2.15.0"
   }

@@ -14,7 +14,22 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "vscode-git-kafka" is now active!');
 
+
+
 	const m_global = M_Global.getInstance();
+
+    let workspaceUUID = vscode.workspace
+      .getConfiguration("vscode-git-kafka")
+      .get("workspaceUUID") as string;
+
+	if (workspaceUUID==="" || workspaceUUID===undefined) {
+		workspaceUUID = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+		vscode.workspace.getConfiguration("vscode-git-kafka").update("workspaceUUID", workspaceUUID, vscode.ConfigurationTarget.Workspace);
+	}  
+
+	m_global.setWorkspaceUUID(workspaceUUID);
+
+
 
 	// get includeDirs, excludeDirs, and pathSpec from settings
   const includeDirs = vscode.workspace.getConfiguration("vscode-git-kafka").get("includeDirs") as string;

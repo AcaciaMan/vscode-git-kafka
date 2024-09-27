@@ -2,6 +2,7 @@ import { M_TestType, RegexpDir } from "../m_dirs_paths/regexpDir";
 import { M_Calc_Dir } from "../m_grep/m_calc_dir";
 import * as vscode from "vscode";
 
+
 // singleton class to store global variables
 export class M_Global {
   // singleton instance
@@ -30,6 +31,11 @@ export class M_Global {
   workspaceFolder: vscode.WorkspaceFolder | undefined;
   promiseCalcDirs: Promise<void> | undefined;
   m_calc_dir: M_Calc_Dir | undefined;
+  workspaceUUID: string = "";
+
+  public setWorkspaceUUID(workspaceUUID: string): void {
+    this.workspaceUUID = workspaceUUID;
+  }
 
   // set directories
   public setDirs(
