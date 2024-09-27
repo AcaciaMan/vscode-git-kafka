@@ -14,11 +14,8 @@
                 <label for="excludeDirs">Exclude Dirs</label> 
                 <input id="excludeDirs" type="text" placeholder="e.g. **/dir_name/**,VSCode" />
                 <br>
-                <label for="includeFiles">Include Files</label>
-                <input id="includeFiles" type="text" placeholder="e.g. *.ts,*.html" />
-                <br>
-                <label for="excludeFiles">Exclude Files</label>
-                <input id="excludeFiles" type="text" placeholder="e.g. *.js,*.py" />
+                <label for="pathSpec">Path Spec</label>
+                <input id="pathSpec" type="text" placeholder="e.g. *.ts,*.html" />
                 <br>
                 <button id="setDirsPaths">Set</button>
                 <script>
@@ -27,15 +24,13 @@
                     setDirsPaths.addEventListener('click', () => {
                         const includeDirs = document.getElementById('includeDirs').value;
                         const excludeDirs = document.getElementById('excludeDirs').value;
-                        const includeFiles = document.getElementById('includeFiles').value;
-                        const excludeFiles = document.getElementById('excludeFiles').value;
+                        const pathSpec = document.getElementById('pathSpec').value;
                         vscode.postMessage({
                             type: 'setDirsPaths',
                             sDirsPaths: {
                                 "includeDirs": includeDirs,
                                 "excludeDirs": excludeDirs,
-                                "includeFiles": includeFiles,
-                                "excludeFiles": excludeFiles
+                                "pathSpec": pathSpec
                             }
                         });
                     });

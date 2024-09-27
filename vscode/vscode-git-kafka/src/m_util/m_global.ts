@@ -1,5 +1,4 @@
 import { M_TestType, RegexpDir } from "../m_dirs_paths/regexpDir";
-import { RegexpFile } from "../m_dirs_paths/regexpFile";
 
 // singleton class to store global variables
 export class M_Global {
@@ -22,13 +21,10 @@ export class M_Global {
     // global variables
     includeDirs: string = "";
     excludeDirs: string = "";
-    includeFiles: string = "";
-    excludeFiles: string = "";
+    pathSpec: string = "";
 
     aIncludeDirs: RegexpDir[] = [];
     aExcludeDirs: RegexpDir[] = [];
-    aIncludeFiles: RegexpFile[] = [];
-    aExcludeFiles: RegexpFile[] = [];
 
     // set directories
     public setDirs(includeDirs: string, excludeDirs:string): void {
@@ -39,11 +35,8 @@ export class M_Global {
     }
 
     // set files
-    public setFiles(includeFiles: string, excludeFiles: string): void {
-        this.includeFiles = includeFiles;
-        this.aIncludeFiles = includeFiles.split(",").map((s) => new RegexpFile(s));
-        this.excludeFiles = excludeFiles;
-        this.aExcludeFiles = excludeFiles.split(",").map((s) => new RegexpFile(s));
+    public setPathSpec(pathSpec: string): void {
+        this.pathSpec = pathSpec;
     }
 
     // test if dir is included and not excluded

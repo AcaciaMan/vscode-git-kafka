@@ -92,12 +92,12 @@ export class ProviderDirsPaths implements vscode.WebviewViewProvider {
     }
     
 
-    private async _setDirsPath(sDirsPaths: { includeDirs: string, excludeDirs: string, includePaths: string, excludePaths: string }) {
+    private async _setDirsPath(sDirsPaths: { includeDirs: string, excludeDirs: string, pathSpec: string }) {
         console.log(`sDirsPaths: ${JSON.stringify(sDirsPaths)}`);
         console.log(`includeDirs: ${sDirsPaths.includeDirs}`);
         const m_global = M_Global.getInstance();
         m_global.setDirs(sDirsPaths.includeDirs, sDirsPaths.excludeDirs);
-        m_global.setFiles(sDirsPaths.includePaths, sDirsPaths.excludePaths);
+        m_global.setPathSpec(sDirsPaths.pathSpec);
     }
 
     public static revive(context: vscode.ExtensionContext) {
