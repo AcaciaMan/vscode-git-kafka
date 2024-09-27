@@ -13,6 +13,12 @@ export class M_Dir {
     // has counted files
     hasCountedFiles: boolean = false;
 
+    // should process
+    shouldProcess: boolean = false;
+
+    // should process check
+    shouldProcessCheck: boolean = true;
+
     constructor(parent:M_Dir | undefined,  dir: string, size: number, fileCount: number) {
         // if dir is ".", set parent to undefined and dir to ""
         if (dir === ".") {

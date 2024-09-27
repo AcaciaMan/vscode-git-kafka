@@ -20,7 +20,8 @@ export class RegexpDir {
         const regexp = sRegExp
           .replace(/\*\*/g, ".*")
           .replace(/(?<!\.)\*/g, "[^/]*");
-        this.regexp = new RegExp(regexp);
+        // ignore case
+        this.regexp = new RegExp(regexp, "i");
         
     }
 
@@ -34,6 +35,7 @@ export class RegexpDir {
         if (testType === M_TestType.EXCLUDE && this.sRegExp === "") {
             return false;
         }
+        // return if string matches regular expression ignoring case
         return this.regexp.test(s);
     }
 }

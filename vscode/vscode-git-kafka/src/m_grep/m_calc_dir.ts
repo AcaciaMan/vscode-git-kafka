@@ -7,6 +7,7 @@ import * as path from "path";
 import { M_Dir } from "./m_dir";
 import { M_Tree } from "./m_tree";
 import { M_File } from "./m_file";
+import { M_Global } from "../m_util/m_global";
 
 export class M_Calc_Dir {
   // make a dictionary of M_Dir objects
@@ -15,6 +16,8 @@ export class M_Calc_Dir {
   workspaceFolder: vscode.WorkspaceFolder;
 
   m_files: M_File[] = [];
+
+  m_global: M_Global = M_Global.getInstance();
 
     constructor(workspaceFolder: vscode.WorkspaceFolder) {
         this.workspaceFolder = workspaceFolder;
@@ -70,6 +73,27 @@ export class M_Calc_Dir {
     );
     }
 
+  public checkShouldProcessDirs(): void {
+    Object.values(this.dirs).forEach((dir) => {
+      if (dir.shouldProcessCheck) {
+        dir.shouldProcess = this.m_global.testDir(dir.getId());
+        dir.shouldProcessCheck = false;
+      }
+    });
+
+    // remove dirs that should not be processed
+    Object.values(this.dirs).forEach((dir) => {
+      if (!dir.shouldProcess) {
+        delete this.dirs[dir.getId()];
+      }
+    });
+
+    // remove files that are not in processed dirs
+    this.m_files = this.m_files.filter((file) => {
+      return file.dir.getId() in this.dirs;
+    });
+  }  
+
   public toString(): string {
     let sDirs = "";
     // convert dictionary to array of M_Dir objects
@@ -91,7 +115,7 @@ export class M_Calc_Dir {
     let unCountedDirs: M_Dir[] = [];
     Object.values(this.dirs).forEach((dir) => {
       if (!dir.hasCountedFiles) {
-        unCountedDirs.push(dir);
+            unCountedDirs.push(dir);
       }
     });
     return unCountedDirs;
@@ -162,6 +186,7 @@ export class M_Calc_Dir {
                 unCountedDirs = this.getUnCountedDirs();
             }
         }
+        this.checkShouldProcessDirs();
     }
 
     public toStringFiles(): string {

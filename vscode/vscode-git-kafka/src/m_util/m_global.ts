@@ -41,6 +41,17 @@ export class M_Global {
 
     // test if dir is included and not excluded
     public testDir(dir: string): boolean {
+        console.log(`dir: ${dir}`);
+        console.log(
+          `aIncludeDirs: ${this.aIncludeDirs.some((rd) =>
+            rd.test(dir, M_TestType.INCLUDE)
+          )}`
+        );
+        console.log(
+          `aExcludeDirs: ${this.aExcludeDirs.some((rd) =>
+            rd.test(dir, M_TestType.EXCLUDE)
+          )}`
+        );
         return this.aIncludeDirs.some((rd) => rd.test(dir, M_TestType.INCLUDE)) && !this.aExcludeDirs.some((rd) => rd.test(dir, M_TestType.EXCLUDE));
     }
 
