@@ -66,9 +66,16 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
         }
 
         const command = `${searchTerm}`;
+
+        // benchmark start
+        const start = new Date().getTime();
         const { stdout, stderr } = await exec(command, {
             cwd: workspaceFolder.uri.fsPath,
         });
+        // benchmark end
+        const end = new Date().getTime();
+        const time = end - start;
+        console.log(`Search Time: ${time} ms`);
 
         if (stderr) {
             vscode.window.showErrorMessage(`Error: ${stderr}`);
@@ -191,7 +198,13 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
         }
 
         const mCalcGrep = new M_CalcGrep(searchTerm);
+        // benchmark start
+        const start = new Date().getTime();
         await mCalcGrep.execGrepCommandAllDirs();
+        // benchmark end
+        const end = new Date().getTime();
+        const time = end - start;
+        console.log(`Search Dirs Time: ${time} ms`);
 
         const outputChannel =
             vscode.window.createOutputChannel("Search Dirs");
