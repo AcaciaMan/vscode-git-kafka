@@ -5,10 +5,9 @@ import * as vscode from "vscode";
 const util = require("node:util");
 const exec = util.promisify(require("node:child_process").exec);
 const fs = require("fs");
-import * as path from "path";
-import { M_Dir } from "./m_dir";
 import { M_Calc_Dir } from "./m_calc_dir";
 import { M_Global } from "../m_util/m_global";
+import { M_CalcGrep } from "./m_calc_grep";
 
 export class ProviderGitGrep implements vscode.WebviewViewProvider {
   public static readonly viewType = 'myExtension.myWebview';
@@ -36,6 +35,9 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
             switch (data.type) {
                 case 'search':
                     await this._search(data.searchTerm);
+                    break;
+                case 'searchDirs':
+                    await this._searchDirs(data.searchTerm);
                     break;
                 case 'biggestDirs':
                     vscode.window.showInformationMessage("Biggest Dirs Receive Msg...");
@@ -175,6 +177,25 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
         const outputChannel =
             vscode.window.createOutputChannel("Largest 50 Files");
         outputChannel.append(mCalcDir.toStringFiles());
+        outputChannel.show();
+
+    }
+
+    private async _searchDirs(searchTerm: string) {
+        console.log(`Search Dirs: ${searchTerm}`);
+
+        const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+        if (!workspaceFolder) {
+            vscode.window.showErrorMessage("No workspace folder found");
+            return;
+        }
+
+        const mCalcGrep = new M_CalcGrep(searchTerm);
+        await mCalcGrep.execGrepCommandAllDirs();
+
+        const outputChannel =
+            vscode.window.createOutputChannel("Search Dirs");
+        outputChannel.append(mCalcGrep.sOut);
         outputChannel.show();
 
     }

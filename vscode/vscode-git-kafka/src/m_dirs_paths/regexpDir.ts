@@ -12,17 +12,21 @@ export class RegexpDir {
     sRegExp: string;
     // constructor
     constructor(sRegExp: string) {
-        this.sRegExp = sRegExp;
+      this.sRegExp = sRegExp;
 
-        // create regular expression from string
-        // replace all ** with .*
-        // replace all *, which are not .*, with any character except /
-        const regexp = sRegExp
-          .replace(/\*\*/g, ".*")
-          .replace(/(?<!\.)\*/g, "[^/]*");
-        // ignore case
-        this.regexp = new RegExp(regexp, "i");
-        
+      // create regular expression from string
+      // replace all ** with .*
+      // replace all *, which are not .*, with any character except /
+      const regexp = sRegExp
+        .replace(/\*\*/g, ".*")
+        .replace(/(?<!\.)\*/g, "[^/]*");
+      // ignore case
+      // match whole word
+
+      // anchor the regular expression to match the whole string
+      const anchoredRegexp = `^${regexp}$`;
+
+      this.regexp = new RegExp(anchoredRegexp, "i");
     }
 
     // test if string matches regular expression
@@ -35,7 +39,7 @@ export class RegexpDir {
         if (testType === M_TestType.EXCLUDE && this.sRegExp === "") {
             return false;
         }
-        // return if string matches regular expression ignoring case
+        // return if string matches regular expression whole word
         return this.regexp.test(s);
     }
 }
