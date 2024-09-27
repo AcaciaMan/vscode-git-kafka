@@ -44,6 +44,21 @@ export class M_Dir {
 
     // toString method
     toString(): string {
-        return `${this.getId()} ${this.size} ${this.fileCount}`;
+
+        const rightPad = (s: string, n: number): string => {
+          if (s.length >= n) {
+            return s;
+          }
+          return s + " ".repeat(n - s.length);
+        };
+
+        const leftPad = (s: string, n: number): string => {
+          if (s.length >= n) {
+            return s;
+          }
+          return " ".repeat(n - s.length) + s;
+        };
+
+        return `${rightPad(this.dir, 30)} ${leftPad(this.size.toString(),8)} ${leftPad(this.fileCount.toString(),5)} ${this.getId()}`;
     }
 }
