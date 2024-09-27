@@ -8,214 +8,214 @@ const fs = require("fs");
 import { M_Calc_Dir } from "./m_calc_dir";
 import { M_Global } from "../m_util/m_global";
 import { M_CalcGrep } from "./m_calc_grep";
+import { ViewResults } from "../m_results/viewResults";
 
 export class ProviderGitGrep implements vscode.WebviewViewProvider {
-  public static readonly viewType = 'myExtension.myWebview';
+  public static readonly viewType = "myExtension.myWebview";
 
-    private _view?: vscode.WebviewView;
+  private _view?: vscode.WebviewView;
 
-    m_global: M_Global = M_Global.getInstance();
+  m_global: M_Global = M_Global.getInstance();
 
-    constructor(private readonly context: vscode.ExtensionContext) {}
+  constructor(private readonly context: vscode.ExtensionContext) {}
 
-    public resolveWebviewView(
-        webviewView: vscode.WebviewView,
-        context: vscode.WebviewViewResolveContext,
-        token: vscode.CancellationToken
-    ) {
-        this._view = webviewView;
+  public resolveWebviewView(
+    webviewView: vscode.WebviewView,
+    context: vscode.WebviewViewResolveContext,
+    token: vscode.CancellationToken
+  ) {
+    this._view = webviewView;
 
-        webviewView.webview.options = {
-            enableScripts: true,
-        };
+    webviewView.webview.options = {
+      enableScripts: true,
+    };
 
-        webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+    webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
-        webviewView.webview.onDidReceiveMessage(async (data) => {
-            switch (data.type) {
-                case 'search':
-                    await this._search(data.searchTerm);
-                    break;
-                case 'searchDirs':
-                    await this._searchDirs(data.searchTerm);
-                    break;
-                case 'biggestDirs':
-                    vscode.window.showInformationMessage("Biggest Dirs Receive Msg...");
-                    await this._biggestDirs();
-                    vscode.window.showInformationMessage("Biggest Dirs Receive Msg Done");
-                    break;
-                case 'biggestFiles':
-                    vscode.window.showInformationMessage("Biggest Files Receive Msg...");
-                    await this._biggestFiles();
-                    vscode.window.showInformationMessage("Biggest Files Receive Msg Done");
-                    break;
-            }
-        });
+    webviewView.webview.onDidReceiveMessage(async (data) => {
+      switch (data.type) {
+        case "search":
+          await this._search(data.searchTerm);
+          break;
+        case "searchDirs":
+          await this._searchDirs(data.searchTerm);
+          break;
+        case "biggestDirs":
+          vscode.window.showInformationMessage("Biggest Dirs Receive Msg...");
+          await this._biggestDirs();
+          vscode.window.showInformationMessage("Biggest Dirs Receive Msg Done");
+          break;
+        case "biggestFiles":
+          vscode.window.showInformationMessage("Biggest Files Receive Msg...");
+          await this._biggestFiles();
+          vscode.window.showInformationMessage(
+            "Biggest Files Receive Msg Done"
+          );
+          break;
+      }
+    });
+  }
+
+  private async _search(searchTerm: string) {
+    if (!searchTerm) {
+      vscode.window.showErrorMessage("Search term is required");
+      return;
     }
 
-    private async _search(searchTerm: string) {
-        if (!searchTerm) {
-            vscode.window.showErrorMessage("Search term is required");
-            return;
-        }
-
-        const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-        if (!workspaceFolder) {
-            vscode.window.showErrorMessage("No workspace folder found");
-            return;
-        }
-
-        const command = `${searchTerm}`;
-
-        // benchmark start
-        const start = new Date().getTime();
-        const { stdout, stderr } = await exec(command, {
-            cwd: workspaceFolder.uri.fsPath,
-        });
-        // benchmark end
-        const end = new Date().getTime();
-        const time = end - start;
-        console.log(`Search Time: ${time} ms`);
-
-        if (stderr) {
-            vscode.window.showErrorMessage(`Error: ${stderr}`);
-            return;
-        }
-
-        const outputChannel = vscode.window.createOutputChannel("Git Grep Results");
-        outputChannel.append(stdout);
-        outputChannel.show();
-    }
-        
-
-    private _getHtmlForWebview(webview: vscode.Webview) {
-      const styleUri = webview.asWebviewUri(
-        vscode.Uri.joinPath(this.context.extensionUri, "media", "style.css")
-      );
-      const scriptUri = webview.asWebviewUri(
-        vscode.Uri.joinPath(this.context.extensionUri, "media", "main.js")
-      );
-
-
-      //load html from file htmlShopConfig.html
-      const fs = require("fs");
-      const htmlPath = vscode.Uri.joinPath(
-        this.context.extensionUri,
-        "src",
-        "m_grep",
-        "htmlGitGrep.html"
-      );
-
-      const html = fs.readFileSync(htmlPath.fsPath, "utf8");
-
-      return html
-        .replace(/{{styleUri}}/g, styleUri.toString())
-        .replace(/{{scriptUri}}/g, scriptUri.toString());
+    const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+    if (!workspaceFolder) {
+      vscode.window.showErrorMessage("No workspace folder found");
+      return;
     }
 
-    public dispose() {
-        //this._view?.dispose();
+    const command = `${searchTerm}`;
+
+    // benchmark start
+    const start = new Date().getTime();
+    const { stdout, stderr } = await exec(command, {
+      cwd: workspaceFolder.uri.fsPath,
+    });
+    // benchmark end
+    const end = new Date().getTime();
+    const time = end - start;
+    console.log(`Search Time: ${time} ms`);
+
+    if (stderr) {
+      vscode.window.showErrorMessage(`Error: ${stderr}`);
+      return;
     }
 
-    public static createOrShow(context: vscode.ExtensionContext) {
-        const column = vscode.window.activeTextEditor
-            ? vscode.window.activeTextEditor.viewColumn
-            : undefined;
+    const outputChannel = vscode.window.createOutputChannel("Git Grep Results");
+    outputChannel.append(stdout);
+    outputChannel.show();
+  }
 
-        const view = vscode.window.createWebviewPanel(
-            ProviderGitGrep.viewType,
-            'Git Grep',
-            column || vscode.ViewColumn.One,
-            {
-                enableFindWidget: true,
-                enableCommandUris: true,
-                retainContextWhenHidden: true,
-            }
-        );
+  private _getHtmlForWebview(webview: vscode.Webview) {
+    const styleUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this.context.extensionUri, "media", "style.css")
+    );
+    const scriptUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this.context.extensionUri, "media", "main.js")
+    );
 
-        const provider = new ProviderGitGrep(context);
-        view.webview.options = {
-            enableScripts: true,
-        };
-        view.webview.html = provider._getHtmlForWebview(view.webview);
+    //load html from file htmlShopConfig.html
+    const fs = require("fs");
+    const htmlPath = vscode.Uri.joinPath(
+      this.context.extensionUri,
+      "src",
+      "m_grep",
+      "htmlGitGrep.html"
+    );
 
-        view.onDidDispose(() => {
-            provider.dispose();
-        });
+    const html = fs.readFileSync(htmlPath.fsPath, "utf8");
 
-        return view;
+    return html
+      .replace(/{{styleUri}}/g, styleUri.toString())
+      .replace(/{{scriptUri}}/g, scriptUri.toString());
+  }
+
+  public dispose() {
+    //this._view?.dispose();
+  }
+
+  public static createOrShow(context: vscode.ExtensionContext) {
+    const column = vscode.window.activeTextEditor
+      ? vscode.window.activeTextEditor.viewColumn
+      : undefined;
+
+    const view = vscode.window.createWebviewPanel(
+      ProviderGitGrep.viewType,
+      "Git Grep",
+      column || vscode.ViewColumn.One,
+      {
+        enableFindWidget: true,
+        enableCommandUris: true,
+        retainContextWhenHidden: true,
+      }
+    );
+
+    const provider = new ProviderGitGrep(context);
+    view.webview.options = {
+      enableScripts: true,
+    };
+    view.webview.html = provider._getHtmlForWebview(view.webview);
+
+    view.onDidDispose(() => {
+      provider.dispose();
+    });
+
+    return view;
+  }
+
+  public static revive(context: vscode.ExtensionContext) {
+    return new ProviderGitGrep(context);
+  }
+
+  private async _biggestDirs() {
+    console.log("Biggest Dirs...");
+
+    const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+    if (!workspaceFolder) {
+      vscode.window.showErrorMessage("No workspace folder found");
+      return;
     }
 
-    public static revive(context: vscode.ExtensionContext) {
-        return new ProviderGitGrep(context);
+    const mCalcDir = await this.m_global.getCalcDirs();
+
+    const outputChannel = vscode.window.createOutputChannel("Biggest Dirs");
+    outputChannel.append(mCalcDir.toString());
+    outputChannel.show();
+  }
+
+  private async _biggestFiles() {
+    console.log("Biggest Files...");
+
+    const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+    if (!workspaceFolder) {
+      vscode.window.showErrorMessage("No workspace folder found");
+      return;
     }
 
+    const mCalcDir = await this.m_global.getCalcDirs();
 
-    private async _biggestDirs() {
-        console.log("Biggest Dirs...");
+    const outputChannel = vscode.window.createOutputChannel("Largest 50 Files");
+    outputChannel.append(mCalcDir.toStringFiles());
+    outputChannel.show();
+  }
 
-        const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-        if (!workspaceFolder) {
-            vscode.window.showErrorMessage("No workspace folder found");
-            return;
-        }
+  private async _searchDirs(searchTerm: string) {
+    console.log(`Search Dirs: ${searchTerm}`);
 
-        const mCalcDir = await this.m_global.getCalcDirs();
-
-
-        const outputChannel =
-            vscode.window.createOutputChannel("Biggest Dirs");
-        outputChannel.append(mCalcDir.toString());
-        outputChannel.show();
-
+    const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+    if (!workspaceFolder) {
+      vscode.window.showErrorMessage("No workspace folder found");
+      return;
     }
 
-    private async _biggestFiles() {
-        console.log("Biggest Files...");
+    const mCalcGrep = new M_CalcGrep(searchTerm);
+    // benchmark start
+    const start = new Date().getTime();
+    await mCalcGrep.execGrepCommandAllDirs();
+    // benchmark end
+    const end = new Date().getTime();
+    const time = end - start;
+    console.log(`Search Dirs Time: ${time} ms`);
 
-        const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-        if (!workspaceFolder) {
-            vscode.window.showErrorMessage("No workspace folder found");
-            return;
-        }
+    const outputChannel = vscode.window.createOutputChannel("Search Dirs");
+    outputChannel.append(mCalcGrep.sOut);
+    outputChannel.show();
 
-        const mCalcDir = await this.m_global.getCalcDirs();
+    const results = [
+      { fileName: "File1.ts", lineNumber: 10 },
+      { fileName: "File2.ts", lineNumber: 20 },
+      { fileName: "File3.ts", lineNumber: 30 },
+    ];
+    const m_results = new ViewResults();
+    m_results.showResultsInNewTab(results, this.context);
+    
+  }
 
-        const outputChannel =
-            vscode.window.createOutputChannel("Largest 50 Files");
-        outputChannel.append(mCalcDir.toStringFiles());
-        outputChannel.show();
-
-    }
-
-    private async _searchDirs(searchTerm: string) {
-        console.log(`Search Dirs: ${searchTerm}`);
-
-        const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-        if (!workspaceFolder) {
-            vscode.window.showErrorMessage("No workspace folder found");
-            return;
-        }
-
-        const mCalcGrep = new M_CalcGrep(searchTerm);
-        // benchmark start
-        const start = new Date().getTime();
-        await mCalcGrep.execGrepCommandAllDirs();
-        // benchmark end
-        const end = new Date().getTime();
-        const time = end - start;
-        console.log(`Search Dirs Time: ${time} ms`);
-
-        const outputChannel =
-            vscode.window.createOutputChannel("Search Dirs");
-        outputChannel.append(mCalcGrep.sOut);
-        outputChannel.show();
-
-    }
-
-        
-
-
+ 
 
 }
 
