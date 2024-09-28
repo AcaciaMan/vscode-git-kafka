@@ -4,6 +4,7 @@ import { M_Dir } from "./m_dir";
 const util = require("node:util");
 const exec = util.promisify(require("node:child_process").exec);
 import * as path from "path";
+import { M_Result } from "../m_results/m_result";
 
 export class M_CalcGrep {
   // execute git grep command
@@ -16,6 +17,7 @@ export class M_CalcGrep {
 
   sOut: string = "";
 
+  aResult: M_Result[] = [];
   i = 0;
 
   constructor(searchTerm: string) {
@@ -92,6 +94,9 @@ export class M_CalcGrep {
       results.forEach((result, index) => {
         //console.log(`Results for ${aDirs[index]}:\n${result}`);
         this.sOut += result;
+        const mResult = new M_Result(result.toString(), aDirs[index]);
+        mResult.fillResultFile();
+        this.aResult.push(mResult);
       });
     } catch (error) {
       console.error(

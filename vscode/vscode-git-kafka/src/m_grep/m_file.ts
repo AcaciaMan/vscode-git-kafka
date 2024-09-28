@@ -16,7 +16,7 @@ export class M_File {
     }
 
     // toString method
-    toString(): string {
+    toString(bPrintSize:boolean = true): string {
         // return nicelly formatted, padded string
         // assuming that name is not longer than 30 characters
         // and size is not longer than 8 characters
@@ -36,16 +36,16 @@ export class M_File {
         };
 
         const path = this.dir.getId();
+        // if bPrintSize is false, return only name and path
+        const size = bPrintSize ? leftPad(this.size.toString(), 8) : "";
+
+
+
+
         if (path === "") {
-            return `${rightPad(this.name, 30)} ${leftPad(
-              this.size.toString(),
-              8
-            )} ${this.name}`;
+            return `${rightPad(this.name, 30)} ${size} ${this.name}`;
         }
-        return `${rightPad(this.name, 30)} ${leftPad(
-          this.size.toString(),
-          8
-        )} ${path}/${this.name}`;
+        return `${rightPad(this.name, 30)} ${size} ${path}/${this.name}`;
     }
 
 }

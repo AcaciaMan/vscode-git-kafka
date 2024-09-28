@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 export class ViewResults {
   // show results in new tab
   public showResultsInNewTab(
-    results: { fileName: string; lineNumber: number }[],
+    results: { fileName: string; line: string }[],
     context: vscode.ExtensionContext
   ): void {
     const panel = vscode.window.createWebviewPanel(
@@ -29,7 +29,7 @@ export class ViewResults {
         (result) => `
       <div class="box">
         <div class="file-name">${result.fileName}</div>
-        <div class="line-number">Line: ${result.lineNumber}</div>
+        <div class="line-number">${result.line}</div>
       </div>
     `
       )

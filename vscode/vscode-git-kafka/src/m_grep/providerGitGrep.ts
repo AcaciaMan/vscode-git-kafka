@@ -9,6 +9,7 @@ import { M_Calc_Dir } from "./m_calc_dir";
 import { M_Global } from "../m_util/m_global";
 import { M_CalcGrep } from "./m_calc_grep";
 import { ViewResults } from "../m_results/viewResults";
+import { get } from "http";
 
 export class ProviderGitGrep implements vscode.WebviewViewProvider {
   public static readonly viewType = "myExtension.myWebview";
@@ -205,15 +206,35 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
     outputChannel.append(mCalcGrep.sOut);
     outputChannel.show();
 
-    const results = [
-      { fileName: "File1.ts", lineNumber: 10 },
-      { fileName: "File2.ts", lineNumber: 20 },
-      { fileName: "File3.ts", lineNumber: 30 },
-    ];
+    const results = this.getResults(mCalcGrep);
     const m_results = new ViewResults();
     m_results.showResultsInNewTab(results, this.context);
     
   }
+
+  // loop through all results and make a list of files and line numbers
+  // for each file
+  getResults(mCalcGrep: M_CalcGrep) {
+    let results: {fileName: string, line: string}[] = [];
+
+    // loop through all results
+    for (let i = 0; i < mCalcGrep.aResult.length; i++) {
+      let mResult = mCalcGrep.aResult[i];
+      for (let j = 0; j < mResult.aResultFile.length; j++) {
+        let mResultFile = mResult.aResultFile[j];
+        let fileName = mResultFile.toString();
+        let line = mResultFile.toStringItems();
+        results.push({fileName: fileName, line: line});
+
+        
+      }
+    }
+
+    return results;
+  }
+
+
+
 
  
 
