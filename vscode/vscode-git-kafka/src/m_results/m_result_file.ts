@@ -1,33 +1,36 @@
 import { M_File } from "../m_grep/m_file";
+import { M_Result } from "./m_result";
 
 // class to store the results of a single file
 export class M_ResultFile {
     file: M_File;
-    aResultItem: number[] = [];
-    aLineNumber: number[] = [];
+    m_result: M_Result;
+    aResultItem: {iStartLine:number, iEndLine:number}[] = [];
+    aParsedLine: number[] = [];
 
-    constructor(file: M_File) {
+    constructor(file: M_File, m_result: M_Result) {
         this.file = file;
+        this.m_result = m_result;
     }
 
-    // find aResultItem from aLineNumber
-    // consequitive line numbers are grouped together in aResultItem
-    public findResultItemFromLineNumber(): void {
-        if (this.aLineNumber.length === 0) {
+    // find aResultItem from aParsedLine
+    // consequitive parsed lines are grouped together in aResultItem
+    public findResultItemFromParsedLine(): void {
+        if (this.aParsedLine.length === 0) {
             return;
         }
-        let iStartLine = this.aLineNumber[0];
-        let iEndLine = this.aLineNumber[0];
-        for (let i = 1; i < this.aLineNumber.length; i++) {
-            if (this.aLineNumber[i] === iEndLine + 1) {
-                iEndLine = this.aLineNumber[i];
+        let iStartLine = this.aParsedLine[0];
+        let iEndLine = this.aParsedLine[0];
+        for (let i = 1; i < this.aParsedLine.length; i++) {
+            if (this.m_result.aResultParsed[this.aParsedLine[i]].line === this.m_result.aResultParsed[iEndLine].line + 1) {
+                iEndLine = this.aParsedLine[i];
             } else {
-                this.aResultItem.push(iStartLine);
-                iStartLine = this.aLineNumber[i];
-                iEndLine = this.aLineNumber[i];
+                this.aResultItem.push({iStartLine:iStartLine, iEndLine:iEndLine});
+                iStartLine = this.aParsedLine[i];
+                iEndLine = this.aParsedLine[i];
             }
         }
-        this.aResultItem.push(iStartLine);
+        this.aResultItem.push({iStartLine:iStartLine, iEndLine:iEndLine});
     }
 
     toString(): string {
@@ -38,7 +41,7 @@ export class M_ResultFile {
     toStringItems(): string {
         let s = "Line: ";
         for (let i = 0; i < this.aResultItem.length; i++) {
-            s += `~${this.aResultItem[i]} `;
+            s += `~${this.m_result.aResultParsed[this.aResultItem[i].iStartLine].line} `;
         }
         return s;
     }

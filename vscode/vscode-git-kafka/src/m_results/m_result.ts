@@ -39,21 +39,20 @@ export class M_Result {
     fillResultFile() {
         for (let i = 0; i < this.aResultParsed.length; i++) {
             let sFile = this.aResultParsed[i].file;
-            let iLineNumber = this.aResultParsed[i].line;
             // if i == 0 or sFile is different from the previous sFile
             if (i === 0 || sFile !== this.aResultParsed[i - 1].file) {
                 const mFile = new M_File(sFile,0,this.m_dir);
-                let m_file = new M_ResultFile(mFile);
-                m_file.aLineNumber.push(iLineNumber);
+                let m_file = new M_ResultFile(mFile,this);
+                m_file.aParsedLine.push(i);
                 this.aResultFile.push(m_file);
             } else {
-                this.aResultFile[this.aResultFile.length - 1].aLineNumber.push(iLineNumber);
+                this.aResultFile[this.aResultFile.length - 1].aParsedLine.push(i);
             }
             
 
         }
         for (let i = 0; i < this.aResultFile.length; i++) {
-            this.aResultFile[i].findResultItemFromLineNumber();
+            this.aResultFile[i].findResultItemFromParsedLine();
         }
     } 
     
