@@ -215,7 +215,7 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
   // loop through all results and make a list of files and line numbers
   // for each file
   getResults(mCalcGrep: M_CalcGrep) {
-    let results: {fileName: string, line: string}[] = [];
+    let results: {fileName: string, line: string, content: string}[] = [];
 
     // loop through all results
     for (let i = 0; i < mCalcGrep.aResult.length; i++) {
@@ -224,7 +224,8 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
         let mResultFile = mResult.aResultFile[j];
         let fileName = mResultFile.toString();
         let line = mResultFile.toStringItems();
-        results.push({fileName: fileName, line: line});
+        let content = mResultFile.toStringItemsText();
+        results.push({fileName: fileName, line: line, content: content});
 
         
       }

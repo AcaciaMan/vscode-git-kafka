@@ -23,7 +23,7 @@ export class ViewResults {
 
   // show results in new tab
   public showResultsInNewTab(
-    results: { fileName: string; line: string }[],
+    results: { fileName: string; line: string, content: string }[],
     context: vscode.ExtensionContext
   ): void {
     // create new webview panel
@@ -32,7 +32,9 @@ export class ViewResults {
         "searchResults", // Identifies the type of the webview. Used internally
         "Search Results", // Title of the panel displayed to the user
         vscode.ViewColumn.One, // Editor column to show the new webview panel in
-        {} // Webview options. More on these later.
+        {
+          enableScripts: true
+        } // Webview options. More on these later.
       );
 
       // load HTML content from htmlResults.html
@@ -46,7 +48,7 @@ export class ViewResults {
       this.htmlContent = fs.readFileSync(htmlPath.fsPath, "utf8");
     }
 
-
+   // show result content in colapsable divs 
 
     const boxes = results
       .map(
@@ -54,6 +56,7 @@ export class ViewResults {
       <div class="box">
         <div class="file-name">${result.fileName}</div>
         <div class="line-number">${result.line}</div>
+        <div class="line-content">${result.content}</div>
       </div>
     `
       )

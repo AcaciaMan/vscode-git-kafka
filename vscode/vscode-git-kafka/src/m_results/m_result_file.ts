@@ -46,5 +46,30 @@ export class M_ResultFile {
         return s;
     }
 
+    // toStringItemsText method
+    toStringItemsText(): string {
+      let s = "";
+      for (let i = 0; i < this.aResultItem.length; i++) {
+        // for each item concatenate the text of the parsed lines
+        s += this.toStringOneItemText(this.aResultItem[i]) + "\n";
+        // add a newline character between items
+        s += "\n";
+      }
+      // remove the last newline character
+      s = s.slice(0, -1);
+      return s;
+    }
+
+    // toStringOneItemText
+    toStringOneItemText(resultItem: {iStartLine: number, iEndLine:number}): string {
+        let s = "";
+        for (let j = resultItem.iStartLine; j <= resultItem.iEndLine; j++) {
+            s += `${this.m_result.aResultParsed[j].text}\n`;
+        }
+        // remove the last newline character
+        s = s.slice(0,-1);
+        return s;
+    }
+
 }
 
