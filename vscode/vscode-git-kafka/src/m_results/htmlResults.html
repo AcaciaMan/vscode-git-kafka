@@ -35,8 +35,11 @@
             font-family: 'Courier New', Courier, monospace; /* Use a monospaced font */
             cursor: pointer;
           }
-          .line-number {
+          .file-line {
             color: #555;
+          }
+          .line-number {
+            cursor: pointer;
           }
           .line-content {
             white-space: pre-wrap;
@@ -52,6 +55,9 @@
         {{boxes}}
         </div>
   <script>
+    const vscode = acquireVsCodeApi();
+
+
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.line-content').forEach(element => {
         element.style.display = 'none'; // Ensure initial state is set to 'none'
@@ -66,6 +72,23 @@
           } else {
             content.style.display = 'none';
           }
+        });
+      });
+
+            document.querySelectorAll('.line-number').forEach(element => {
+        element.addEventListener('click', (event) => {
+          const filePath = element.getAttribute('data-file-path');
+          const lineStart = parseInt(element.getAttribute('data-line-start'), 10);
+          const lineEnd = parseInt(element.getAttribute('data-line-end'), 10);
+          if (filePath && !isNaN(lineStart) && !isNaN(lineEnd)) {
+            vscode.postMessage({
+              command: 'openFile',
+              filePath: filePath,
+              lineStart: lineStart,
+              lineEnd: lineEnd
+            });
+          }
+          
         });
       });
     });

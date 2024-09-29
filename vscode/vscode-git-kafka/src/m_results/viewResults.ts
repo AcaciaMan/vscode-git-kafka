@@ -23,7 +23,7 @@ export class ViewResults {
 
   // show results in new tab
   public showResultsInNewTab(
-    results: { fileName: string; line: string, content: string }[],
+    results: { fileName: string; line: string; content: string }[],
     context: vscode.ExtensionContext
   ): void {
     // create new webview panel
@@ -33,7 +33,7 @@ export class ViewResults {
         "Search Results", // Title of the panel displayed to the user
         vscode.ViewColumn.One, // Editor column to show the new webview panel in
         {
-          enableScripts: true
+          enableScripts: true,
         } // Webview options. More on these later.
       );
 
@@ -48,14 +48,14 @@ export class ViewResults {
       this.htmlContent = fs.readFileSync(htmlPath.fsPath, "utf8");
     }
 
-   // show result content in colapsable divs 
+    // show result content in colapsable divs
 
     const boxes = results
       .map(
         (result) => `
       <div class="box">
         <div class="file-name">${result.fileName}</div>
-        <div class="line-number">${result.line}</div>
+        <div class="file-line">${result.line}</div>
         <div class="line-content">${result.content}</div>
       </div>
     `
@@ -64,5 +64,30 @@ export class ViewResults {
 
     // Set the webview's HTML content
     this.panel.webview.html = this.htmlContent.replace(/{{boxes}}/g, boxes);
+
+    // Handle messages from the webview
+    this.panel.webview.onDidReceiveMessage(
+      (message) => {
+        switch (message.command) {
+          case "openFile":
+            this.openFileInEditor(message.filePath, message.lineStart, message.lineEnd);
+            return;
+        }
+      },
+      undefined,
+      context.subscriptions
+    );
+  }
+
+  // open file in editor and go to specific line
+  private openFileInEditor(filePath: string, lineStart: number, lineEnd: number): void {
+    const openPath = vscode.Uri.file(filePath);
+    vscode.workspace.openTextDocument(openPath).then((doc) => {
+      vscode.window.showTextDocument(doc).then((editor) => {
+        const range = new vscode.Range(lineStart-1, 0, lineStart-1, 0);
+        editor.selection = new vscode.Selection(range.start, range.end);
+        editor.revealRange(range);
+      });
+    });
   }
 }

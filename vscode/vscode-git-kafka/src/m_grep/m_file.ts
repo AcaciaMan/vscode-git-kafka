@@ -1,3 +1,5 @@
+import path from "path";
+import { M_Global } from "../m_util/m_global";
 import { M_Dir } from "./m_dir";
 
 // class to store file information (name, size, and M_Dir object)
@@ -8,6 +10,8 @@ export class M_File {
     size: number;
     // directory object
     dir: M_Dir;
+
+    m_global: M_Global = M_Global.getInstance();
 
     constructor(name: string, size: number, dir: M_Dir) {
         this.name = name;
@@ -46,6 +50,16 @@ export class M_File {
             return `${rightPad(this.name, 30)} ${size} ${this.name}`;
         }
         return `${rightPad(this.name, 30)} ${size} ${path}/${this.name}`;
+    }
+
+    public getPath(): string {
+
+
+        // concatenate m_global workspace folder path, dir id, and file name
+        if (this.m_global.workspaceFolder && this.m_global.workspaceFolder.uri) {
+            return path.join(this.m_global.workspaceFolder.uri.fsPath, this.dir.getId(), this.name);
+        }
+        return "";
     }
 
 }

@@ -41,7 +41,9 @@ export class M_ResultFile {
     toStringItems(): string {
         let s = "Line: ";
         for (let i = 0; i < this.aResultItem.length; i++) {
-            s += `~${this.m_result.aResultParsed[this.aResultItem[i].iStartLine].line} `;
+            const lineStart = this.m_result.aResultParsed[this.aResultItem[i].iStartLine].line;
+            const lineEnd = this.m_result.aResultParsed[this.aResultItem[i].iEndLine].line;
+            s += `<span class="line-number" data-file-path="${this.file.getPath()}" data-line-start="${lineStart}" data-line-end="${lineEnd}">~${lineStart}</span> `;
         }
         return s;
     }
@@ -63,11 +65,20 @@ export class M_ResultFile {
     // toStringOneItemText
     toStringOneItemText(resultItem: {iStartLine: number, iEndLine:number}): string {
         let s = "";
+
+        const lineStart = this.m_result.aResultParsed[resultItem.iStartLine].line;
+        const lineEnd = this.m_result.aResultParsed[resultItem.iEndLine].line;
+        // add the line number from the first line
+        s += `<span class="line-number" data-file-path="${this.file.getPath()}" data-line-start="${lineStart}" data-line-end="${lineEnd}">~~~${
+          lineStart
+        }</span>\n`;
         for (let j = resultItem.iStartLine; j <= resultItem.iEndLine; j++) {
             s += `${this.m_result.aResultParsed[j].text}\n`;
         }
-        // remove the last newline character
-        s = s.slice(0,-1);
+        // add the line number from the last line
+        s += `<span class="line-number" data-file-path="${this.file.getPath()}" data-line-start="${lineEnd}" data-line-end="${lineEnd}">~~~${
+          lineEnd
+        }</span>`;
         return s;
     }
 
