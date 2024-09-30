@@ -27,7 +27,7 @@
         {
           "id": "myExtensionContainer",
           "title": "Git Kafka",
-          "icon": "resources/icon.svg"
+          "icon": "resources/icon.png"
         }
       ]
     },
