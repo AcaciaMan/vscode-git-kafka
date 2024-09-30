@@ -10,6 +10,7 @@ import { M_Global } from "../m_util/m_global";
 import { M_CalcGrep } from "./m_calc_grep";
 import { ViewResults } from "../m_results/viewResults";
 import { get } from "http";
+import { M_ResultFile } from "../m_results/m_result_file";
 
 export class ProviderGitGrep implements vscode.WebviewViewProvider {
   public static readonly viewType = "myExtension.myWebview";
@@ -217,18 +218,41 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
   getResults(mCalcGrep: M_CalcGrep) {
     let results: {fileName: string, line: string, content: string}[] = [];
 
-    // loop through all results
+    // maka a list of all result files
+    let aResultFile: M_ResultFile[] = [];
     for (let i = 0; i < mCalcGrep.aResult.length; i++) {
       let mResult = mCalcGrep.aResult[i];
       for (let j = 0; j < mResult.aResultFile.length; j++) {
         let mResultFile = mResult.aResultFile[j];
-        let fileName = mResultFile.toString();
-        let line = mResultFile.toStringItems();
-        let content = mResultFile.toStringItemsText();
-        results.push({fileName: fileName, line: line, content: content});
-
-        
+        aResultFile.push(mResultFile);
       }
+    }
+
+    // sort the list of result files by dirId and fileName
+    aResultFile.sort((a, b) => {
+      if (a.file.dir.getId() < b.file.dir.getId()) {
+        return -1;
+      }
+      if (a.file.dir.getId() > b.file.dir.getId()) {
+        return 1;
+      }
+      if (a.file.name < b.file.name) {
+        return -1;
+      }
+      if (a.file.name > b.file.name) {
+        return 1;
+      }
+      return 0;
+    });
+
+
+    // loop through all results
+    for (let i = 0; i < aResultFile.length; i++) {
+      let mResultFile = aResultFile[i];
+      let fileName = mResultFile.toString();
+      let line = mResultFile.toStringItems();
+      let content = mResultFile.toStringItemsText();
+      results.push({fileName: fileName, line: line, content: content});
     }
 
     return results;
