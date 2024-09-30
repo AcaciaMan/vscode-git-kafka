@@ -9,3 +9,6 @@ Git is great version control system with good commands in scripts. Visual Studio
 ## v0.0.2
 ![Screenshot_search_boxes](https://github.com/user-attachments/assets/48e9c999-cc08-4178-994f-1562134e9a53)
 
+## v0.0.3 Added results sorting
+![Screenshot_added_sorts](https://github.com/user-attachments/assets/d81ee4ec-cbeb-489a-b514-64803a9144cc)
+
