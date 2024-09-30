@@ -24,7 +24,7 @@ export class ViewResults {
 
   // show results in new tab
   public showResultsInNewTab(
-    results: { fileName: string; line: string; content: string }[],
+    results: { fileName: string; line: string; content: string, dirPath:string }[],
     context: vscode.ExtensionContext
   ): void {
     // create new webview panel
@@ -57,7 +57,7 @@ export class ViewResults {
       .map(
         (result) => `
       <div class="box">
-        <div class="file-name">${result.fileName}</div>
+        <div class="file-name" data-dir="${result.dirPath}">${result.fileName}</div>
         <div class="file-line">${result.line}</div>
         <div class="line-content">${result.content}</div>
       </div>
@@ -76,6 +76,9 @@ export class ViewResults {
             this.openFileInEditor(message.filePath, message.lineStart, message.lineEnd);
             mClicks.incrementClicks(message.dirPath);
             return;
+          case "clickFileName":
+            mClicks.incrementClicks(message.dirPath);
+            return;  
         }
       },
       undefined,

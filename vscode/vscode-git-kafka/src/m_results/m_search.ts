@@ -32,7 +32,7 @@ export class M_Search {
 
 
   // search results
-  aSearchResults: { fileName: string; line: string; content: string }[] = [];
+  aSearchResults: { fileName: string; line: string; content: string; dirPath:string }[] = [];
   aResultFile: M_ResultFile[] = [];
   // array of sort types
   aSorts: string[] = [
@@ -51,12 +51,14 @@ export class M_Search {
   public addSearchResult(
     fileName: string,
     line: string,
-    content: string
+    content: string,
+    dirPath:string
   ): void {
     this.aSearchResults.push({
       fileName: fileName,
       line: line,
       content: content,
+        dirPath: dirPath
     });
   }
 
@@ -284,7 +286,7 @@ export class M_Search {
             let fileName = resultFile.toString();
             let line = resultFile.toStringItems();
             let content = resultFile.toStringItemsText();
-            this.addSearchResult(fileName, line, content);
+            this.addSearchResult(fileName, line, content, resultFile.file.dir.getId());
         }
     }
 

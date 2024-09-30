@@ -12,6 +12,7 @@ import { ViewResults } from "../m_results/viewResults";
 import { get } from "http";
 import { M_ResultFile } from "../m_results/m_result_file";
 import { M_Search } from "../m_results/m_search";
+import { M_Clicks } from "../m_results/m_clicks";
 
 export class ProviderGitGrep implements vscode.WebviewViewProvider {
   public static readonly viewType = "myExtension.myWebview";
@@ -73,7 +74,13 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
           // Set the current try
           this.m_global.setSortType(data.text);
           this._showResultsInNewTab();
-          break;}
+          break;
+        case "clearClicks":
+          const mClicks = M_Clicks.getInstance();
+          mClicks.clearClicks();
+          break;  
+        
+        }
     });
   }
 

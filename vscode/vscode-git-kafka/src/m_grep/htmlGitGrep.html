@@ -17,6 +17,7 @@
                 <button id="biggestFiles">Find largest 50 files</button>
                 -->
                 <!-- add dashed line seperator -->
+                 <button id="clearButton">Clear clicks</button>
                 <br>
                 <label for="sortDropdown">Sort:</label>
             <select id="sortDropdown">
@@ -55,6 +56,12 @@
                         });
                     });
                     */
+                    const clearButton = document.getElementById('clearButton');
+                    clearButton.addEventListener('click', () => {
+                        vscode.postMessage({
+                            type: 'clearClicks'
+                        });
+                    });
 
                 //add tries names to drop down list
   window.addEventListener('message', event => {

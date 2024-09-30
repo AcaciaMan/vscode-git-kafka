@@ -67,7 +67,11 @@
             content.style.display = 'block';
           } else {
             content.style.display = 'none';
-          }
+          };
+          vscode.postMessage({
+            command: 'clickFileName',
+            dirPath: element.getAttribute('data-dir')
+          });
         });
       });
 

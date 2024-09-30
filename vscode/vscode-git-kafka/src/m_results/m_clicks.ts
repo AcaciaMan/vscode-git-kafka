@@ -33,4 +33,10 @@ export class M_Clicks {
         }
         return this.dictClicks[key];
     }
+
+    // clear number of clicks
+    public clearClicks(): void {
+        this.dictClicks = {};
+    }
+
 }
