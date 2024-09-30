@@ -28,6 +28,10 @@ export class M_Result {
                 let sFile = aLine[0];
                 // sLineNumber is an integer
                 let iLineNumber = parseInt(aLine[1]);
+                // sText is the rest of the line
+                for (let j = 3; j < aLine.length; j++) {
+                    aLine[2] += ':' + aLine[j];
+                }
                 let sText = aLine[2];
                 aResultParsed.push({ file: sFile, line: iLineNumber, text: sText });
             }
