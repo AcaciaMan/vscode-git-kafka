@@ -146,7 +146,7 @@ export class M_Calc_Dir {
 
     public async getTreeInDir(dir: M_Dir): Promise<M_Tree[] | undefined> {
         const fullPath = path.join(this.workspaceFolder.uri.fsPath, dir.getId());
-        const command = `git ls-tree --format="%(objecttype);;;%(path);;;%(objectsize)" HEAD`;
+        const command = `git ls-tree -d --format="%(objecttype);;;%(path);;;%(objectsize)" HEAD`;
         const { stdout, stderr } = await exec(command, {
             cwd: fullPath,
         });
