@@ -11,6 +11,7 @@ import { M_CalcGrep } from "./m_calc_grep";
 import { ViewResults } from "../m_results/viewResults";
 import { get } from "http";
 import { M_ResultFile } from "../m_results/m_result_file";
+import { M_Search } from "../m_results/m_search";
 
 export class ProviderGitGrep implements vscode.WebviewViewProvider {
   public static readonly viewType = "myExtension.myWebview";
@@ -18,6 +19,7 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
 
   m_global: M_Global = M_Global.getInstance();
+  mCalcGrep: M_CalcGrep | undefined;
 
   constructor(private readonly context: vscode.ExtensionContext) {}
 
@@ -54,7 +56,23 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
             "Biggest Files Receive Msg Done"
           );
           break;
-      }
+        case "webviewLoaded":
+          console.log("Webview Loaded");
+          // Send data to the webview
+          //make array
+          var arrSorts = ['Alphabetical (A-Z)', 'Alphabetical (Z-A)', 'Number of Lines (Low-High)', 'Number of Lines (High-Low)' ];
+          // Send data to the webview
+          webviewView.webview.postMessage({ command: "setSortsOptions", arrSorts: arrSorts });
+          webviewView.webview.postMessage({
+            command: "setSortOption",
+            currSort: "Alphabetical (A-Z)"
+          });
+          break;
+        case "selectSort":
+          // Set the current try
+          this.m_global.setSortType(data.text);
+          this._showResultsInNewTab();
+          break;}
     });
   }
 
@@ -194,74 +212,35 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
       return;
     }
 
-    const mCalcGrep = new M_CalcGrep(searchTerm);
+    this.mCalcGrep = new M_CalcGrep(searchTerm);
     // benchmark start
     const start = new Date().getTime();
-    await mCalcGrep.execGrepCommandAllDirs();
+    await this.mCalcGrep.execGrepCommandAllDirs();
     // benchmark end
     const end = new Date().getTime();
     const time = end - start;
     console.log(`Search Dirs Time: ${time} ms`);
 
     const outputChannel = vscode.window.createOutputChannel("Search Dirs");
-    outputChannel.append(mCalcGrep.sOut);
+    outputChannel.append(this.mCalcGrep.sOut);
     outputChannel.show();
 
-    const results = this.getResults(mCalcGrep);
+
+    this._showResultsInNewTab();    
+  }
+
+  // show results in new tab
+  private _showResultsInNewTab() 
+    {
+      if (!this.mCalcGrep) {
+        vscode.window.showInformationMessage("No search results found");
+        return;
+      }
+    const m_search: M_Search = M_Search.getInstance();
+    m_search.processSearchResults(this.mCalcGrep, this.m_global.sortType);
     const m_results = ViewResults.getInstance();
-    m_results.showResultsInNewTab(results, this.context);
-    
+    m_results.showResultsInNewTab(m_search.aSearchResults, this.context);
   }
-
-  // loop through all results and make a list of files and line numbers
-  // for each file
-  getResults(mCalcGrep: M_CalcGrep) {
-    let results: {fileName: string, line: string, content: string}[] = [];
-
-    // maka a list of all result files
-    let aResultFile: M_ResultFile[] = [];
-    for (let i = 0; i < mCalcGrep.aResult.length; i++) {
-      let mResult = mCalcGrep.aResult[i];
-      for (let j = 0; j < mResult.aResultFile.length; j++) {
-        let mResultFile = mResult.aResultFile[j];
-        aResultFile.push(mResultFile);
-      }
-    }
-
-    // sort the list of result files by dirId and fileName
-    aResultFile.sort((a, b) => {
-      if (a.file.dir.getId() < b.file.dir.getId()) {
-        return -1;
-      }
-      if (a.file.dir.getId() > b.file.dir.getId()) {
-        return 1;
-      }
-      if (a.file.name < b.file.name) {
-        return -1;
-      }
-      if (a.file.name > b.file.name) {
-        return 1;
-      }
-      return 0;
-    });
-
-
-    // loop through all results
-    for (let i = 0; i < aResultFile.length; i++) {
-      let mResultFile = aResultFile[i];
-      let fileName = mResultFile.toString();
-      let line = mResultFile.toStringItems();
-      let content = mResultFile.toStringItemsText();
-      results.push({fileName: fileName, line: line, content: content});
-    }
-
-    return results;
-  }
-
-
-
-
- 
 
 }
 

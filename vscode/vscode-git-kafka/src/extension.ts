@@ -5,6 +5,7 @@ import { exec } from "child_process";
 import { ProviderGitGrep } from './m_grep/providerGitGrep';
 import { ProviderDirsPaths } from './m_dirs_paths/providerDirsPaths';
 import { M_Global } from './m_util/m_global';
+import { M_Search } from './m_results/m_search';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -28,6 +29,22 @@ export function activate(context: vscode.ExtensionContext) {
 	}  
 
 	m_global.setWorkspaceUUID(workspaceUUID);
+
+  let sortType = vscode.workspace
+    .getConfiguration("vscode-git-kafka")
+    .get("sort") as string;
+
+  m_global.sortType = sortType;
+
+  if (sortType === "" || sortType === undefined) {
+    sortType = M_Search.getInstance().enumSortType.AlphabeticalAZ;
+      m_global.setSortType(sortType);
+
+  }
+
+
+
+
 
 
 

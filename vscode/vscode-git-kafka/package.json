@@ -68,6 +68,11 @@
           "type": "string",
           "default": "",
           "description": "Workspace UUID"
+        },
+        "vscode-git-kafka.sort": {
+          "type": "string",
+          "default": "",
+          "description": "Sort"
         }
       }
     }

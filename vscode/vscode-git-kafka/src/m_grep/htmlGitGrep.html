@@ -16,6 +16,13 @@
                 <!--
                 <button id="biggestFiles">Find largest 50 files</button>
                 -->
+                <!-- add dashed line seperator -->
+                <br>
+                <label for="sortDropdown">Sort:</label>
+            <select id="sortDropdown">
+                <option value="0">Select...</option>
+            </select>
+
                 <script>
                     const vscode = acquireVsCodeApi();
                     const searchButton = document.getElementById('searchButton');
@@ -48,6 +55,43 @@
                         });
                     });
                     */
+
+                //add tries names to drop down list
+  window.addEventListener('message', event => {
+    const message = event.data;
+    const sortDropdown = document.getElementById('sortDropdown');
+
+    switch (message.command) {
+      case 'setSortsOptions':
+        
+        sortDropdown.innerHTML = '';
+        message.arrSorts.forEach(sortName => {
+          const option = document.createElement('option');
+          option.value = sortName;
+          option.text = sortName;
+          sortDropdown.add(option);
+
+    });
+
+
+        //add event listener to dropdown list
+        sortDropdown.addEventListener('change', () => {
+          const selectedSort = sortDropdown.options[sortDropdown.selectedIndex].text;
+          vscode.postMessage({ type: 'selectSort', text: selectedSort });
+        });
+       
+        break;
+        case 'setSortOption':
+            sortDropdown.value = message.currSort;
+            break;
+    }
+    });
+
+                // Notify the extension that the webview is loaded
+            window.addEventListener('DOMContentLoaded', () => {
+                vscode.postMessage({ type: 'webviewLoaded' });
+            });
+
                 </script>
                 <script src="${{scriptUri}}"></script>
             </body>

@@ -32,9 +32,17 @@ export class M_Global {
   promiseCalcDirs: Promise<void> | undefined;
   m_calc_dir: M_Calc_Dir | undefined;
   workspaceUUID: string = "";
+  sortType: string = "";
 
   public setWorkspaceUUID(workspaceUUID: string): void {
     this.workspaceUUID = workspaceUUID;
+  }
+
+  public setSortType(sortType: string): void {
+    this.sortType = sortType;
+        vscode.workspace
+          .getConfiguration("vscode-git-kafka")
+          .update("sort", sortType, vscode.ConfigurationTarget.Workspace);
   }
 
   // set directories
