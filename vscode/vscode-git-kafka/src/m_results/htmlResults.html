@@ -59,15 +59,11 @@
 
 
     document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.line-content').forEach(element => {
-        element.style.display = 'none'; // Ensure initial state is set to 'none'
-      });
-
 
       document.querySelectorAll('.file-name').forEach(element => {
         element.addEventListener('click', () => {
           const content = element.nextElementSibling.nextElementSibling;
-          if (content.style.display === 'none') {
+          if (content.style.display === 'none' || content.style.display === '') {
             content.style.display = 'block';
           } else {
             content.style.display = 'none';
