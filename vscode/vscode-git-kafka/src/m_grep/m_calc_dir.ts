@@ -100,8 +100,8 @@ export class M_Calc_Dir {
     // convert dictionary to array of M_Dir objects
     const dirArray = Object.values(this.dirs);
 
-    // sort array by size
-    dirArray.sort((a, b) => b.size - a.size);
+    // dirArray concatenate 10 dirs
+    dirArray.slice(0, 50);
 
     // convert array to string
     dirArray.forEach((dir) => {

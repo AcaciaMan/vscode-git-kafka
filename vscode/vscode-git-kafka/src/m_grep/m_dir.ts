@@ -59,6 +59,6 @@ export class M_Dir {
           return " ".repeat(n - s.length) + s;
         };
 
-        return `${rightPad(this.dir, 30)} ${leftPad(this.size.toString(),8)} ${leftPad(this.fileCount.toString(),5)} ${this.getId()}`;
+        return `${rightPad(this.dir, 30)} ${this.getId()}`;
     }
 }

@@ -163,7 +163,7 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
 
     const mCalcDir = await this.m_global.getCalcDirs();
 
-    const outputChannel = vscode.window.createOutputChannel("Biggest Dirs");
+    const outputChannel = vscode.window.createOutputChannel("50 Dirs");
     outputChannel.append(mCalcDir.toString());
     outputChannel.show();
   }
