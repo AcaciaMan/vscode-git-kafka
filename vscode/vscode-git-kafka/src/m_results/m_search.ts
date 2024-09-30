@@ -1,4 +1,5 @@
 import { M_CalcGrep } from "../m_grep/m_calc_grep";
+import { M_Clicks } from "./m_clicks";
 import { M_ResultFile } from "./m_result_file";
 
 // class to handle search results
@@ -21,6 +22,8 @@ export class M_Search {
 
   // add enum for sort types
     public enumSortType = {
+        ClicksHighLow: "Clicks (High-Low)",
+        ClicksLowHigh: "Clicks (Low-High)",
         AlphabeticalAZ: "Alphabetical (A-Z)",
         AlphabeticalZA: "Alphabetical (Z-A)",
         NumberOfLinesLowHigh: "Number of Lines (Low-High)",
@@ -33,6 +36,8 @@ export class M_Search {
   aResultFile: M_ResultFile[] = [];
   // array of sort types
   aSorts: string[] = [
+    this.enumSortType.ClicksHighLow,
+    this.enumSortType.ClicksLowHigh,
     this.enumSortType.AlphabeticalAZ,
     this.enumSortType.AlphabeticalZA,
     this.enumSortType.NumberOfLinesLowHigh,
@@ -168,6 +173,67 @@ export class M_Search {
                 }
                 if (a.aResultItem.length < b.aResultItem.length) {
                     return 1;
+                }
+                                if (a.file.name < b.file.name) {
+                                  return -1;
+                                }
+                                if (a.file.name > b.file.name) {
+                                  return 1;
+                                }
+                return 0;
+            });
+        } else if (sortType === this.enumSortType.ClicksHighLow) {
+            const mClicks: M_Clicks = M_Clicks.getInstance();
+            this.aResultFile.sort((a, b) => {
+                if (
+                  mClicks.getClicks(a.file.dir.getId()) <
+                  mClicks.getClicks(b.file.dir.getId())
+                ) {
+                  return 1;
+                }
+                if (
+                    mClicks.getClicks(a.file.dir.getId()) >
+                    mClicks.getClicks(b.file.dir.getId())
+                ) {
+                    return -1;
+                }
+                                if (a.file.dir.getId() < b.file.dir.getId()) {
+                                  return -1;
+                                }
+                                if (a.file.dir.getId() > b.file.dir.getId()) {
+                                  return 1;
+                                }
+
+
+
+                                if (a.file.name < b.file.name) {
+                                  return -1;
+                                }
+                                if (a.file.name > b.file.name) {
+                                  return 1;
+                                }
+                return 0;
+            });
+        } else if (sortType === this.enumSortType.ClicksLowHigh) {
+            const mClicks: M_Clicks = M_Clicks.getInstance();
+            this.aResultFile.sort((a, b) => {
+                if (
+                  mClicks.getClicks(a.file.dir.getId()) >
+                  mClicks.getClicks(b.file.dir.getId())
+                ) {
+                  return 1;
+                }
+                if (
+                  mClicks.getClicks(a.file.dir.getId()) <
+                  mClicks.getClicks(b.file.dir.getId())
+                ) {
+                  return -1;
+                }
+                if (a.file.dir.getId() < b.file.dir.getId()) {
+                  return -1;
+                }
+                if (a.file.dir.getId() > b.file.dir.getId()) {
+                  return 1;
                 }
                                 if (a.file.name < b.file.name) {
                                   return -1;

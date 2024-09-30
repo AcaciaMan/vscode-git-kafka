@@ -37,7 +37,7 @@ export function activate(context: vscode.ExtensionContext) {
   m_global.sortType = sortType;
 
   if (sortType === "" || sortType === undefined) {
-    sortType = M_Search.getInstance().enumSortType.AlphabeticalAZ;
+    sortType = M_Search.getInstance().enumSortType.ClicksHighLow;
       m_global.setSortType(sortType);
 
   }

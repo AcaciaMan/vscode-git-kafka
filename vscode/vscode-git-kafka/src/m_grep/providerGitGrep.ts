@@ -60,12 +60,13 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
           console.log("Webview Loaded");
           // Send data to the webview
           //make array
-          var arrSorts = ['Alphabetical (A-Z)', 'Alphabetical (Z-A)', 'Number of Lines (Low-High)', 'Number of Lines (High-Low)' ];
+          const mSearch: M_Search = M_Search.getInstance();
+          var arrSorts = mSearch.aSorts;
           // Send data to the webview
           webviewView.webview.postMessage({ command: "setSortsOptions", arrSorts: arrSorts });
           webviewView.webview.postMessage({
             command: "setSortOption",
-            currSort: "Alphabetical (A-Z)"
+            currSort: this.m_global.sortType,
           });
           break;
         case "selectSort":

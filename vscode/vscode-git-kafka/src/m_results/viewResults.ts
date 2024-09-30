@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { M_Clicks } from "./m_clicks";
 
 // class to show results in new tab
 export class ViewResults {
@@ -48,6 +49,8 @@ export class ViewResults {
       this.htmlContent = fs.readFileSync(htmlPath.fsPath, "utf8");
     }
 
+    const mClicks: M_Clicks = M_Clicks.getInstance();
+
     // show result content in colapsable divs
 
     const boxes = results
@@ -71,6 +74,7 @@ export class ViewResults {
         switch (message.command) {
           case "openFile":
             this.openFileInEditor(message.filePath, message.lineStart, message.lineEnd);
+            mClicks.incrementClicks(message.dirPath);
             return;
         }
       },
