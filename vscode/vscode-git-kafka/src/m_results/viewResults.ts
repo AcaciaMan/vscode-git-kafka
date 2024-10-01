@@ -40,12 +40,12 @@ export class ViewResults {
 
       // load HTML content from htmlResults.html
       const fs = require("fs");
-      const htmlPath = vscode.Uri.joinPath(
+      const htmlPath = vscode.Uri.file(vscode.Uri.joinPath(
         context.extensionUri,
         "src",
         "m_results",
         "htmlResults.html"
-      );
+      ).fsPath);
       this.htmlContent = fs.readFileSync(htmlPath.fsPath, "utf8");
     }
 
