@@ -80,10 +80,6 @@ export class M_Calc_Dir {
       }
     });
 
-    // remove files that are not in processed dirs
-    this.m_files = this.m_files.filter((file) => {
-      return file.dir.getId() in this.dirs;
-    });
   }  
 
   public toString(): string {
@@ -202,7 +198,7 @@ export class M_Calc_Dir {
             this.dirs[m_dir.getId()] = m_dir;
         }
 
-        
+        this.checkShouldProcessDirs();
     }
 
 
