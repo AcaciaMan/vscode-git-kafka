@@ -5,7 +5,6 @@ const exec = util.promisify(require("node:child_process").exec);
 const fs = require("fs");
 import * as path from "path";
 import { M_Dir } from "./m_dir";
-import { M_Tree } from "./m_tree";
 import { M_File } from "./m_file";
 import { M_Global } from "../m_util/m_global";
 
@@ -55,20 +54,12 @@ export class M_Calc_Dir {
 
   }
 
-  public calcDirsFromTree(trees: M_Tree[], calcDir: M_Dir): void {
+  public calcDirsFromTree(trees: string[], calcDir: M_Dir): void {
     trees.forEach((tree) => {
 
       let m_dir: M_Dir;
-      if (tree.objectType === "tree") {
-        m_dir = new M_Dir(calcDir, tree.path, 0, 0);
+      m_dir = new M_Dir(calcDir, tree, 0, 0);
         this.dirs[m_dir.getId()] = m_dir;
-
-      } else if (tree.objectType === "blob") {
-        calcDir.size += tree.objectSize;
-        calcDir.fileCount += 1;
-        const m_file = new M_File(tree.path, tree.objectSize, calcDir);
-        this.m_files.push(m_file);
-      }
     }
     );
     calcDir.hasCountedFiles = true;
@@ -144,9 +135,9 @@ export class M_Calc_Dir {
         return files;
     }
 
-    public async getTreeInDir(dir: M_Dir): Promise<M_Tree[] | undefined> {
+    public async getTreeInDir(dir: M_Dir): Promise<string[] | undefined> {
         const fullPath = path.join(this.workspaceFolder.uri.fsPath, dir.getId());
-        const command = `git ls-tree -d --format="%(objecttype);;;%(path);;;%(objectsize)" HEAD`;
+        const command = `git ls-tree -d --name-only HEAD`;
         const { stdout, stderr } = await exec(command, {
             cwd: fullPath,
         });
@@ -157,15 +148,10 @@ export class M_Calc_Dir {
             return undefined;
         }
 
-        const sTrees = stdout.split("\n");
+        const sTrees: string[] = stdout.split("\n");
         sTrees.pop(); // remove last empty line
 
-        let trees: M_Tree[] = [];
-        sTrees.forEach((sTree: string) => {
-            trees.push(M_Tree.fromString(sTree));
-        });
-
-        return trees;
+        return sTrees;
     }
 
     public async calcUnCountedDirs(): Promise<void> {
