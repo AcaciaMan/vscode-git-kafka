@@ -60,14 +60,14 @@ export class ProviderDirsPaths implements vscode.WebviewViewProvider {
       //load html from file htmlShopConfig.html
       const fs = require("fs");
       const path = require("path");
-      const htmlPath = vscode.Uri.file(
+      const htmlPath = webview.asWebviewUri( vscode.Uri.file(
         path.join(
           this.context.extensionPath,
           "src",
           "m_dirs_paths",
           "htmlDirsPaths.html"
         )
-      );
+      ));
 
       const html = fs.readFileSync(htmlPath.fsPath, "utf8");
 
