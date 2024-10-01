@@ -128,12 +128,10 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
 
     //load html from file htmlShopConfig.html
     const fs = require("fs");
-    const htmlPath = vscode.Uri.file(vscode.Uri.joinPath(
-      this.context.extensionUri,
-      "src",
-      "m_grep",
-      "htmlGitGrep.html"
-    ).fsPath);
+    const path = require("path");
+    const htmlPath = vscode.Uri.file(
+      path.join(this.context.extensionPath, "src", "m_grep", "htmlGitGrep.html")
+    );
 
     const html = fs.readFileSync(htmlPath.fsPath, "utf8");
 
