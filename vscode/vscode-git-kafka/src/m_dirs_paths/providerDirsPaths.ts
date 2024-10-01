@@ -63,8 +63,7 @@ export class ProviderDirsPaths implements vscode.WebviewViewProvider {
       const htmlPath = webview.asWebviewUri( vscode.Uri.file(
         path.join(
           this.context.extensionPath,
-          "src",
-          "m_dirs_paths",
+          "resources",
           "htmlDirsPaths.html"
         )
       ));

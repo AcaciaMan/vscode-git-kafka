@@ -41,9 +41,11 @@ export class ViewResults {
       // load HTML content from htmlResults.html
       const fs = require("fs");
       const path = require("path");
-      const htmlPath = this.panel.webview.asWebviewUri(  vscode.Uri.file(
-        path.join(context.extensionPath, "src", "m_results", "htmlResults.html")
-      ));
+      const htmlPath = this.panel.webview.asWebviewUri(
+        vscode.Uri.file(
+          path.join(context.extensionPath, "resources", "htmlResults.html")
+        )
+      );
       this.htmlContent = fs.readFileSync(htmlPath.fsPath, "utf8");
     }
 
