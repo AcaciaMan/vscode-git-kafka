@@ -172,18 +172,25 @@ export class M_Calc_Dir {
         let unCountedDirs = this.getUnCountedDirs();
         while (unCountedDirs.length > 0) {
             // process unCountedDirs in parallel with Promise.all
-            await Promise.all(
-                unCountedDirs.map(async (dir) => {
-                let trees = await this.getTreeInDir(dir);
-                if (trees) {
-                  this.calcDirsFromTree(trees, dir);
-                }
-                })
-            );
+            let trees = await Promise.all(
+                unCountedDirs.map((dir) => this.getTreeInDir(dir))
+              );
+              trees.forEach((tree, index) => {
+                              let dir = unCountedDirs[index];
+              
+                              if (tree) {
+                                this.calcDirsFromTree(tree, dir);
+                              }
+              
+                            });
 
 
                 unCountedDirs = this.getUnCountedDirs();
-        }
+
+
+              };
+
+
         this.checkShouldProcessDirs();
     }
 

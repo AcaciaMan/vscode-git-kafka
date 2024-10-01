@@ -119,12 +119,6 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
   }
 
   private _getHtmlForWebview(webview: vscode.Webview) {
-    const styleUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this.context.extensionUri, "media", "style.css")
-    );
-    const scriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this.context.extensionUri, "media", "main.js")
-    );
 
     //load html from file htmlShopConfig.html
     const fs = require("fs");
@@ -137,9 +131,7 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
 
     const html = fs.readFileSync(htmlPath.fsPath, "utf8");
 
-    return html
-      .replace(/{{styleUri}}/g, styleUri.toString())
-      .replace(/{{scriptUri}}/g, scriptUri.toString());
+    return html;
   }
 
   public dispose() {
