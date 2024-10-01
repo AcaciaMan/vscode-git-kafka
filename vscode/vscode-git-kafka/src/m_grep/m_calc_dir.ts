@@ -154,7 +154,7 @@ export class M_Calc_Dir {
         return sTrees;
     }
 
-    public async calcUnCountedDirs(): Promise<void> {
+    public async calcUnCountedDirsOld(): Promise<void> {
         let unCountedDirs = this.getUnCountedDirs();
         while (unCountedDirs.length > 0) {
             // process unCountedDirs in parallel with Promise.all
@@ -179,6 +179,35 @@ export class M_Calc_Dir {
 
         this.checkShouldProcessDirs();
     }
+
+
+    public async calcUnCountedDirs(): Promise<void> {
+               const fullPath = this.workspaceFolder.uri.fsPath;
+        const command = `git ls-tree -d -r --name-only HEAD`;
+        const { stdout, stderr } = await exec(command, {
+            cwd: fullPath,
+        });
+
+        if (stderr) {
+            vscode.window.showErrorMessage(`Error: ${stderr}`);
+            // this promise rejected
+            return undefined;
+        }
+
+        const sTrees: string[] = stdout.split("\n");
+        sTrees.pop(); // remove last empty line
+
+        for (const tree of sTrees) {
+            let m_dir = new M_Dir(undefined, tree, 0, 0);
+            this.dirs[m_dir.getId()] = m_dir;
+        }
+
+        
+    }
+
+
+
+
 
     public toStringFiles(): string {
         let sFiles = "";
