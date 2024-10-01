@@ -2,11 +2,12 @@
   "name": "vscode-git-kafka",
   "displayName": "vscode-git-kafka",
   "description": "Visual Studio Code extension to invoke git commands and scale with kafka",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "manacacia",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AcaciaMan/vscode-git-kafka.git"},
+    "url": "https://github.com/AcaciaMan/vscode-git-kafka.git"
+  },
   "engines": {
     "vscode": "^1.93.0"
   },
