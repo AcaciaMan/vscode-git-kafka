@@ -22,6 +22,7 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
 
   m_global: M_Global = M_Global.getInstance();
   mUtil = M_Util.getInstance();
+  viewResults: ViewResults = ViewResults.getInstance();
   mCalcGrep: M_CalcGrep | undefined;
 
   constructor(private readonly context: vscode.ExtensionContext) {}
@@ -248,22 +249,27 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
       return;
     }
 
+    await this.m_global.getCalcDirs();
+
     this.mCalcGrep = new M_CalcGrep(searchTerm);
     // benchmark start
     const start = new Date().getTime();
-    await this.mCalcGrep.execGrepCommandAllDirs();
+    this.mCalcGrep.execGrepCommandAllDirs();
     // benchmark end
     const end = new Date().getTime();
     const time = end - start;
     console.log(`Search Dirs Time: ${time} ms`);
 
-    const outputChannel = vscode.window.createOutputChannel("Search Dirs");
-    outputChannel.append(this.mCalcGrep.sOut);
-    outputChannel.show();
+        const outputChannel = vscode.window.createOutputChannel("Search Dirs");
+        await this.viewResults.newSearch(this.context, outputChannel, this.mCalcGrep);
 
 
-    this._showResultsInNewTab();    
-  }
+      
+    }
+
+
+
+  
 
   // show results in new tab
   private _showResultsInNewTab() 

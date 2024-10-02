@@ -293,8 +293,8 @@ export class M_Search {
     // populate result files from calc grep
     public populateResultFiles(mCalcGrep: M_CalcGrep): void {
         this.clearResultFiles();
-        for (let i = 0; i < mCalcGrep.aResult.length; i++) {
-            let mResult = mCalcGrep.aResult[i];
+        for (let i = 0; i < mCalcGrep.mChunks.aResult.length; i++) {
+            let mResult = mCalcGrep.mChunks.aResult[i];
             for (let j = 0; j < mResult.aResultFile.length; j++) {
                 let mResultFile = mResult.aResultFile[j];
                 this.addResultFile(mResultFile);

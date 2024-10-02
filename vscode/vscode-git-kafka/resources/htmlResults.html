@@ -52,7 +52,9 @@
       </head>
       <body>
         <div class="container"></div>
-        {{boxes}}
+        <!-- pointer element after which to add boxes with script -->
+         <div id="pointerContainer">
+        <div id="pointer"></div>
         </div>
   <script>
     const vscode = acquireVsCodeApi();
@@ -93,6 +95,53 @@
           
         });
       });
+    });
+
+    window.addEventListener('message', event => {
+      const message = event.data;
+      const container = document.getElementById('pointerContainer');
+      const pointer = document.getElementById('pointer');
+      switch (message.command) {
+        case 'addBox':
+          const box = document.createElement('div');
+          box.className = 'box';
+          box.innerHTML = `${message.box}`;
+          container.insertBefore(box, pointer);
+                box.querySelectorAll('.file-name').forEach(element => {
+        element.addEventListener('click', () => {
+          const content = element.nextElementSibling.nextElementSibling;
+          if (content.style.display === 'none' || content.style.display === '') {
+            content.style.display = 'block';
+          } else {
+            content.style.display = 'none';
+          };
+          vscode.postMessage({
+            command: 'clickFileName',
+            dirPath: element.getAttribute('data-dir')
+          });
+        });
+      });
+
+            box.querySelectorAll('.line-number').forEach(element => {
+        element.addEventListener('click', (event) => {
+          const filePath = element.getAttribute('data-file-path');
+          const lineStart = parseInt(element.getAttribute('data-line-start'), 10);
+          const lineEnd = parseInt(element.getAttribute('data-line-end'), 10);
+          const dirPath = element.getAttribute('data-dir');
+          if (filePath && !isNaN(lineStart) && !isNaN(lineEnd)) {
+            vscode.postMessage({
+              command: 'openFile',
+              filePath: filePath,
+              lineStart: lineStart,
+              lineEnd: lineEnd,
+              dirPath: dirPath
+            });
+          }
+          
+        });
+      });
+          break;
+      }
     });
   </script>        
       </body>

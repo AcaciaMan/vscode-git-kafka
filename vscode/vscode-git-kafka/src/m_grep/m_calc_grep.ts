@@ -6,6 +6,7 @@ const exec = util.promisify(require("node:child_process").exec);
 import * as path from "path";
 import { M_Result } from "../m_results/m_result";
 import { M_Util } from "../m_util/m_util";
+import { M_Chunks } from "./m_chunks";
 
 export class M_CalcGrep {
   // execute git grep command
@@ -17,9 +18,7 @@ export class M_CalcGrep {
 
   m_command: string = "";
 
-  sOut: string = "";
-
-  aResult: M_Result[] = [];
+  mChunks: M_Chunks = new M_Chunks(5);
   i = 0;
 
   constructor(searchTerm: string) {
@@ -90,19 +89,19 @@ export class M_CalcGrep {
     // order aDirs by sortType
     this.mUtil.sortDirs(aDirs);
 
+    this.mChunks = new M_Chunks(5);
 
     // execute grep command for each dir with Promise.all to run in parallel
     try {
-      const results = await Promise.all(
-        aDirs.map((dir) => this.execGrepCommand(dir))
-      );
-      results.forEach((result, index) => {
-        //console.log(`Results for ${aDirs[index]}:\n${result}`);
-        this.sOut += result;
-        const mResult = new M_Result(result, aDirs[index]);
-        mResult.fillResultFile();
-        this.aResult.push(mResult);
-      });
+
+
+      let aPromises = this.mChunks.processChunk(aDirs, this);
+      while (aPromises.length > 0) {
+        const results = await Promise.all(aPromises);
+        this.mChunks.addChunkResults(results, aDirs);
+        aPromises = this.mChunks.processChunk(aDirs, this);
+      }
+
     } catch (error) {
       console.error(
         `Error executing grep in parallel: ${(error as Error).message}`
