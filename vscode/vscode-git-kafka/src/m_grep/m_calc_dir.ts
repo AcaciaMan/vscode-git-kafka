@@ -194,6 +194,10 @@ export class M_Calc_Dir {
         sTrees.pop(); // remove last empty line
 
         for (const tree of sTrees) {
+            // continue if tree is ./ or ../
+            if (tree === "./" || tree === "../") {
+                continue;
+            }
             let m_dir = new M_Dir(undefined, tree, 0, 0);
             this.dirs[m_dir.getId()] = m_dir;
         }

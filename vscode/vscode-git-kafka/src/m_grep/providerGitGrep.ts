@@ -40,15 +40,19 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
         case "search":
+          vscode.window.showInformationMessage("Search ...");
           await this._search(data.searchTerm);
+          vscode.window.showInformationMessage("Search Done");
           break;
         case "searchDirs":
+          vscode.window.showInformationMessage("Search Dirs ...");
           await this._searchDirs(data.searchTerm);
+          vscode.window.showInformationMessage("Search Dirs Done");
           break;
         case "biggestDirs":
-          vscode.window.showInformationMessage("Biggest Dirs Receive Msg...");
+          vscode.window.showInformationMessage("Biggest Dirs ...");
           await this._biggestDirs();
-          vscode.window.showInformationMessage("Biggest Dirs Receive Msg Done");
+          vscode.window.showInformationMessage("Biggest Dirs Done");
           break;
         case "biggestFiles":
           vscode.window.showInformationMessage("Biggest Files Receive Msg...");
