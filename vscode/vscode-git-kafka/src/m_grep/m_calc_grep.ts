@@ -85,6 +85,9 @@ export class M_CalcGrep {
 
     const aDirs = Object.values(mCalcDirs.dirs);
 
+    // order aDirs by sortType
+    
+
     // execute grep command for each dir with Promise.all to run in parallel
     try {
       const results = await Promise.all(
