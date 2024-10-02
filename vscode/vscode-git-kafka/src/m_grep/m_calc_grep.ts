@@ -39,9 +39,8 @@ export class M_CalcGrep {
   }
 
   public async execGrepCommand(
-    dir: M_Dir,
-    searchString: string
-  ): Promise<String> {
+    dir: M_Dir
+  ): Promise<string> {
     const m_gl = M_Global.getInstance();
     if (!m_gl.workspaceFolder) {
       throw new Error("Workspace folder is undefined");
@@ -89,12 +88,12 @@ export class M_CalcGrep {
     // execute grep command for each dir with Promise.all to run in parallel
     try {
       const results = await Promise.all(
-        aDirs.map((dir) => this.execGrepCommand(dir, this.m_command))
+        aDirs.map((dir) => this.execGrepCommand(dir))
       );
       results.forEach((result, index) => {
         //console.log(`Results for ${aDirs[index]}:\n${result}`);
         this.sOut += result;
-        const mResult = new M_Result(result.toString(), aDirs[index]);
+        const mResult = new M_Result(result, aDirs[index]);
         mResult.fillResultFile();
         this.aResult.push(mResult);
       });
