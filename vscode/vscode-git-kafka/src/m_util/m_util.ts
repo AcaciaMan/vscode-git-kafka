@@ -30,7 +30,9 @@ export class M_Util {
         ) {
           aDirs.sort((a, b) => b.getId().localeCompare(a.getId()));
         } else if (
-            this.m_global.sortType === mSearch.enumSortType.ClicksHighLow
+            (this.m_global.sortType === mSearch.enumSortType.ClicksHighLow) ||
+            (this.m_global.sortType === mSearch.enumSortType.NumberOfLinesHighLow) ||
+            (this.m_global.sortType === mSearch.enumSortType.NumberOfLinesLowHigh)
         ) {
             const mClicks: M_Clicks = M_Clicks.getInstance();
             aDirs.sort((a, b) => {
@@ -48,12 +50,37 @@ export class M_Util {
                 }
                 return a.getId().localeCompare(b.getId());
 
-        });
+        });} else if (
+            this.m_global.sortType === mSearch.enumSortType.ClicksLowHigh
+        ) {
+            const mClicks: M_Clicks = M_Clicks.getInstance();
+            aDirs.sort((a, b) => {
+                if (
+                  mClicks.getClicks(a.getId()) >
+                  mClicks.getClicks(b.getId())
+                ) {
+                  return 1;
+                }
+                if (
+                    mClicks.getClicks(a.getId()) <
+                    mClicks.getClicks(b.getId())
+                ) {
+                    return -1;
+                }
+                return a.getId().localeCompare(b.getId());
+            });
+        }
+
+    
+    
+    
+    
+    
+
     
 
 
     
 
-}
 }
 }

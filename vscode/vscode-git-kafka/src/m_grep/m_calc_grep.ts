@@ -5,11 +5,13 @@ const util = require("node:util");
 const exec = util.promisify(require("node:child_process").exec);
 import * as path from "path";
 import { M_Result } from "../m_results/m_result";
+import { M_Util } from "../m_util/m_util";
 
 export class M_CalcGrep {
   // execute git grep command
 
   m_global: M_Global = M_Global.getInstance();
+  mUtil: M_Util = M_Util.getInstance();
 
   searchTerm: string = "";
 
@@ -86,7 +88,8 @@ export class M_CalcGrep {
     const aDirs = Object.values(mCalcDirs.dirs);
 
     // order aDirs by sortType
-    
+    this.mUtil.sortDirs(aDirs);
+
 
     // execute grep command for each dir with Promise.all to run in parallel
     try {

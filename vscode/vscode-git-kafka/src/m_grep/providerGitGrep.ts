@@ -13,6 +13,7 @@ import { get } from "http";
 import { M_ResultFile } from "../m_results/m_result_file";
 import { M_Search } from "../m_results/m_search";
 import { M_Clicks } from "../m_results/m_clicks";
+import { M_Util } from "../m_util/m_util";
 
 export class ProviderGitGrep implements vscode.WebviewViewProvider {
   public static readonly viewType = "myExtension.myWebview";
@@ -20,6 +21,7 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
 
   m_global: M_Global = M_Global.getInstance();
+  mUtil = M_Util.getInstance();
   mCalcGrep: M_CalcGrep | undefined;
 
   constructor(private readonly context: vscode.ExtensionContext) {}
@@ -186,8 +188,23 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
 
     const mCalcDir = await this.m_global.getCalcDirs();
 
+            const aDirs = Object.values(mCalcDir.dirs);
+
+            // order aDirs by sortType
+            this.mUtil.sortDirs(aDirs);
+
+            let sOut = "";
+            let i = 0;
+            for (const dir of aDirs) {
+              if (i > 50) {
+                break;
+              }
+              sOut += `${dir.getId()}\n`;
+              i++;
+            }
+
     const outputChannel = vscode.window.createOutputChannel("50 Dirs");
-    outputChannel.append(mCalcDir.toString());
+    outputChannel.append(sOut);
     outputChannel.show();
   }
 
@@ -202,8 +219,23 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
 
     const mCalcDir = await this.m_global.getCalcDirs();
 
+        const aDirs = Object.values(mCalcDir.dirs);
+
+        // order aDirs by sortType
+        this.mUtil.sortDirs(aDirs);
+
+        let sOut = "";
+        let i = 0;
+        for (const dir of aDirs) {
+          if (i > 50) {
+            break;
+          }
+          sOut += `${dir.getId()}\n`;
+          i++;
+        }
+
     const outputChannel = vscode.window.createOutputChannel("Largest 50 Files");
-    outputChannel.append(mCalcDir.toStringFiles());
+    outputChannel.append(sOut);
     outputChannel.show();
   }
 
