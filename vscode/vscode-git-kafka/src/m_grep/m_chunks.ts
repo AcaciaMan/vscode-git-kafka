@@ -10,6 +10,7 @@ export class M_Chunks {
     iEnd: number = 0;
     aResult: M_Result[] = [];
     aPromises: Promise<string>[] = [];
+    iTotalSize: number = 0;
 
     constructor (chunkSize: number) {
         this.chunkSize = chunkSize;
@@ -27,6 +28,7 @@ export class M_Chunks {
 
     // process the chunk
     processChunk(aDirs: M_Dir[], mCalcGrep: M_CalcGrep): Promise<string>[] {
+        this.iTotalSize = aDirs.length;
         this.getNextChunk(aDirs);
         for (let i = this.iStart; i < this.iEnd; i++) {
             const mPromise = mCalcGrep.execGrepCommand(aDirs[i]);

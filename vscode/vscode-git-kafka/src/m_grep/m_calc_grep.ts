@@ -20,6 +20,7 @@ export class M_CalcGrep {
 
   mChunks: M_Chunks = new M_Chunks(5);
   i = 0;
+  iTotalSize = 0;
 
   constructor(searchTerm: string) {
     this.searchTerm = searchTerm;
@@ -85,6 +86,7 @@ export class M_CalcGrep {
     let mCalcDirs = await this.m_global.getCalcDirs();
 
     const aDirs = Object.values(mCalcDirs.dirs);
+    this.iTotalSize = aDirs.length;
 
     // order aDirs by sortType
     this.mUtil.sortDirs(aDirs);

@@ -104,10 +104,9 @@ export class ViewResults {
 
   public async showResults(outputChannel: vscode.OutputChannel, visible: boolean): Promise<void> {
     try {
-      for (let i = 0; i < 500; i++) {
-        if (i === 0) {
-          await new Promise((resolve) => setTimeout(resolve, 100));
-        }
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      for (let i = 0; i < this.mCalcGrep.iTotalSize; i++) {
+
         // after each 5 dirs, wait 1 second
         if (i % 5 === 0) {
           await new Promise((resolve) => setTimeout(resolve, 100));
