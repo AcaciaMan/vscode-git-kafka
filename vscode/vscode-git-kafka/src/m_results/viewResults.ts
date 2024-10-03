@@ -3,6 +3,7 @@ import { M_Clicks } from "./m_clicks";
 import { M_Result } from "./m_result";
 import { M_Chunks } from "../m_grep/m_chunks";
 import { M_CalcGrep } from "../m_grep/m_calc_grep";
+import { M_Global } from "../m_util/m_global";
 
 // class to show results in new tab
 export class ViewResults {
@@ -25,6 +26,7 @@ export class ViewResults {
   panel: vscode.WebviewPanel | undefined;
   htmlContent: string = "";
  mCalcGrep: M_CalcGrep = new M_CalcGrep("");
+ m_global: M_Global = M_Global.getInstance();
 
   public async newSearch(context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel, mCalcGrep: M_CalcGrep): Promise<void> {
         const mClicks: M_Clicks = M_Clicks.getInstance();
@@ -104,18 +106,25 @@ export class ViewResults {
 
   public async showResults(outputChannel: vscode.OutputChannel, visible: boolean): Promise<void> {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      for (let i = 0; i < this.mCalcGrep.iTotalSize; i++) {
+      const mCalcDirs = await this.m_global.getCalcDirs();
+      // get length of dictionary mCalcDirs.dirs
+      const iTotalSize = Object.keys(mCalcDirs.dirs).length;
 
-        // after each 5 dirs, wait 1 second
-        if (i % 5 === 0) {
+      
+      for (let i = 0; i < iTotalSize; i++) {
+        let j = 0;
+        if (
+          ((this.mCalcGrep.mChunks.aPromises[i] === undefined) ||
+          (this.mCalcGrep.mChunks.aResult[i] === undefined)) && (j<300)
+        ) {
+          j++;
           await new Promise((resolve) => setTimeout(resolve, 100));
         }
         await this.mCalcGrep.mChunks.aPromises[i];
         if (!visible) {
-        outputChannel.append(this.mCalcGrep.mChunks.aResult[i].sResult);
-        outputChannel.show();
-      }
+          outputChannel.append(this.mCalcGrep.mChunks.aResult[i].sResult);
+          outputChannel.show();
+        }
         this.addSearchResults(this.mCalcGrep.mChunks.aResult[i]);
       }
     } catch (error) {
