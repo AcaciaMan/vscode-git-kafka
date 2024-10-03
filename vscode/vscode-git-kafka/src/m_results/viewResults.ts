@@ -113,14 +113,21 @@ export class ViewResults {
       
       for (let i = 0; i < iTotalSize; i++) {
         let j = 0;
-        if (
-          ((this.mCalcGrep.mChunks.aPromises[i] === undefined) ||
-          (this.mCalcGrep.mChunks.aResult[i] === undefined)) && (j<300)
+        while (
+          (this.mCalcGrep.mChunks.aPromises[i] === undefined) && (j<300)
         ) {
           j++;
           await new Promise((resolve) => setTimeout(resolve, 100));
         }
         await this.mCalcGrep.mChunks.aPromises[i];
+        j = 0;
+                while (
+                  this.mCalcGrep.mChunks.aResult[i] === undefined &&
+                  j < 300
+                ) {
+                  j++;
+                  await new Promise((resolve) => setTimeout(resolve, 100));
+                }
         if (!visible) {
           outputChannel.append(this.mCalcGrep.mChunks.aResult[i].sResult);
           outputChannel.show();
