@@ -1,32 +1,52 @@
 import * as vscode from 'vscode';
-import { M_Global } from "../m_util/m_global";
-import { M_Dir } from '../m_grep/m_dir';
-import { M_State } from './m_state';
+
+export enum M_Task_State {
+  InSearch = 0,
+  Cancelled = 1,
+  NewSearch = 2,
+}
 
 export class M_Task {
   created_at: Date;
-  m_global: M_Global = M_Global.getInstance();
   workspaceFolder: vscode.WorkspaceFolder =
     vscode.workspace.workspaceFolders?.[0] ??
     (() => {
       throw new Error("WorkspaceFolder is undefined");
     })();
-  aDirs: M_Dir[] = [];
-  mState: M_State = new M_State();
+  mState: M_Task_State = M_Task_State.InSearch;
+  sSearchTerm: string;
+  outputChannel: vscode.OutputChannel;
+  pInitialized: Promise<void> | undefined;
+  pExecuted: Promise<void> | undefined;
+  sStdout: string = "";
 
-  constructor() {
+  constructor(sSearchTerm: string, outputChannelName: string) {
+    // Validate sSearchTerm
+    if (
+      !sSearchTerm ||
+      typeof sSearchTerm !== "string" ||
+      sSearchTerm.trim() === ""
+    ) {
+      throw new Error("Invalid search term");
+    }
+
+    // Validate outputChannelName
+    if (
+      !outputChannelName ||
+      typeof outputChannelName !== "string" ||
+      outputChannelName.trim() === ""
+    ) {
+      throw new Error("Invalid output channel name");
+    }
+
     this.created_at = new Date();
+    this.sSearchTerm = sSearchTerm;
+    this.outputChannel = vscode.window.createOutputChannel(outputChannelName);
   }
 
   getId(): string {
     return this.created_at.getTime().toString();
   }
 
-  async init() {
-    const mCalcDirs = await this.m_global.getCalcDirs();
-    const dDirs = mCalcDirs.dirs;
-    this.aDirs = Object.values(dDirs).map(
-      (dir) => new M_Dir(dir.parent, dir.dir, 0, 0)
-    );
-  }
 }
+

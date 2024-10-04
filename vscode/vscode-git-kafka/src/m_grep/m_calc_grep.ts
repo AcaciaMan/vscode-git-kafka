@@ -7,6 +7,7 @@ import * as path from "path";
 import { M_Result } from "../m_results/m_result";
 import { M_Util } from "../m_util/m_util";
 import { M_Chunks } from "./m_chunks";
+import { M_Task } from "../m_tasks/m_task";
 
 export class M_CalcGrep {
   // execute git grep command
@@ -21,9 +22,11 @@ export class M_CalcGrep {
   mChunks: M_Chunks = new M_Chunks(5);
   i = 0;
   iTotalSize = 0;
+  mTask: M_Task;
 
-  constructor(searchTerm: string) {
-    this.searchTerm = searchTerm;
+  constructor(mTask: M_Task) {
+    this.mTask = mTask;
+    this.searchTerm = mTask.sSearchTerm;
   }
 
   public makeGrepCommand(): void {
@@ -109,6 +112,8 @@ export class M_CalcGrep {
         `Error executing grep in parallel: ${(error as Error).message}`
       );
     }
+              vscode.window.showInformationMessage("Execute Dirs Done");
+
   }
 }
 

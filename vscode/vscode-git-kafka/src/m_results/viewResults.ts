@@ -25,7 +25,6 @@ export class ViewResults {
 
   panel: vscode.WebviewPanel | undefined;
   htmlContent: string = "";
- mCalcGrep: M_CalcGrep = new M_CalcGrep("");
  m_global: M_Global = M_Global.getInstance();
 
   public async newSearch(context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel, mCalcGrep: M_CalcGrep): Promise<void> {
@@ -85,7 +84,7 @@ export class ViewResults {
     this.panel.onDidChangeViewState((e) => {
       if (e.webviewPanel.visible) {
         this.panel!.webview.html = this.htmlContent;
-        this.showResults(outputChannel, true);
+        this.showResults(outputChannel, true, mCalcGrep);
       }
     });
 
@@ -98,13 +97,11 @@ export class ViewResults {
     // Set the webview's HTML content
     this.panel.webview.html = this.htmlContent;
 
-    this.mCalcGrep = mCalcGrep;
-
-    await this.showResults(outputChannel, false );
+    this.showResults(outputChannel, false, mCalcGrep);
 
   }
 
-  public async showResults(outputChannel: vscode.OutputChannel, visible: boolean): Promise<void> {
+  public async showResults(outputChannel: vscode.OutputChannel, visible: boolean, mCalcGrep: M_CalcGrep): Promise<void> {
     try {
       const mCalcDirs = await this.m_global.getCalcDirs();
       // get length of dictionary mCalcDirs.dirs
@@ -114,25 +111,25 @@ export class ViewResults {
       for (let i = 0; i < iTotalSize; i++) {
         let j = 0;
         while (
-          (this.mCalcGrep.mChunks.aPromises[i] === undefined) && (j<300)
+          (mCalcGrep.mChunks.aPromises[i] === undefined) && (j<600)
         ) {
           j++;
           await new Promise((resolve) => setTimeout(resolve, 100));
         }
-        await this.mCalcGrep.mChunks.aPromises[i];
+        await mCalcGrep.mChunks.aPromises[i];
         j = 0;
                 while (
-                  this.mCalcGrep.mChunks.aResult[i] === undefined &&
-                  j < 300
+                  mCalcGrep.mChunks.aResult[i] === undefined &&
+                  j < 600
                 ) {
                   j++;
                   await new Promise((resolve) => setTimeout(resolve, 100));
                 }
         if (!visible) {
-          outputChannel.append(this.mCalcGrep.mChunks.aResult[i].sResult);
+          outputChannel.append(mCalcGrep.mChunks.aResult[i].sResult);
           outputChannel.show();
         }
-        this.addSearchResults(this.mCalcGrep.mChunks.aResult[i]);
+        this.addSearchResults(mCalcGrep.mChunks.aResult[i]);
       }
     } catch (error) {
       console.error(

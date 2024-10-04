@@ -5,15 +5,14 @@ import * as vscode from "vscode";
 const util = require("node:util");
 const exec = util.promisify(require("node:child_process").exec);
 const fs = require("fs");
-import { M_Calc_Dir } from "./m_calc_dir";
 import { M_Global } from "../m_util/m_global";
 import { M_CalcGrep } from "./m_calc_grep";
 import { ViewResults } from "../m_results/viewResults";
-import { get } from "http";
-import { M_ResultFile } from "../m_results/m_result_file";
 import { M_Search } from "../m_results/m_search";
 import { M_Clicks } from "../m_results/m_clicks";
 import { M_Util } from "../m_util/m_util";
+import { M_Task } from "../m_tasks/m_task";
+import { TaskExecute, TaskExecuteDirs } from "../m_tasks/m_task_executor";
 
 export class ProviderGitGrep implements vscode.WebviewViewProvider {
   public static readonly viewType = "myExtension.myWebview";
@@ -43,14 +42,12 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
         case "search":
-          vscode.window.showInformationMessage("Search ...");
-          await this._search(data.searchTerm);
-          vscode.window.showInformationMessage("Search Done");
+          vscode.window.showInformationMessage("Execute ...");
+          this._search(data.searchTerm);
           break;
         case "searchDirs":
-          vscode.window.showInformationMessage("Search Dirs ...");
-          await this._searchDirs(data.searchTerm);
-          vscode.window.showInformationMessage("Search Dirs Done");
+          vscode.window.showInformationMessage("Execute Dirs ...");
+          this._searchDirs(data.searchTerm);
           break;
         case "biggestDirs":
           vscode.window.showInformationMessage("Biggest Dirs ...");
@@ -92,37 +89,10 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
   }
 
   private async _search(searchTerm: string) {
-    if (!searchTerm) {
-      vscode.window.showErrorMessage("Search term is required");
-      return;
-    }
-
-    const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-    if (!workspaceFolder) {
-      vscode.window.showErrorMessage("No workspace folder found");
-      return;
-    }
-
-    const command = `${searchTerm}`;
-
-    // benchmark start
-    const start = new Date().getTime();
-    const { stdout, stderr } = await exec(command, {
-      cwd: workspaceFolder.uri.fsPath,
-    });
-    // benchmark end
-    const end = new Date().getTime();
-    const time = end - start;
-    console.log(`Search Time: ${time} ms`);
-
-    if (stderr) {
-      vscode.window.showErrorMessage(`Error: ${stderr}`);
-      return;
-    }
-
-    const outputChannel = vscode.window.createOutputChannel("Git Grep Results");
-    outputChannel.append(stdout);
-    outputChannel.show();
+    const mTask = new M_Task(searchTerm, "Execute results");
+    const mTaskExecute = new TaskExecute(mTask);
+    mTask.pInitialized = mTaskExecute.init();
+    mTask.pExecuted = mTaskExecute.execute();
   }
 
   private _getHtmlForWebview(webview: vscode.Webview) {
@@ -241,34 +211,12 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
   }
 
   private async _searchDirs(searchTerm: string) {
-    console.log(`Search Dirs: ${searchTerm}`);
-
-    const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-    if (!workspaceFolder) {
-      vscode.window.showErrorMessage("No workspace folder found");
-      return;
+    const mTask = new M_Task(searchTerm, "ExecuteDirs results");
+    const mTaskExecuteDirs = new TaskExecuteDirs(mTask);
+    mTask.pInitialized = mTaskExecuteDirs.init();
+    mTask.pExecuted = mTaskExecuteDirs.execute(); 
+    this.viewResults.newSearch(this.context, mTask.outputChannel, mTaskExecuteDirs.mCalcGrep);
     }
-
-    await this.m_global.getCalcDirs();
-
-    this.mCalcGrep = new M_CalcGrep(searchTerm);
-    // benchmark start
-    const start = new Date().getTime();
-    this.mCalcGrep.execGrepCommandAllDirs();
-    // benchmark end
-    const end = new Date().getTime();
-    const time = end - start;
-    console.log(`Search Dirs Time: ${time} ms`);
-
-        const outputChannel = vscode.window.createOutputChannel("Search Dirs");
-        await this.viewResults.newSearch(this.context, outputChannel, this.mCalcGrep);
-
-
-      
-    }
-
-
-
   
 
   // show results in new tab
