@@ -24,16 +24,34 @@ export class M_Result {
         for (let i = 0; i < aResult.length; i++) {
             let sLine = aResult[i];
             if (sLine.length > 0) {
-                let aLine: string[] = sLine.split(':');
-                let sFile = aLine[0];
-                // sLineNumber is an integer
-                let iLineNumber = parseInt(aLine[1]);
-                // sText is the rest of the line
-                for (let j = 3; j < aLine.length; j++) {
-                    aLine[2] += ':' + aLine[j];
+
+                // loop through the line and get the first 2 parts separated by ':' or '-'
+                let i1 = -1;
+                let i2 = -1;
+                for (let j = 0; j < sLine.length; j++) {
+                    if (sLine[j] === ':' || sLine[j] === '-') {
+                        if (i1 === -1) {
+                            i1 = j;
+                        } else {
+                            i2 = j;
+                        break;
+                        }
+                    }
                 }
-                let sText = aLine[2];
+                if (i1 === -1 || i2 === -1) {
+                    continue;
+                }
+                // sLine split into 3 parts: sFile, sLineNumber, sText
+                let sFile = sLine.substring(0, i1);
+                // sLineNumber is an integer
+                let iLineNumber = parseInt(sLine.substring(i1 + 1, i2));
+                // sText is the rest of the line
+                let sText = sLine.substring(i2 + 1);
+
+                if(!isNaN(iLineNumber)) {
+
                 aResultParsed.push({ file: sFile, line: iLineNumber, text: sText });
+                }
             }
         }
         return aResultParsed;
