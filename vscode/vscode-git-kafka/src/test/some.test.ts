@@ -1,15 +1,15 @@
 import * as assert from "assert";
-const solr = require("solr-client");
+import * as solr from "solr-client";
 
 // test suite to test some typescript functionality
 describe("Some Test Suite", () => {
   it("Sample test", () => {
-    assert.strictEqual(-1, [1, 2, 3].indexOf(5));
-    assert.strictEqual(-1, [1, 2, 3].indexOf(0));
+    assert.strictEqual([1, 2, 3].indexOf(5), -1);
+    assert.strictEqual([1, 2, 3].indexOf(0), -1);
   });
 
     it("Sample test 2", () => {
-        assert.strictEqual(1, [1, 2, 3].indexOf(2));
+        assert.strictEqual([1, 2, 3].indexOf(2), 1);
     });
 
     it("Sample test 3", () => {
@@ -28,7 +28,7 @@ describe("Some Test Suite", () => {
 
     });
 
-    it("Sample test 4", (done) => {
+    it("Sample test 4", async () => {
         const client = solr.createClient({
             host: "localhost",
             port: "8983",
@@ -36,22 +36,28 @@ describe("Some Test Suite", () => {
             path: "/solr",
         });
 
+
         console.log("client: ", client);
 
 
         const query = client.query().q("*");
         console.log("Executing query: ", query);
-        
-        client.search(query, function (err: any, obj: any) {
-            console.log("searching for all docs");
-            if (err) {
-                console.log(err);
-                done(err);
-            } else {
-                console.log("Obj", obj);
-                done();
-            }
-        });
+
+        const searchResponse = await client.search(
+          query
+        );
+
+        console.log("searchResponse: ", searchResponse);
+
+        const response = searchResponse.response;
+        console.log("response: ", response);
+
+        const docs = response.docs;
+        console.log("docs: ", docs);
+
+        const numFound = response.numFound;
+        console.log("numFound: ", numFound);
+
 
 
 });
