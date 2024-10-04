@@ -58,6 +58,8 @@ describe("Some Test Suite", () => {
         const numFound = response.numFound;
         console.log("numFound: ", numFound);
 
+        console.log( await client.ping());
+
 
 
 });
