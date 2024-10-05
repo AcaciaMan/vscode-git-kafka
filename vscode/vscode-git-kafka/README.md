@@ -6,3 +6,6 @@ Git is great version control system with good commands in scripts. Visual Studio
 
 ![Screenshot](https://github.com/user-attachments/assets/d81ee4ec-cbeb-489a-b514-64803a9144cc)
 
+## Solr
+Execution results are going to be stored in Solr search server. The ongoing task is to make Solr [config](/config)
+
