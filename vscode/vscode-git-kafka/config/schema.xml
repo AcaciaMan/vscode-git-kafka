@@ -121,49 +121,30 @@
     <field name="_nest_path_" type="_nest_path_" /><fieldType name="_nest_path_" class="solr.NestPathField" />
 
     <field name="_text_" type="text_general" indexed="true" stored="true" multiValued="true"/>
-	<field name="search_venue" type="textSuggest" indexed="true" stored="true" multiValued="true"/>
-	<field name="search_discipline" type="textSuggest" indexed="true" stored="true" multiValued="true"/>
-	<field name="search_country" type="textSuggest" indexed="true" stored="true" multiValued="true"/>
-	
+    <field name="resultPath" type="url" indexed="true" stored="true" multiValued="true"/>
+
+	<field name="workspaceUUID" type="uuid" indexed="true" stored="true" required="true" multiValued="false"/>
+  <field name="workspaceFolder" type="url" indexed="true" stored="true" required="true" multiValued="false"/>
+  <field name="includeDirs" type="url" indexed="true" stored="true" required="true" multiValued="true"/>
+  <field name="excludeDirs" type="url" indexed="true" stored="true" required="true" multiValued="true"/>
+  <field name="pathSpec" type="url" indexed="true" stored="true" required="true" multiValued="false"/>
 	<field name="created" type="pdate" indexed="true" stored="true" required="true" multiValued="false"/>
-  <field name="name" type="text_en" indexed="true" stored="true" multiValued="false"/>
-  <field name="desc" type="text_en" indexed="true" stored="true" multiValued="false"/>
-  <field name="date" type="date_range" indexed="true" stored="true" multiValued="false"/>
-  <field name="starting" type="pdate" indexed="true" stored="true" multiValued="false"/>
-  <field name="url_event" type="url" indexed="true" stored="true" multiValued="false"/>
-  <field name="url_calendar" type="url" indexed="true" stored="true" multiValued="true"/>
-  <field name="url_venue" type="url" indexed="true" stored="true" multiValued="false"/>
-   <field name="place" type="location" indexed="true" stored="true" multiValued="false"/>
-  <field name="discipline" type="text_en" indexed="true" stored="true" multiValued="true"/>
-  <field name="venue" type="text_en" indexed="true" stored="true" multiValued="false"/>
-  <field name="city" type="text_en" indexed="true" stored="true" multiValued="false"/>
-  <field name="state" type="text_en" indexed="true" stored="true" multiValued="false"/>
-  <field name="category" type="text_en" indexed="true" stored="true" multiValued="true"/>
-  <field name="country" type="text_en" indexed="true" stored="true" multiValued="true"/>
-  <field name="relevance" type="pint" indexed="true" stored="true" multiValued="false"/>
+  <field name="searchTerm" type="text_general" indexed="true" stored="true" multiValued="false"/>
+  <field name="resultText" type="text_general" indexed="true" stored="true" multiValued="false"/>
+  <field name="resultDir" type="url" indexed="true" stored="true" multiValued="false"/>
+  <field name="resultFile" type="url" indexed="true" stored="true" multiValued="false"/>
+  <field name="resultLine" type="pint" indexed="true" stored="true" multiValued="false"/>
+  <field name="resultLineEnd" type="pint" indexed="true" stored="true" multiValued="false"/>
+  <field name="clicks" type="pint" indexed="true" stored="true" multiValued="false"/>
+  <field name="linesCount" type="pint" indexed="true" stored="true" multiValued="false"/>
+  <field name="queryTime" type="pint" indexed="true" stored="true" multiValued="false"/>
+
+  <copyField source="resultDir" dest="resultPath"/>
+  <copyField source="resultFile" dest="resultPath"/>
 
 
-  <copyField source="url_event" dest="_text_"/> 
-  <copyField source="url_calendar" dest="_text_"/>
-  <copyField source="url_venue" dest="_text_"/>
-  <copyField source="name" dest="_text_"/> 
-  <copyField source="desc" dest="_text_"/>
-  <copyField source="discipline" dest="_text_"/>
-  <copyField source="venue" dest="_text_"/>
-  <copyField source="category" dest="_text_"/>
-  <copyField source="country" dest="_text_"/>
-  <copyField source="city" dest="_text_"/>
-  <copyField source="state" dest="_text_"/>
-
-  <copyField source="venue" dest="search_venue"/>
-  <copyField source="city" dest="search_venue"/>
-
-<copyField source="discipline" dest="search_discipline"/>
-<copyField source="category" dest="search_discipline"/>
-
-<copyField source="country" dest="search_country"/>
-<copyField source="state" dest="search_country"/>  
-	
+  <copyField source="searchTerm" dest="_text_"/> 
+  <copyField source="resultText" dest="_text_"/>
 
     <!-- This can be enabled, in case the client does not know what fields may be searched. It isn't enabled by default
          because it's very expensive to index everything twice. -->

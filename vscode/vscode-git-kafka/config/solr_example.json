@@ -1,18 +1,19 @@
 {
     "workspaceUUID": "12345678-1234-1234-1234-123456789012",
     "workspaceFolder": "/path/to/workspace",
-    "IncludeDirs": "/path/to/includeDirs",
-    "ExcludeDirs": "/path/to/excludeDirs",
+    "includeDirs": "/path/to/includeDirs",
+    "excludeDirs": "/path/to/excludeDirs",
     "pathSpec": "*.ts",
     "created": "2019-01-01T00:00:00.000Z",
     "searchTerm": "git grep text",
-    "resultUUID": "12345678-1234-1234-1234-123456789012",
+    "id": "12345678-1234-1234-1234-123456789012",
     "resultText": "a lot of text",
     "resultDir": "/path/to/resultDir",
     "resultFile": "file.txt",
     "resultLine": 123,
     "resultLineEnd": 456,
     "clicks": 1,
-    "linesCount": 100
+    "linesCount": 100,
+    "queryTime": 100
 
 }
