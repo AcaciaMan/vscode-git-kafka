@@ -12,3 +12,5 @@ Git is great version control system with good commands in scripts. Visual Studio
 ## v0.0.3 Added results sorting
 ![Screenshot_added_sorts](https://github.com/user-attachments/assets/d81ee4ec-cbeb-489a-b514-64803a9144cc)
 
+## Solr
+Execution results are going to be stored in Solr search server. The ongoing task is to make Solr [config](/vscode/vscode-git-kafka/config)
