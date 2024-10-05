@@ -51,6 +51,7 @@ export class M_Solr {
       workspaceFolder: mExecuteTask.task.workspaceFolder.uri.fsPath,
       searchTerm: mExecuteTask.task.sSearchTerm,
       created: mExecuteTask.task.created_at,
+      taskId: mExecuteTask.task.getId(),
       resultText: mExecuteTask.task.sStdout,
       queryTime: mExecuteTask.executionTime,
     };
