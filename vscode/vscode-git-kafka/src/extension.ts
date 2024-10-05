@@ -6,6 +6,8 @@ import { ProviderGitGrep } from './m_grep/providerGitGrep';
 import { ProviderDirsPaths } from './m_dirs_paths/providerDirsPaths';
 import { M_Global } from './m_util/m_global';
 import { M_Search } from './m_results/m_search';
+import { M_Util } from './m_util/m_util';
+import { M_Solr } from './m_util/m_solr';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -18,13 +20,15 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 	const m_global = M_Global.getInstance();
+  const mUtil = M_Util.getInstance();
+  const mSolr = M_Solr.getInstance();
 
     let workspaceUUID = vscode.workspace
       .getConfiguration("vscode-git-kafka")
       .get("workspaceUUID") as string;
 
 	if (workspaceUUID==="" || workspaceUUID===undefined) {
-		workspaceUUID = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+		workspaceUUID = mUtil.getUUID();
 		vscode.workspace.getConfiguration("vscode-git-kafka").update("workspaceUUID", workspaceUUID, vscode.ConfigurationTarget.Workspace);
 	}  
 
@@ -42,12 +46,6 @@ export function activate(context: vscode.ExtensionContext) {
 
   }
 
-
-
-
-
-
-
 	// get includeDirs, excludeDirs, and pathSpec from settings
   const includeDirs = vscode.workspace.getConfiguration("vscode-git-kafka").get("includeDirs") as string;
   const excludeDirs = vscode.workspace.getConfiguration("vscode-git-kafka").get("excludeDirs") as string;
@@ -58,6 +56,8 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.workspace.workspaceFolders?.[0]
   );
 	m_global.setPathSpec(pathSpec);
+
+  mSolr.refresh();
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand

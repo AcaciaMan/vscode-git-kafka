@@ -3,12 +3,17 @@ import { M_Dir } from "../m_grep/m_dir";
 import { M_CalcGrep } from "../m_grep/m_calc_grep";
 import { M_Global } from "../m_util/m_global";
 import { M_Task } from "./m_task";
+import { M_Util } from "../m_util/m_util";
+import { M_Solr } from "../m_util/m_solr";
 
 export class TaskExecutor {
   task: M_Task;
   mExecute: M_Execute;
   mCalcGrep: M_CalcGrep;
   m_global: M_Global = M_Global.getInstance();
+  endTime: Date = new Date();
+  executionTime: number = 0;
+  mSolr = M_Solr.getInstance();
 
   constructor(task: M_Task) {
     this.task = task;
@@ -29,11 +34,20 @@ export class TaskExecute extends TaskExecutor {
     constructor(task: M_Task) {
         super(task);
     }
+
+    mUtil = M_Util.getInstance();
     
+    mId = this.mUtil.getUUID();
+
     async execute() {
         await super.execute();
         // Additional execution logic
         await this.mExecute.execute();
+        this.endTime = new Date();
+        this.executionTime = this.endTime.getTime() - this.task.created_at.getTime();
+        this.mSolr.makeExecuteDoc(this);
+        await this.mSolr.addDoc();
+        await this.mSolr.commit();
     }
     }
 

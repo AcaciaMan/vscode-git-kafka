@@ -125,9 +125,9 @@
 
 	<field name="workspaceUUID" type="uuid" indexed="true" stored="true" required="true" multiValued="false"/>
   <field name="workspaceFolder" type="url" indexed="true" stored="true" required="true" multiValued="false"/>
-  <field name="includeDirs" type="url" indexed="true" stored="true" required="true" multiValued="true"/>
-  <field name="excludeDirs" type="url" indexed="true" stored="true" required="true" multiValued="true"/>
-  <field name="pathSpec" type="url" indexed="true" stored="true" required="true" multiValued="false"/>
+  <field name="includeDirs" type="url" indexed="true" stored="true" multiValued="true"/>
+  <field name="excludeDirs" type="url" indexed="true" stored="true" multiValued="true"/>
+  <field name="pathSpec" type="url" indexed="true" stored="true" multiValued="false"/>
 	<field name="created" type="pdate" indexed="true" stored="true" required="true" multiValued="false"/>
   <field name="searchTerm" type="text_general" indexed="true" stored="true" multiValued="false"/>
   <field name="resultText" type="text_general" indexed="true" stored="true" multiValued="false"/>

@@ -79,6 +79,16 @@
           "type": "string",
           "default": "",
           "description": "Sort"
+        },
+        "vscode-git-kafka.solrClient": {
+          "type": "object",
+          "default": {
+            "host": "localhost",
+            "port": "8983",
+            "core": "vscodegit",
+            "path": "/solr"
+          },
+          "description": "Solr Client"
         }
       }
     }

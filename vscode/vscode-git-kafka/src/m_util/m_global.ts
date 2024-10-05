@@ -33,6 +33,7 @@ export class M_Global {
   m_calc_dir: M_Calc_Dir | undefined;
   workspaceUUID: string = "";
   sortType: string = "";
+  solrClient: object = {};
 
   public setWorkspaceUUID(workspaceUUID: string): void {
     this.workspaceUUID = workspaceUUID;

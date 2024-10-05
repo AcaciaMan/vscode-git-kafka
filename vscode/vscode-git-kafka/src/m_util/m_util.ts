@@ -69,18 +69,24 @@ export class M_Util {
                 }
                 return a.getId().localeCompare(b.getId());
             });
+        }}
+
+        public getUUID(): string {
+            let s= Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+
+
+            // format as UUID
+            // add mising characters to the end of the string
+            if (s.length < 32) {
+                s += "0".repeat(32 - s.length);
+            }
+
+            return s.substring(0, 8) + "-" + s.substring(8, 12) + "-" + s.substring(12, 16) + "-" + s.substring(16, 20) + "-" + s.substring(20, 32);
+
+            
         }
 
-    
-    
-    
-    
-    
-
-    
 
 
-    
-
-}
 }
