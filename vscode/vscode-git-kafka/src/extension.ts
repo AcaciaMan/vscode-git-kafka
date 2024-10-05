@@ -27,7 +27,11 @@ export function activate(context: vscode.ExtensionContext) {
       .getConfiguration("vscode-git-kafka")
       .get("workspaceUUID") as string;
 
-	if (workspaceUUID==="" || workspaceUUID===undefined) {
+	if (workspaceUUID==="" || 
+    workspaceUUID===undefined ||
+    // if the workspaceUUID is not a valid UUID
+    !mUtil.isUUID(workspaceUUID)
+  ) {
 		workspaceUUID = mUtil.getUUID();
 		vscode.workspace.getConfiguration("vscode-git-kafka").update("workspaceUUID", workspaceUUID, vscode.ConfigurationTarget.Workspace);
 	}  

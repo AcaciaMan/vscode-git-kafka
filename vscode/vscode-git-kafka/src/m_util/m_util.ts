@@ -87,6 +87,10 @@ export class M_Util {
             
         }
 
+        public isUUID(s: string): boolean {
+            return s.match(/^.{8}-.{4}-.{4}-.{4}-.{12}$/) !== null;
+        }
+
 
 
 }
