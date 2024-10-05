@@ -32,7 +32,7 @@ describe("Some Test Suite", () => {
         const client = solr.createClient({
             host: "localhost",
             port: "8983",
-            core: "events",
+            core: "vscodegit",
             path: "/solr",
         });
 
