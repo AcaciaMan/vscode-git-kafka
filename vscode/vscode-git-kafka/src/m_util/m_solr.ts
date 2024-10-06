@@ -76,6 +76,10 @@ export class M_Solr {
   }
 
   hasSolrClient() {
+    if (!solr) {
+      vscode.window.showErrorMessage("Not installed: solr-client. Run npm install solr-client");
+    }
+
     return solr ? true : false;
   }
 }
