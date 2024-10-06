@@ -80,7 +80,6 @@ public showResults(solrResponse: any): string {
   },
   "highlighting":{"8h2vr5pc-f1ed-g88h-tlzy-xc0000000000":{"resultText":[" distributed\r\nLICENSE:          or as an addendum to the NOTICE text from the Work, provided\r\nLICENSE:      the <em>brackets</em>!)  The text should be enclosed in the"]}}}
     */
-   console.log(solrResponse);
   const highlightedText = solrResponse.highlighting;
   const keys = Object.keys(highlightedText);
   const htmlParagraphs = keys.map((key) => {
