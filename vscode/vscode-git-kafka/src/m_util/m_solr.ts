@@ -20,6 +20,7 @@ export class M_Solr {
   m_global = M_Global.getInstance();
   solrClient: any;
   mDoc: object = {};
+  bCheckFirstTime: boolean = true;
 
   // methods
   public refresh() {
@@ -76,7 +77,8 @@ export class M_Solr {
   }
 
   hasSolrClient() {
-    if (!solr) {
+    if (!solr && this.bCheckFirstTime) {
+      this.bCheckFirstTime = false;
       vscode.window.showErrorMessage("Not installed: solr-client. Run npm install solr-client");
     }
 
