@@ -13,6 +13,7 @@ import { M_Clicks } from "../m_results/m_clicks";
 import { M_Util } from "../m_util/m_util";
 import { M_Task } from "../m_tasks/m_task";
 import { TaskExecute, TaskExecuteDirs } from "../m_tasks/m_task_executor";
+import { M_Status } from "../m_tasks/m_status";
 
 export class ProviderGitGrep implements vscode.WebviewViewProvider {
   public static readonly viewType = "myExtension.myWebview";
@@ -21,6 +22,7 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
 
   m_global: M_Global = M_Global.getInstance();
   mUtil = M_Util.getInstance();
+  mStatus = M_Status.getInstance();
   viewResults: ViewResults = ViewResults.getInstance();
   mCalcGrep: M_CalcGrep | undefined;
 
@@ -93,6 +95,8 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
     const mTaskExecute = new TaskExecute(mTask);
     mTask.pInitialized = mTaskExecute.init();
     mTask.pExecuted = mTaskExecute.execute();
+    await mTask.pExecuted;
+    this.mStatus.addExecutor(mTaskExecute);
   }
 
   private _getHtmlForWebview(webview: vscode.Webview) {

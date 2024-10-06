@@ -1,0 +1,40 @@
+import { M_Task_State } from "./m_task";
+import { TaskExecutor } from "./m_task_executor";
+
+export class M_Status {
+    static instance: M_Status;
+    static getInstance(): M_Status {
+        if (!M_Status.instance) {
+            M_Status.instance = new M_Status();
+        }
+        return M_Status.instance;
+    }
+
+    mExecutors: TaskExecutor[] = [];
+
+    constructor() {
+    }
+
+
+    addExecutor(executor: TaskExecutor) {
+        // set previous executors with tasks insearch to status newsearch
+        for (let i = this.mExecutors.length - 1; i >= 0; i--) {
+            if (this.mExecutors[i].task.mState === M_Task_State.InSearch) {
+                this.mExecutors[i].task.mState = M_Task_State.NewSearch;
+            } else if (this.mExecutors[i].task.mState === M_Task_State.NewSearch) {
+                break;
+            }
+        }
+
+
+        this.mExecutors.push(executor);
+    }
+
+    getExecutor() {
+        if (this.mExecutors.length === 0) {
+            return undefined;
+        }
+        return this.mExecutors[this.mExecutors.length - 1];
+    }   
+
+}

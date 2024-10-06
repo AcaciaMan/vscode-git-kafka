@@ -3,6 +3,8 @@ import { M_Global } from "../m_util/m_global";
 import { M_Solr } from "../m_util/m_solr";
 import { M_Task } from "../m_tasks/m_task";
 import { M_SolrSearch } from "./m_solr_search";
+import { M_Status } from "../m_tasks/m_status";
+import { M_SearchExecutor, M_SearchSolr } from "../m_tasks/m_search_executor";
 
 export class ProviderSolr implements vscode.WebviewViewProvider {
   public static readonly viewType = "myExtension.solr";
@@ -12,6 +14,7 @@ export class ProviderSolr implements vscode.WebviewViewProvider {
   m_global: M_Global = M_Global.getInstance();
 
   mSolr: M_Solr = M_Solr.getInstance();
+  mStatus = M_Status.getInstance();
 
   constructor(private readonly context: vscode.ExtensionContext) {}
 
@@ -63,9 +66,14 @@ export class ProviderSolr implements vscode.WebviewViewProvider {
       this.mSolr.refresh();
     }
 
-    private _searchSolr(searchTerm: string) {
+    private async _searchSolr(searchTerm: string) {
       const mTask = new M_Task(searchTerm, "Solr results");
-      const mSolrSearch = new M_SolrSearch(mTask, "1728172544294");
-      mSolrSearch.search();
+      const mExecutor = this.mStatus.getExecutor();
+      if (!mExecutor) {
+        vscode.window.showInformationMessage("No executor found");
+        return;
+      }
+      const mSearchExecutor = new M_SearchSolr(mTask, mExecutor);
+      await mSearchExecutor.executeSearch();
     }
 }
