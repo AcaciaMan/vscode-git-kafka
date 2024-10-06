@@ -1,6 +1,8 @@
 import * as vscode from "vscode";
 import { M_Global } from "../m_util/m_global";
 import { M_Solr } from "../m_util/m_solr";
+import { M_Task } from "../m_tasks/m_task";
+import { M_SolrSearch } from "./m_solr_search";
 
 export class ProviderSolr implements vscode.WebviewViewProvider {
   public static readonly viewType = "myExtension.solr";
@@ -31,7 +33,7 @@ export class ProviderSolr implements vscode.WebviewViewProvider {
         case "refresh":
           this._refresh();
           break;
-        case "searchSolr":
+        case "search":
             this._searchSolr(data.searchTerm);
             break;
 
@@ -62,6 +64,8 @@ export class ProviderSolr implements vscode.WebviewViewProvider {
     }
 
     private _searchSolr(searchTerm: string) {
-      this.mSolr.searchSolr(searchTerm);
+      const mTask = new M_Task(searchTerm, "Solr results");
+      const mSolrSearch = new M_SolrSearch(mTask, "1728172544294");
+      mSolrSearch.search();
     }
 }

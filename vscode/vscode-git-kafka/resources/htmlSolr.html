@@ -11,6 +11,7 @@
 <body>
     <textarea id="searchTerm" rows="10" cols="50" placeholder="e.g. *:*"></textarea>
     <br>
+    <button id="search">Search</button>
     <button id="refresh">Refresh</button>
     <script>
         const vscode = acquireVsCodeApi();
@@ -18,6 +19,14 @@
         refresh.addEventListener('click', () => {
             vscode.postMessage({
                 type: 'refresh'
+            });
+        });
+        const search = document.getElementById('search');
+        search.addEventListener('click', () => {
+            const searchTerm = document.getElementById('searchTerm').value;
+            vscode.postMessage({
+                type: 'search',
+                searchTerm: searchTerm
             });
         });
 

@@ -1,7 +1,9 @@
 const solr = require("solr-client");
+//import solr from "solr-client";
 import * as vscode from "vscode";
 import { M_Global } from "./m_global";
-import { TaskExecute } from "../m_tasks/m_task_executor";
+import { TaskExecute, TaskExecutor } from "../m_tasks/m_task_executor";
+import { M_Task } from "../m_tasks/m_task";
 
 export class M_Solr {
   // singleton
@@ -64,8 +66,13 @@ export class M_Solr {
     await this.solrClient.add(this.mDoc);
   }
 
-  searchSolr(searchTerm: string) {
-    throw new Error("Method not implemented.");
+  async searchSolr(mTask: M_Task, sExeId: string) {
+        const query = this.solrClient
+          .query()
+          .q(mTask.sSearchTerm).fq({field: "taskId", value: sExeId});
+
+        const searchResponse = await this.solrClient.search(query);
+        mTask.sStdout = searchResponse;
   }
 
   hasSolrClient() {
