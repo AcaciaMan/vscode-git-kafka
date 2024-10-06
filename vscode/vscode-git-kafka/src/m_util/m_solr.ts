@@ -70,7 +70,14 @@ export class M_Solr {
   async searchSolr(mTask: M_Task, sExeId: string) {
         const query = this.solrClient
           .query()
-          .q(mTask.sSearchTerm).fq({field: "taskId", value: sExeId});
+          .q(mTask.sSearchTerm)
+          .fq({ field: "taskId", value: sExeId })
+          .hl({ on: true, fl: "resultText" });
+
+        /*  
+        const client: solr.Client;
+        client.query().hl({on: true, fl: "resultText"});  
+        */
 
         const searchResponse = await this.solrClient.search(query);
         mTask.sStdout = searchResponse;
