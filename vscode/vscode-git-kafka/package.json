@@ -48,6 +48,11 @@
           "type": "webview",
           "id": "myExtension.myWebview",
           "name": "Git grep"
+        },
+        {
+          "type": "webview",
+          "id": "myExtension.solr",
+          "name": "Solr"
         }
       ]
     },

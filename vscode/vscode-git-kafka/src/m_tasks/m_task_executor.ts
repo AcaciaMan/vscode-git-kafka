@@ -45,9 +45,11 @@ export class TaskExecute extends TaskExecutor {
         await this.mExecute.execute();
         this.endTime = new Date();
         this.executionTime = this.endTime.getTime() - this.task.created_at.getTime();
-        this.mSolr.makeExecuteDoc(this);
-        await this.mSolr.addDoc();
-        await this.mSolr.commit();
+        if (this.mSolr.hasSolrClient()) {
+           this.mSolr.makeExecuteDoc(this);
+           await this.mSolr.addDoc();
+           await this.mSolr.commit();
+        }
     }
     }
 

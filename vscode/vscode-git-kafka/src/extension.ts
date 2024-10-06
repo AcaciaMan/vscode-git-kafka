@@ -8,6 +8,7 @@ import { M_Global } from './m_util/m_global';
 import { M_Search } from './m_results/m_search';
 import { M_Util } from './m_util/m_util';
 import { M_Solr } from './m_util/m_solr';
+import { ProviderSolr } from './m_solr/providerSolr';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -132,6 +133,16 @@ export function activate(context: vscode.ExtensionContext) {
 			providerDirsPaths
 		)
 	);
+
+  if (mSolr.hasSolrClient()) {
+    const providerSolr = new ProviderSolr(context);
+    context.subscriptions.push(
+      vscode.window.registerWebviewViewProvider(
+        ProviderSolr.viewType,
+        providerSolr
+      )
+    );
+  }
 
 }
 

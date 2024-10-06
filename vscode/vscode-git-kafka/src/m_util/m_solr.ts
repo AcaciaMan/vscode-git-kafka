@@ -34,11 +34,11 @@ export class M_Solr {
       return;
     }
     this.solrClient = solr.createClient(this.m_global.solrClient);
-    }
+  }
 
   async commit() {
     if (!solr) {
-        return;
+      return;
     }
 
     await this.solrClient.commit();
@@ -58,9 +58,17 @@ export class M_Solr {
   }
 
   async addDoc() {
-        if (!solr) {
-          return;
-        }
+    if (!solr) {
+      return;
+    }
     await this.solrClient.add(this.mDoc);
+  }
+
+  searchSolr(searchTerm: string) {
+    throw new Error("Method not implemented.");
+  }
+
+  hasSolrClient() {
+    return solr ? true : false;
   }
 }
