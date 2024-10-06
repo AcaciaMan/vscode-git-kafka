@@ -5,6 +5,7 @@ import { M_Task } from "../m_tasks/m_task";
 import { M_SolrSearch } from "./m_solr_search";
 import { M_Status } from "../m_tasks/m_status";
 import { M_SearchExecutor, M_SearchSolr } from "../m_tasks/m_search_executor";
+import { ViewExecuteSolrResults } from "./viewExecuteSolrResults";
 
 export class ProviderSolr implements vscode.WebviewViewProvider {
   public static readonly viewType = "myExtension.solr";
@@ -15,6 +16,7 @@ export class ProviderSolr implements vscode.WebviewViewProvider {
 
   mSolr: M_Solr = M_Solr.getInstance();
   mStatus = M_Status.getInstance();
+  mViewSolrResults: ViewExecuteSolrResults = ViewExecuteSolrResults.getInstance();
 
   constructor(private readonly context: vscode.ExtensionContext) {}
 
@@ -75,6 +77,9 @@ export class ProviderSolr implements vscode.WebviewViewProvider {
       }
       const mSearchExecutor = new M_SearchSolr(mTask, mExecutor);
       await mSearchExecutor.executeSearch();
+      this.mStatus.addSolrExecutor(mSearchExecutor);
+      this.mViewSolrResults.newSearch(this.context);
+
     }
 }
 

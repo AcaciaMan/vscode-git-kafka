@@ -1,3 +1,4 @@
+import { M_SearchSolr } from "./m_search_executor";
 import { M_Task_State } from "./m_task";
 import { TaskExecutor } from "./m_task_executor";
 
@@ -11,6 +12,7 @@ export class M_Status {
     }
 
     mExecutors: TaskExecutor[] = [];
+    mSolrExecutors: M_SearchSolr[] = [];
 
     constructor() {
     }
@@ -36,5 +38,13 @@ export class M_Status {
         }
         return this.mExecutors[this.mExecutors.length - 1];
     }   
+
+    addSolrExecutor(executor: M_SearchSolr) {
+        this.mSolrExecutors.push(executor);
+    }
+
+    getSolrExecutor() {
+        return this.mSolrExecutors[this.mSolrExecutors.length - 1];
+    }
 
 }
