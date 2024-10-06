@@ -77,3 +77,30 @@ export class ProviderSolr implements vscode.WebviewViewProvider {
       await mSearchExecutor.executeSearch();
     }
 }
+
+
+export class ProviderSolrEmpty implements vscode.WebviewViewProvider {
+  public static readonly viewType = "myExtension.solr";
+
+  private _view?: vscode.WebviewView;
+
+  constructor(private readonly context: vscode.ExtensionContext) {}
+
+  public resolveWebviewView(
+    webviewView: vscode.WebviewView,
+    context: vscode.WebviewViewResolveContext,
+    token: vscode.CancellationToken
+  ) {
+    this._view = webviewView;
+
+    webviewView.webview.options = {
+      enableScripts: true,
+    };
+
+    webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+  }
+
+  private _getHtmlForWebview(webview: vscode.Webview) {
+    return "";
+  }
+}

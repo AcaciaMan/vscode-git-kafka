@@ -72,11 +72,11 @@ export class M_Solr {
           .query()
           .q(mTask.sSearchTerm)
           .fq({ field: "taskId", value: sExeId })
-          .hl({ on: true, fl: "resultText" });
+          .hl({ on: true, fl: "resultText", fragsize: 150, snippets: 1000000 });
 
-        /*  
+          /*
         const client: solr.Client;
-        client.query().hl({on: true, fl: "resultText"});  
+        client.query().hl({on: true, fl: "resultText", fragsize: 150, snippets: 1000000});  
         */
 
         const searchResponse = await this.solrClient.search(query);
