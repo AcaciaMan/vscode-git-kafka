@@ -25,6 +25,8 @@ export class M_Solr {
 
   // methods
   public refresh() {
+    this.bCheckFirstTime = true;
+    this.bSolrReachable = true;
     // get solrClient from settings
     const solrClient = vscode.workspace
       .getConfiguration("vscode-git-kafka")
