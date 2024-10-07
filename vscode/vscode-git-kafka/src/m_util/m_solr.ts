@@ -40,7 +40,7 @@ export class M_Solr {
   }
 
   async commit() {
-    if (!solr) {
+    if (!this.hasSolrClient()) {
       return;
     }
 
@@ -61,7 +61,7 @@ export class M_Solr {
   }
 
   async addDoc() {
-    if (!solr) {
+    if (!this.hasSolrClient()) {
       return;
     }
     await this.solrClient.add(this.mDoc);
@@ -85,11 +85,32 @@ export class M_Solr {
   }
 
   hasSolrClient() {
+    let bResult = true;
+
     if (!solr && this.bCheckFirstTime) {
       this.bCheckFirstTime = false;
       vscode.window.showErrorMessage("Not installed: solr-client. Run npm install solr-client");
     }
 
-    return solr ? true : false;
+    if (!solr) {return false;};
+
+    if (!this.solrClient) {
+      this.refresh();
+    }
+
+    // try to ping solr
+    if (this.bCheckFirstTime) {
+      this.bCheckFirstTime = false;
+      this.solrClient.ping((err: any, obj: any) => {
+        if (err) {
+          vscode.window.showErrorMessage("Solr is not available");
+          bResult = false;
+        }
+      });
+    }
+
+
+
+    return bResult;
   }
 }

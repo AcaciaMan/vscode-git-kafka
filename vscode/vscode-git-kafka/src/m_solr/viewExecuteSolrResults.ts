@@ -84,6 +84,9 @@ public showResults(solrResponse: any): string {
   const keys = Object.keys(highlightedText);
   const htmlParagraphs = keys.map((key) => {
     const highlights = highlightedText[key].resultText;
+    if (!highlights) {
+      return "";
+    }
     const htmlHighlights = highlights.map((highlight: string) => {
       return `<p>${highlight}</p>`;
     });
