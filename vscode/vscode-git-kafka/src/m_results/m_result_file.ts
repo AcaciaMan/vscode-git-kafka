@@ -1,12 +1,14 @@
 import { M_File } from "../m_grep/m_file";
+import { M_Util } from "../m_util/m_util";
 import { M_Result } from "./m_result";
 
 // class to store the results of a single file
 export class M_ResultFile {
     file: M_File;
     m_result: M_Result;
-    aResultItem: {iStartLine:number, iEndLine:number}[] = [];
+    aResultItem: {iStartLine:number, iEndLine:number, mId: string}[] = [];
     aParsedLine: number[] = [];
+    mUtil: M_Util = M_Util.getInstance();
 
     constructor(file: M_File, m_result: M_Result) {
         this.file = file;
@@ -25,12 +27,12 @@ export class M_ResultFile {
             if (this.m_result.aResultParsed[this.aParsedLine[i]].line === this.m_result.aResultParsed[iEndLine].line + 1) {
                 iEndLine = this.aParsedLine[i];
             } else {
-                this.aResultItem.push({iStartLine:iStartLine, iEndLine:iEndLine});
+                this.aResultItem.push({iStartLine:iStartLine, iEndLine:iEndLine, mId: this.mUtil.getUUID()});
                 iStartLine = this.aParsedLine[i];
                 iEndLine = this.aParsedLine[i];
             }
         }
-        this.aResultItem.push({iStartLine:iStartLine, iEndLine:iEndLine});
+        this.aResultItem.push({iStartLine:iStartLine, iEndLine:iEndLine, mId: this.mUtil.getUUID()});
     }
 
     toString(): string {
@@ -63,7 +65,7 @@ export class M_ResultFile {
     }
 
     // toStringOneItemText
-    toStringOneItemText(resultItem: {iStartLine: number, iEndLine:number}): string {
+    toStringOneItemText(resultItem: {iStartLine: number, iEndLine:number, mId: string}): string {
         let s = "";
 
         const lineStart = this.m_result.aResultParsed[resultItem.iStartLine].line;
@@ -77,6 +79,25 @@ export class M_ResultFile {
         s += `<span class="line-number" data-file-path="${this.file.getPath()}" data-line-start="${lineEnd}" data-line-end="${lineEnd}" data-dir="${this.file.dir.getId()}">~~~${lineEnd}</span>`;
         return s;
     }
+
+    toStringItemText(resultItem: {iStartLine: number, iEndLine:number, mId: string}): string {
+        let s = "";
+        for (let j = resultItem.iStartLine; j <= resultItem.iEndLine; j++) {
+            s += `${this.m_result.aResultParsed[j].text}\n`;
+        }
+        s = s.slice(0, -1);
+        return s;
+    }
+
+    getLineStart(resultItem: {iStartLine: number, iEndLine:number, mId: string}): number {
+        return this.m_result.aResultParsed[resultItem.iStartLine].line;
+    }
+
+    getLineEnd(resultItem: {iStartLine: number, iEndLine:number, mId: string}): number {
+        return this.m_result.aResultParsed[resultItem.iEndLine].line;
+    }
+
+    
 
 }
 
