@@ -107,7 +107,7 @@ export class M_Solr {
         await this.solrClient.ping();
       } catch (error) {
         if ((error as { code: string }).code === "ECONNREFUSED") {
-          vscode.window.showErrorMessage("Solr is not reachable. Check solrClient settings");
+          vscode.window.showErrorMessage("Solr is not reachable. Check solrClient settings " + JSON.stringify(this.m_global.solrClient));
           this.bSolrReachable = false;
         } else {
           vscode.window.showErrorMessage("Solr error: " + error);
