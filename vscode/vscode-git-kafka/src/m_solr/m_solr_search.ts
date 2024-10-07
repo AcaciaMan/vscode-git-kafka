@@ -14,6 +14,7 @@ export class M_SolrSearch {
 
     async search() {
         this.solrResponse =  await this.mSolr.searchSolr(this.mTask, this.sExeId);
+        await this.mSolr.commit();
         this.mTask.outputChannel.append(this.mTask.sStdout);
                 this.mTask.outputChannel.show();
                 vscode.window.showInformationMessage("Solr Search Done");

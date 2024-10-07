@@ -103,7 +103,7 @@ export class M_CalcGrep {
       let aPromises = this.mChunks.processChunk(aDirs, this);
       while (aPromises.length > 0) {
         const results = await Promise.all(aPromises);
-        this.mChunks.addChunkResults(results, aDirs);
+        this.mChunks.addChunkResults(results, aDirs, this.mTask);
         aPromises = this.mChunks.processChunk(aDirs, this);
       }
 

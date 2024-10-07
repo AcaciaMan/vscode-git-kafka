@@ -1,4 +1,5 @@
 import { M_Result } from "../m_results/m_result";
+import { M_Task } from "../m_tasks/m_task";
 import { M_CalcGrep } from "./m_calc_grep";
 import { M_Dir } from "./m_dir";
 
@@ -37,7 +38,7 @@ export class M_Chunks {
         return this.aPromises.slice( this.iStart, this.iEnd);
     }
 
-    addChunkResults(aResults: string[], aDirs: M_Dir[]): void {
+    addChunkResults(aResults: string[], aDirs: M_Dir[], mTask: M_Task): void {
         for (let i = 0; i < aResults.length; i++) {
             const mResult = new M_Result(aResults[i], aDirs[i+this.iStart]);
             mResult.fillResultFile();
