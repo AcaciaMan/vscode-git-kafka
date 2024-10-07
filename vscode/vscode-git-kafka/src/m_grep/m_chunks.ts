@@ -52,10 +52,16 @@ export class M_Chunks {
             const mResult = new M_Result(aResults[i], aDirs[i+this.iStart]);
             mResult.fillResultFile();
             this.aResult.push(mResult);
-            await this.addSolrDoc(mResult, mTask);
+            try {
+            if (await this.mSolr.hasSolrClient()) {
+                await this.addSolrDoc(mResult, mTask);
+            }
+        } catch (error) { 
+            console.error(error);
         }
     }
-    
+}
+
     async addSolrDoc(mResult: M_Result, mTask: M_Task) {
 
         for (let i = 0; i < mResult.aResultFile.length; i++) {

@@ -21,6 +21,7 @@ export class M_Solr {
   solrClient: any;
   mDoc: object = {};
   bCheckFirstTime: boolean = true;
+  bSolrReachable: boolean = true;
 
   // methods
   public refresh() {
@@ -74,43 +75,47 @@ export class M_Solr {
           .fq({ field: "taskId", value: sExeId })
           .hl({ on: true, fl: "resultText", fragsize: 150, snippets: 1000000 }).fl("taskId");
 
-        /*  
+          /*
         const client: solr.Client;
-        client.query().hl({on: true, fl: "resultText", fragsize: 150, snippets: 1000000}).;  
-        */
+        client.query().hl({on: true, fl: "resultText", fragsize: 150, snippets: 1000000});
+        client.ping(); 
+         */
+        
 
         const searchResponse = await this.solrClient.search(query);
         mTask.sStdout = searchResponse;
         return searchResponse;
   }
 
-  hasSolrClient() {
-    let bResult = true;
+  async hasSolrClient() {
+    if (!this.bSolrReachable) {
+      return false;
+    }
 
     if (!solr && this.bCheckFirstTime) {
       this.bCheckFirstTime = false;
       vscode.window.showErrorMessage("Not installed: solr-client. Run npm install solr-client");
-    }
-
-    if (!solr) {return false;};
-
-    if (!this.solrClient) {
-      this.refresh();
+      this.bSolrReachable = false;
     }
 
     // try to ping solr
     if (this.bCheckFirstTime) {
       this.bCheckFirstTime = false;
-      this.solrClient.ping((err: any, obj: any) => {
-        if (err) {
-          vscode.window.showErrorMessage("Solr is not available");
-          bResult = false;
+      try {
+        await this.solrClient.ping();
+      } catch (error) {
+        if ((error as { code: string }).code === "ECONNREFUSED") {
+          vscode.window.showErrorMessage("Solr is not reachable. Check solrClient settings");
+          this.bSolrReachable = false;
+        } else {
+          vscode.window.showErrorMessage("Solr error: " + error);
+          this.bSolrReachable = false;
         }
-      });
+      };
     }
 
 
 
-    return bResult;
+    return this.bSolrReachable;
   }
 }

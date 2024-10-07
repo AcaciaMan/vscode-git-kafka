@@ -134,7 +134,7 @@ export function activate(context: vscode.ExtensionContext) {
 		)
 	);
 
-  if (mSolr.hasSolrClient()) {
+
     const providerSolr = new ProviderSolr(context);
     context.subscriptions.push(
       vscode.window.registerWebviewViewProvider(
@@ -142,15 +142,6 @@ export function activate(context: vscode.ExtensionContext) {
         providerSolr
       )
     );
-  } else {
-    const providerSolrEmpty = new ProviderSolrEmpty(context);
-    context.subscriptions.push(
-      vscode.window.registerWebviewViewProvider(
-        ProviderSolrEmpty.viewType,
-        providerSolrEmpty
-      )
-    );
-  }
 
 }
 
