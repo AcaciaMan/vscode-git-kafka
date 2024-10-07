@@ -30,9 +30,7 @@ export class M_Util {
         ) {
           aDirs.sort((a, b) => b.getId().localeCompare(a.getId()));
         } else if (
-            (this.m_global.sortType === mSearch.enumSortType.ClicksHighLow) ||
-            (this.m_global.sortType === mSearch.enumSortType.NumberOfLinesHighLow) ||
-            (this.m_global.sortType === mSearch.enumSortType.NumberOfLinesLowHigh)
+            (this.m_global.sortType === mSearch.enumSortType.ClicksHighLow)
         ) {
             const mClicks: M_Clicks = M_Clicks.getInstance();
             aDirs.sort((a, b) => {

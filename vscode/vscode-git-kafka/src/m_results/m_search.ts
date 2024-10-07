@@ -25,9 +25,7 @@ export class M_Search {
         ClicksHighLow: "Clicks (High-Low)",
         ClicksLowHigh: "Clicks (Low-High)",
         AlphabeticalAZ: "Alphabetical (A-Z)",
-        AlphabeticalZA: "Alphabetical (Z-A)",
-        NumberOfLinesLowHigh: "Number of Lines (Low-High)",
-        NumberOfLinesHighLow: "Number of Lines (High-Low)",
+        AlphabeticalZA: "Alphabetical (Z-A)"
     };
 
 
@@ -39,9 +37,7 @@ export class M_Search {
     this.enumSortType.ClicksHighLow,
     this.enumSortType.ClicksLowHigh,
     this.enumSortType.AlphabeticalAZ,
-    this.enumSortType.AlphabeticalZA,
-    this.enumSortType.NumberOfLinesLowHigh,
-    this.enumSortType.NumberOfLinesHighLow,
+    this.enumSortType.AlphabeticalZA
   ];
 
   // dictionary of directories and their number of lines
@@ -109,79 +105,6 @@ export class M_Search {
                 if (a.file.name < b.file.name) {
                     return 1;
                 }
-                return 0;
-            });
-        } else if (sortType === this.enumSortType.NumberOfLinesLowHigh) {
-            this.assignNumberOfLines();
-            this.aResultFile.sort((a, b) => {
-                if (
-                  this.getNumberOfLines(a.file.dir.getId()) <
-                  this.getNumberOfLines(b.file.dir.getId())
-                ) {
-                  return -1;
-                }
-                if (
-                  this.getNumberOfLines(a.file.dir.getId()) >
-                  this.getNumberOfLines(b.file.dir.getId())
-                ) {
-                  return 1;
-                }
-                      if (a.file.dir.getId() < b.file.dir.getId()) {
-                        return -1;
-                      }
-                      if (a.file.dir.getId() > b.file.dir.getId()) {
-                        return 1;
-                      }
-
-
-                if (a.aResultItem.length < b.aResultItem.length) {
-                    return -1;
-                }
-                if (a.aResultItem.length > b.aResultItem.length) {
-                    return 1;
-                }
-                                if (a.file.name < b.file.name) {
-                                  return -1;
-                                }
-                                if (a.file.name > b.file.name) {
-                                  return 1;
-                                }
-                return 0;
-            });
-        } else if (sortType === this.enumSortType.NumberOfLinesHighLow) {
-            this.assignNumberOfLines();
-            this.aResultFile.sort((a, b) => {
-                 if (
-                   this.getNumberOfLines(a.file.dir.getId()) >
-                   this.getNumberOfLines(b.file.dir.getId())
-                 ) {
-                   return -1;
-                 }
-                 if (
-                   this.getNumberOfLines(a.file.dir.getId()) <
-                   this.getNumberOfLines(b.file.dir.getId())
-                 ) {
-                   return 1;
-                 }               
-                      if (a.file.dir.getId() < b.file.dir.getId()) {
-                        return -1;
-                      }
-                      if (a.file.dir.getId() > b.file.dir.getId()) {
-                        return 1;
-                      }
-                
-                if (a.aResultItem.length > b.aResultItem.length) {
-                    return -1;
-                }
-                if (a.aResultItem.length < b.aResultItem.length) {
-                    return 1;
-                }
-                                if (a.file.name < b.file.name) {
-                                  return -1;
-                                }
-                                if (a.file.name > b.file.name) {
-                                  return 1;
-                                }
                 return 0;
             });
         } else if (sortType === this.enumSortType.ClicksHighLow) {
