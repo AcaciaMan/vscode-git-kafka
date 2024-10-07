@@ -11,8 +11,18 @@
 <body>
     <textarea id="searchTerm" rows="10" cols="50" placeholder="e.g. *:*"></textarea>
     <br>
+    <label for="sort">Sort:</label>
+    <input type="text" id="sort" placeholder="e.g. id asc, created desc"></input>
+<br>
     <button id="search">Search</button>
     <button id="refresh">Refresh</button>
+    <br>
+    <p>* - Fields: id, workspaceUUID, workspaceFolder,</p>
+    <p>includeDirs, excludeDirs, pathSpec,</p>
+    <p>created, taskId, searchTerm, _text_,</p>
+    <p>resultText, resultDir, resultPath, resultFile,</p>
+    <p>resultLine, resultLineEnd, linesCount, queryTime, clicks.</p>
+    <p>* - Operators: AND, OR, NOT, +, -, (, ), *, ?, ~, "", ^, :, /.</p>
     <script>
         const vscode = acquireVsCodeApi();
         const refresh = document.getElementById('refresh');
@@ -24,9 +34,11 @@
         const search = document.getElementById('search');
         search.addEventListener('click', () => {
             const searchTerm = document.getElementById('searchTerm').value;
+            const sort = document.getElementById('sort').value;
             vscode.postMessage({
                 type: 'search',
-                searchTerm: searchTerm
+                searchTerm: searchTerm,
+                sort: sort
             });
         });
 
