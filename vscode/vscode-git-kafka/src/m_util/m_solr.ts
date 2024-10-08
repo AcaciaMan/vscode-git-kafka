@@ -79,8 +79,9 @@ export class M_Solr {
 
           /*
         const client: solr.Client;
-        client.query().hl({on: true, fl: "resultText", fragsize: 150, snippets: 1000000});
+        client.query().hl({on: true, fl: "resultText", fragsize: 150, snippets: 1000000}).;
         client.ping(); 
+        client.
          */
         
 
@@ -104,7 +105,14 @@ export class M_Solr {
     if (this.bCheckFirstTime) {
       this.bCheckFirstTime = false;
       try {
-        await this.solrClient.ping();
+        const pingResponse = await this.solrClient.ping();
+        console.log(pingResponse);
+        const query = this.solrClient.query().q("*:*").rows(1);
+        const searchResponse = await this.solrClient.search(query);
+        console.log(searchResponse);
+        if (searchResponse.response.numFound > 1000000) {
+          vscode.window.showErrorMessage("Solr has more than 1,000,000 documents. Please delete some documents.");
+        }
       } catch (error) {
         if ((error as { code: string }).code === "ECONNREFUSED") {
           vscode.window.showErrorMessage("Solr is not reachable. Check solrClient settings " + JSON.stringify(this.m_global.solrClient));
