@@ -46,8 +46,11 @@ export class M_Solr {
     if (!this.hasSolrClient()) {
       return;
     }
-
-    await this.solrClient.commit();
+    try {
+      await this.solrClient.commit();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   makeExecuteDoc(mExecuteTask: TaskExecute) {
@@ -67,7 +70,11 @@ export class M_Solr {
     if (!this.hasSolrClient()) {
       return;
     }
-    await this.solrClient.add(this.mDoc);
+    try {
+      await this.solrClient.add(this.mDoc);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async searchSolr(mTask: M_Task, sExeId: string) {
