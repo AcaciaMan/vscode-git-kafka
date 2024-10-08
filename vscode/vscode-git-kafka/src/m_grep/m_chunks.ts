@@ -59,6 +59,7 @@ export class M_Chunks {
         } catch (error) { 
             console.error(error);
         }
+        await this.mSolr.commit();
     }
 }
 

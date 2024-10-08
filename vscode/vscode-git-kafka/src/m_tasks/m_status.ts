@@ -1,3 +1,4 @@
+import { M_Solr } from "../m_util/m_solr";
 import { M_SearchSolr } from "./m_search_executor";
 import { M_Task_State } from "./m_task";
 import { TaskExecutor } from "./m_task_executor";
@@ -17,6 +18,8 @@ export class M_Status {
     constructor() {
     }
 
+    mSolr = M_Solr.getInstance();
+
 
     addExecutor(executor: TaskExecutor) {
         // set previous executors with tasks insearch to status newsearch
@@ -27,6 +30,8 @@ export class M_Status {
                 break;
             }
         }
+
+        this.mSolr.commit();
 
 
         this.mExecutors.push(executor);
