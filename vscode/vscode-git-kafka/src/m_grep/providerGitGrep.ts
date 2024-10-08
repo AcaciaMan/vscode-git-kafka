@@ -220,6 +220,7 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
     mTask.pInitialized = mTaskExecuteDirs.init();
     mTask.pExecuted = mTaskExecuteDirs.execute(); 
     this.viewResults.newSearch(this.context, mTask.outputChannel, mTaskExecuteDirs.mCalcGrep);
+    this.mStatus.addExecutor(mTaskExecuteDirs);
     }
   
 

@@ -15,6 +15,7 @@ export class M_Task {
     })();
   mState: M_Task_State = M_Task_State.InSearch;
   sSearchTerm: string;
+  sSort: string = "";
   outputChannel: vscode.OutputChannel;
   pInitialized: Promise<void> | undefined;
   pExecuted: Promise<void> | undefined;

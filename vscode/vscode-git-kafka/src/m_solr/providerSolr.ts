@@ -41,6 +41,9 @@ export class ProviderSolr implements vscode.WebviewViewProvider {
         case "search":
             this._searchSolr(data.searchTerm);
             break;
+        case "searchDirs":
+            this._searchSolrDirs(data.searchTerm, data.sort);
+            break;
 
 
         }
@@ -80,6 +83,20 @@ export class ProviderSolr implements vscode.WebviewViewProvider {
       this.mStatus.addSolrExecutor(mSearchExecutor);
       this.mViewSolrResults.newSearch(this.context);
 
+    }
+
+    private async _searchSolrDirs(searchTerm: string, sort: string) {
+      const mTask = new M_Task(searchTerm, "Solr Dirs results");
+      mTask.sSort = sort;
+      const mExecutor = this.mStatus.getExecutor();
+      if (!mExecutor) {
+        vscode.window.showInformationMessage("No executor found");
+        return;
+      }
+      await this.mSolr.commit();
+      await this.mSolr.searchSolrDirs(mTask, mExecutor.task.getId());
+      mTask.outputChannel.append(mTask.sStdout);
+      mTask.outputChannel.show();
     }
 }
 

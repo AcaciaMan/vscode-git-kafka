@@ -15,6 +15,7 @@
     <input type="text" id="sort" placeholder="e.g. id asc, created desc"></input>
 <br>
     <button id="search">Search</button>
+    <button id="searchDirs">Search Dirs</button>
     <button id="refresh">Refresh</button>
     <br>
     <p>* - Fields: id, workspaceUUID, workspaceFolder,</p>
@@ -37,6 +38,16 @@
             const sort = document.getElementById('sort').value;
             vscode.postMessage({
                 type: 'search',
+                searchTerm: searchTerm,
+                sort: sort
+            });
+        });
+        const searchDirs = document.getElementById('searchDirs');
+        searchDirs.addEventListener('click', () => {
+            const searchTerm = document.getElementById('searchTerm').value;
+            const sort = document.getElementById('sort').value;
+            vscode.postMessage({
+                type: 'searchDirs',
                 searchTerm: searchTerm,
                 sort: sort
             });

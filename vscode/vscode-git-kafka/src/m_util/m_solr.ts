@@ -78,23 +78,44 @@ export class M_Solr {
   }
 
   async searchSolr(mTask: M_Task, sExeId: string) {
-        const query = this.solrClient
-          .query()
-          .q(mTask.sSearchTerm)
-          .fq({ field: "taskId", value: sExeId })
-          .hl({ on: true, fl: "resultText", fragsize: 150, snippets: 1000000 }).fl("taskId");
+    const query = this.solrClient
+      .query()
+      .q(mTask.sSearchTerm)
+      .fq({ field: "taskId", value: sExeId })
+      .hl({ on: true, fl: "resultText", fragsize: 150, snippets: 1000000 })
+      .fl("taskId");
 
-          /*
+    /*
         const client: solr.Client;
         client.query().hl({on: true, fl: "resultText", fragsize: 150, snippets: 1000000}).;
         client.ping(); 
         client.
          */
-        
 
-        const searchResponse = await this.solrClient.search(query);
-        mTask.sStdout = searchResponse;
-        return searchResponse;
+    const searchResponse = await this.solrClient.search(query);
+    mTask.sStdout = searchResponse;
+    return searchResponse;
+  }
+
+  async searchSolrDirs(mTask: M_Task, sExeId: string) {
+    const query = this.solrClient
+      .query()
+      .q(mTask.sSearchTerm)
+      .sort(mTask.sSort)
+      .fq({ field: "taskId", value: sExeId })
+      .hl({ on: true, fl: "resultText", fragsize: 150, snippets: 1000000 })
+      .fl("id").rows(1000000);
+
+    /*
+        const client: solr.Client;
+        client.query().hl({on: true, fl: "resultText", fragsize: 150, snippets: 1000000}).;
+        client.ping(); 
+        client.
+         */
+
+    const searchResponse = await this.solrClient.search(query);
+    mTask.sStdout = searchResponse;
+    return searchResponse;
   }
 
   async hasSolrClient() {
@@ -104,7 +125,9 @@ export class M_Solr {
 
     if (!solr && this.bCheckFirstTime) {
       this.bCheckFirstTime = false;
-      vscode.window.showErrorMessage("Not installed: solr-client. Run npm install solr-client");
+      vscode.window.showErrorMessage(
+        "Not installed: solr-client. Run npm install solr-client"
+      );
       this.bSolrReachable = false;
     }
 
@@ -118,20 +141,23 @@ export class M_Solr {
         const searchResponse = await this.solrClient.search(query);
         console.log(searchResponse);
         if (searchResponse.response.numFound > 1000000) {
-          vscode.window.showErrorMessage("Solr has more than 1,000,000 documents. Please delete some documents.");
+          vscode.window.showErrorMessage(
+            "Solr has more than 1,000,000 documents. Please delete some documents."
+          );
         }
       } catch (error) {
         if ((error as { code: string }).code === "ECONNREFUSED") {
-          vscode.window.showErrorMessage("Solr is not reachable. Check solrClient settings " + JSON.stringify(this.m_global.solrClient));
+          vscode.window.showErrorMessage(
+            "Solr is not reachable. Check solrClient settings " +
+              JSON.stringify(this.m_global.solrClient)
+          );
           this.bSolrReachable = false;
         } else {
           vscode.window.showErrorMessage("Solr error: " + error);
           this.bSolrReachable = false;
         }
-      };
+      }
     }
-
-
 
     return this.bSolrReachable;
   }
