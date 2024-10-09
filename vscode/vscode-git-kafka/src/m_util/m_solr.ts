@@ -102,10 +102,13 @@ export class M_Solr {
     const query = this.solrClient
       .query()
       .q(mTask.sSearchTerm)
-      .sort(mTask.sSort)
       .fq({ field: "taskId", value: sExeId })
       .hl({ on: true, fl: "resultText", fragsize: 150, snippets: 1000000 })
       .fl("id").rows(1000000);
+
+      query.parameters.push(
+        `sort=${mTask.sSort}`.replace(/ /g, "%20").replace(/,/g, "%2C")
+      );
 
     /*
         const client: solr.Client;
@@ -113,8 +116,6 @@ export class M_Solr {
         client.ping(); 
         client.
          */
-  console.log(mTask);
-        console.log("query: " +  JSON.stringify(  query));
     const searchResponse = await this.solrClient.search(query);
     mTask.sStdout = searchResponse;
     return searchResponse;

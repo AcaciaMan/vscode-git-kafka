@@ -40,8 +40,8 @@ describe("Some Test Suite", () => {
         console.log("client: ", client);
 
 
-        const query = client.query().q("imports");
-        query.parameters.push("sort=clicks desc");
+        const query = client.query().q("imports something").rows(10);
+        query.parameters.push("sort=clicks desc, id asc".replace(/ /g, "%20").replace(/,/g, "%2C"));
         console.log("Executing query: ", query);
 
         const searchResponse = await client.search(

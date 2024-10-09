@@ -92,7 +92,6 @@ export class ProviderSolr implements vscode.WebviewViewProvider {
     private async _searchSolrDirs(searchTerm: string, sort: string) {
       const mTask = new M_Task(searchTerm, "Solr Dirs results");
       mTask.sSort = sort;
-      console.log("sort: " + sort);
       const mExecutor = this.mStatus.getExecutor();
       if (!mExecutor) {
         vscode.window.showInformationMessage("No executor found");
