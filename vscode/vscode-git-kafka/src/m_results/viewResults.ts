@@ -127,7 +127,6 @@ export class ViewResults {
                 }
         if (!visible) {
           outputChannel.append(mCalcGrep.mChunks.aResult[i].sResult);
-          outputChannel.show();
         }
         this.addSearchResults(mCalcGrep.mChunks.aResult[i]);
       }
