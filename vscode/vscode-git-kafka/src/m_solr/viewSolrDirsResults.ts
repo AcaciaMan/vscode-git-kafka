@@ -19,9 +19,11 @@ export class ViewSolrDirsResults {
     const columnToShowIn = vscode.ViewColumn.One;
     this.mSolrExecutor = this.mStatus.getSolrDirsExecutor();
 
-    if (this._panel) {
-      this._panel.reveal(columnToShowIn);
-    } else {
+        if (this._panel) {
+          this._panel.dispose();
+        }
+
+    if (!this._panel) {
       this._panel = vscode.window.createWebviewPanel(
         "solrDirsResults",
         "Solr Dirs Results",
@@ -30,6 +32,10 @@ export class ViewSolrDirsResults {
           enableScripts: true,
         }
       );
+
+      this._panel.onDidDispose(() => {
+        this._panel = undefined;
+      });
 
       // load HTML content from htmlResults.html
       const fs = require("fs");
