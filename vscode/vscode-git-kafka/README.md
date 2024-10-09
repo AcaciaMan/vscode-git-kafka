@@ -3,6 +3,10 @@ Visual Studio Code extension to invoke git commands and store results in SOLR se
 
 Git is great version control system with good commands in scripts. Visual Studio extension to publish commands results in windows UI and and store results in SOLR search index server.
 
+Execute - run git command in current workspace folder, Execute Dirs - run git command recursively in subdirectories set in DIRS PATHS.
+
+SOLR Search - do SOLR search in git Excute command output text, Search Dirs - do SOLR search in Execute Dirs command output text.
+
 ## v0.0.3 Added results sorting
 ![Screenshot_added_sorts](https://github.com/user-attachments/assets/d81ee4ec-cbeb-489a-b514-64803a9144cc)
 
