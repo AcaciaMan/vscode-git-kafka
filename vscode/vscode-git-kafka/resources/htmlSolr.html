@@ -7,16 +7,33 @@
     <link href="${{styleUri}}" rel="stylesheet">
     -->
     <title>Solr</title>
+                        <style>
+        /* Emphasize the searchDirs button */
+        #searchDirs {
+            background-color: #28a745; /* GitHub green */
+            color: white;
+            font-size: 1.2em;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 10px; /* Add bottom margin */
+        }
+
+        #searchDirs:focus {
+            outline: 2px solid #0056b3; /* Blue outline on focus */
+        }
+    </style>
 </head>
 <body>
     <textarea id="searchTerm" rows="10" cols="50" placeholder="e.g. *:*"></textarea>
     <br>
+        <button id="searchDirs" tabindex="1">Search Dirs</button>
+        <br>
+    <button id="search">Search</button>
+    <button id="refresh">Refresh</button>
+    <br>
     <label for="sort">Sort:</label>
     <input type="text" id="sort" placeholder="e.g. id asc, created desc"></input>
-<br>
-    <button id="search">Search</button>
-    <button id="searchDirs">Search Dirs</button>
-    <button id="refresh">Refresh</button>
     <br>
     <p>* - Fields: id, workspaceUUID, workspaceFolder,
     <br>includeDirs, excludeDirs, pathSpec,

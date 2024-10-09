@@ -7,13 +7,31 @@
                 <link href="${{styleUri}}" rel="stylesheet">
             -->
                 <title>Git Grep</title>
+                    <style>
+        /* Emphasize the searchDirs button */
+        #searchDirs {
+            background-color: #28a745; /* GitHub green */
+            color: white;
+            font-size: 1.2em;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 10px; /* Add bottom margin */
+        }
+
+        #searchDirs:focus {
+            outline: 2px solid #0056b3; /* Blue outline on focus */
+        }
+    </style>
             </head>
             <body>
                 <!-- enter search term in text area -->
                 <textarea id="searchTerm" rows="10" cols="50"></textarea>
                 <br>
+                <button id="searchDirs" tabindex="1">Execute Dirs</button>
+                <br>                
                 <button id="searchButton">Execute</button>
-                <button id="searchDirs">Execute Dirs</button>
+
                 <button id="biggestDirs">50 Dirs</button>
                 <!--
                 <button id="biggestFiles">Find largest 50 files</button>
