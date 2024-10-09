@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { M_Chunks } from '../m_grep/m_chunks';
 
 export enum M_Task_State {
   InSearch = 0,
@@ -20,6 +21,7 @@ export class M_Task {
   pInitialized: Promise<void> | undefined;
   pExecuted: Promise<void> | undefined;
   sStdout: string = "";
+  mChunks: M_Chunks = new M_Chunks(5);
 
   constructor(sSearchTerm: string, outputChannelName: string) {
     // Validate sSearchTerm
@@ -48,6 +50,5 @@ export class M_Task {
   getId(): string {
     return this.created_at.getTime().toString();
   }
-
 }
 

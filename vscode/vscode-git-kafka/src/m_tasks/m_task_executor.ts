@@ -65,6 +65,7 @@ export class TaskExecuteDirs extends TaskExecutor {
     const mCalcDirs = await this.m_global.getCalcDirs();
     const dDirs = mCalcDirs.dirs;
     this.aDirs = Object.values(dDirs).map((dir) => new M_Dir(dir.parent, dir.dir, 0, 0));
+    this.task.mChunks = this.mCalcGrep.mChunks;
   }
 
   async execute() {

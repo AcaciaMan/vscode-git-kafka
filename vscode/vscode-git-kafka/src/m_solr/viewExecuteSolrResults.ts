@@ -88,7 +88,7 @@ public showResults(solrResponse: any): string {
       return "";
     }
     const htmlHighlights = highlights.map((highlight: string) => {
-      return `<p>${highlight}</p>`;
+      return `<pre>${highlight}</pre>`;
     });
     return htmlHighlights.join("");
   });

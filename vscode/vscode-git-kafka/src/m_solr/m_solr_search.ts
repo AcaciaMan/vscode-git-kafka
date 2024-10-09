@@ -21,3 +21,19 @@ export class M_SolrSearch {
 
     }
 }
+
+export class M_SolrDirsSearch {
+    mSolr = M_Solr.getInstance();
+    mTask: M_Task;
+    sExeId: string;
+    solrResponse: any;
+    constructor(mTask: M_Task, sExeId: string) {
+        this.mTask = mTask;
+        this.sExeId = sExeId;
+    }
+
+    async search() {
+        this.solrResponse =  await this.mSolr.searchSolrDirs(this.mTask, this.sExeId);
+        vscode.window.showInformationMessage("Solr Dirs Search Done");
+}
+}

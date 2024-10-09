@@ -40,7 +40,8 @@ describe("Some Test Suite", () => {
         console.log("client: ", client);
 
 
-        const query = client.query().q("*");
+        const query = client.query().q("imports");
+        query.parameters.push("sort=clicks desc");
         console.log("Executing query: ", query);
 
         const searchResponse = await client.search(
@@ -49,14 +50,14 @@ describe("Some Test Suite", () => {
 
         console.log("searchResponse: ", searchResponse);
 
-        const response = searchResponse.response;
-        console.log("response: ", response);
+        //const response = searchResponse.response;
+        //console.log("response: ", response);
 
-        const docs = response.docs;
-        console.log("docs: ", docs);
+        //const docs = response.docs;
+        //console.log("docs: ", docs);
 
-        const numFound = response.numFound;
-        console.log("numFound: ", numFound);
+        //const numFound = response.numFound;
+        //console.log("numFound: ", numFound);
 
         console.log( await client.ping());
 

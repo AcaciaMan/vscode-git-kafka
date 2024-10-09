@@ -87,7 +87,7 @@ export class M_Solr {
 
     /*
         const client: solr.Client;
-        client.query().hl({on: true, fl: "resultText", fragsize: 150, snippets: 1000000}).;
+        client.query().hl({on: true, fl: "resultText", fragsize: 150, snippets: 1000000}).sort({}).rows(1000000);
         client.ping(); 
         client.
          */
@@ -98,6 +98,7 @@ export class M_Solr {
   }
 
   async searchSolrDirs(mTask: M_Task, sExeId: string) {
+
     const query = this.solrClient
       .query()
       .q(mTask.sSearchTerm)
@@ -112,7 +113,8 @@ export class M_Solr {
         client.ping(); 
         client.
          */
-
+  console.log(mTask);
+        console.log("query: " +  JSON.stringify(  query));
     const searchResponse = await this.solrClient.search(query);
     mTask.sStdout = searchResponse;
     return searchResponse;

@@ -94,8 +94,6 @@ export class M_CalcGrep {
     // order aDirs by sortType
     this.mUtil.sortDirs(aDirs);
 
-    this.mChunks = new M_Chunks(5);
-
     // execute grep command for each dir with Promise.all to run in parallel
     try {
 

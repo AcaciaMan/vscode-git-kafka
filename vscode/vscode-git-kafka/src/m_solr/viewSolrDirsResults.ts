@@ -1,15 +1,23 @@
 import * as vscode from "vscode";
+import { M_Status } from "../m_tasks/m_status";
+import { M_SearchSolrDirs } from "../m_tasks/m_search_executor";
+import { M_Chunks } from "../m_grep/m_chunks";
 
 export class ViewSolrDirsResults {
   private _panel: vscode.WebviewPanel | undefined;
-  private _extensionUri: vscode.Uri;
 
-  constructor(extensionUri: vscode.Uri) {
-    this._extensionUri = extensionUri;
+  context: vscode.ExtensionContext;
+  htmlContent: string = "";
+  mStatus: M_Status = M_Status.getInstance();
+  mSolrExecutor: M_SearchSolrDirs = this.mStatus.getSolrDirsExecutor();
+
+  constructor(context: vscode.ExtensionContext) {
+    this.context = context;
   }
 
-  public showSolrDirsResults(solrDirsResults: string) {
+  public showSolrDirsResults(mChunks: M_Chunks) {
     const columnToShowIn = vscode.ViewColumn.One;
+    this.mSolrExecutor = this.mStatus.getSolrDirsExecutor();
 
     if (this._panel) {
       this._panel.reveal(columnToShowIn);
@@ -20,27 +28,55 @@ export class ViewSolrDirsResults {
         columnToShowIn,
         {
           enableScripts: true,
-          localResourceRoots: [this._extensionUri],
         }
       );
 
-      this._panel.webview.html = this._getHtmlForWebview(solrDirsResults);
+      // load HTML content from htmlResults.html
+      const fs = require("fs");
+      const path = require("path");
+      const htmlPath = this._panel.webview.asWebviewUri(
+        vscode.Uri.file(
+          path.join(
+            this.context.extensionPath,
+            "resources",
+            "htmlSolrDirsResults.html"
+          )
+        )
+      );
+      this.htmlContent = fs.readFileSync(htmlPath.fsPath, "utf8");
+
+      const sHighlightedText = this.showResults(
+        this.mSolrExecutor.mSolrDirsSearch.solrResponse, mChunks
+      );
+
+      this._panel.webview.html = this.htmlContent.replace(
+        "<!-- highlightedText -->",
+        sHighlightedText
+      );
     }
   }
 
-  private _getHtmlForWebview(solrDirsResults: string) {
-    return `<!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${this._panel?.webview.cspSource};">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Solr Dirs Results</title>
-    </head>
-    <body>
-      <h1>Solr Dirs Results</h1>
-      <pre>${solrDirsResults}</pre>
-    </body>
-    </html>`;
+    private showResults(solrResponse: any, mChunks: M_Chunks) {
+        let sHighlightedText = "";
+        const highlightedText = solrResponse.highlighting;
+        for (const key in highlightedText) {
+            if (highlightedText.hasOwnProperty(key)) {
+
+                const mItem = mChunks.dItems[key];
+                let resultText = highlightedText[key].resultText;
+                if (!resultText) {
+                    resultText = mItem.mFile.toStringItemText(mItem.mItem);
+                }
+
+                sHighlightedText += `<h1>${mItem.mFile.file.toString(false)}</h1>
+                <pre>${resultText}</pre>`;
+
+
+            }
+        }
+ 
+        return sHighlightedText;
+
+
     }
 }

@@ -4,8 +4,9 @@ import { M_Solr } from "../m_util/m_solr";
 import { M_Task } from "../m_tasks/m_task";
 import { M_SolrSearch } from "./m_solr_search";
 import { M_Status } from "../m_tasks/m_status";
-import { M_SearchExecutor, M_SearchSolr } from "../m_tasks/m_search_executor";
+import { M_SearchExecutor, M_SearchSolr, M_SearchSolrDirs } from "../m_tasks/m_search_executor";
 import { ViewExecuteSolrResults } from "./viewExecuteSolrResults";
+import { ViewSolrDirsResults } from "./viewSolrDirsResults";
 
 export class ProviderSolr implements vscode.WebviewViewProvider {
   public static readonly viewType = "myExtension.solr";
@@ -17,8 +18,11 @@ export class ProviderSolr implements vscode.WebviewViewProvider {
   mSolr: M_Solr = M_Solr.getInstance();
   mStatus = M_Status.getInstance();
   mViewSolrResults: ViewExecuteSolrResults = ViewExecuteSolrResults.getInstance();
+  viewSolrDirsResults: ViewSolrDirsResults;
 
-  constructor(private readonly context: vscode.ExtensionContext) {}
+  constructor(private readonly context: vscode.ExtensionContext) {
+    this.viewSolrDirsResults = new ViewSolrDirsResults(context);
+  }
 
   public resolveWebviewView(
     webviewView: vscode.WebviewView,
@@ -88,15 +92,18 @@ export class ProviderSolr implements vscode.WebviewViewProvider {
     private async _searchSolrDirs(searchTerm: string, sort: string) {
       const mTask = new M_Task(searchTerm, "Solr Dirs results");
       mTask.sSort = sort;
+      console.log("sort: " + sort);
       const mExecutor = this.mStatus.getExecutor();
       if (!mExecutor) {
         vscode.window.showInformationMessage("No executor found");
         return;
       }
-      await this.mSolr.commit();
-      await this.mSolr.searchSolrDirs(mTask, mExecutor.task.getId());
+      const mSearchExecutor = new M_SearchSolrDirs(mTask, mExecutor);
+      await mSearchExecutor.executeSearch();
+      this.mStatus.addSolrDirsExecutor(mSearchExecutor);
       mTask.outputChannel.append(mTask.sStdout);
       mTask.outputChannel.show();
+      this.viewSolrDirsResults.showSolrDirsResults(mExecutor.task.mChunks);
     }
 }
 
