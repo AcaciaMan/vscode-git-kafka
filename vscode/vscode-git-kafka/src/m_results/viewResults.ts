@@ -43,6 +43,7 @@ export class ViewResults {
         vscode.ViewColumn.One, // Editor column to show the new webview panel in
         {
           enableScripts: true,
+          retainContextWhenHidden: true, // Retain context when hidden
         } // Webview options. More on these later.
       );
 
@@ -80,13 +81,16 @@ export class ViewResults {
       context.subscriptions
     );
 
+    /*
         // Add event listener for when the panel becomes visible
     this.panel.onDidChangeViewState((e) => {
+      console.log("change view state", e);
       if (e.webviewPanel.visible) {
         this.panel!.webview.html = this.htmlContent;
         this.showResults(outputChannel, true, mCalcGrep);
       }
     });
+    */
 
     // Add event listener for when the panel is disposed
     this.panel.onDidDispose(() => {

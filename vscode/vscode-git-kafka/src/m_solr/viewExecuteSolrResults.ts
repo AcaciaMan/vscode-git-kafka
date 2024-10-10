@@ -42,6 +42,7 @@ export class ViewExecuteSolrResults {
         vscode.ViewColumn.One, // Editor column to show the new webview panel in
         {
           enableScripts: true,
+          retainContextWhenHidden: true, // Retain context when hidden
         } // Webview options. More on these later.
       );
 

@@ -30,6 +30,7 @@ export class ViewSolrDirsResults {
         columnToShowIn,
         {
           enableScripts: true,
+          retainContextWhenHidden: true, // Retain context when hidden
         }
       );
 
