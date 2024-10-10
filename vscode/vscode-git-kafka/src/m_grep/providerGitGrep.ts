@@ -79,7 +79,7 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
         case "selectSort":
           // Set the current try
           this.m_global.setSortType(data.text);
-          this._showResultsInNewTab();
+          //this._showResultsInNewTab();
           break;
         case "clearClicks":
           const mClicks = M_Clicks.getInstance();
