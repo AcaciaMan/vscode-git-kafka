@@ -25,9 +25,41 @@
             background-color: #ffff00; /* Add a yellow background */
             padding: 2px; /* Add some padding */
         }
+
+          .line-number {
+            cursor: pointer;
+          }
     </style>
 </head>
 <body>
         <!-- highlightedText -->
+
+  <script>
+    const vscode = acquireVsCodeApi();
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+            document.querySelectorAll('.line-number').forEach(element => {
+        element.addEventListener('click', (event) => {
+          const filePath = element.getAttribute('data-file-path');
+          const lineStart = parseInt(element.getAttribute('data-line-start'), 10);
+          const lineEnd = parseInt(element.getAttribute('data-line-end'), 10);
+          const dirPath = element.getAttribute('data-dir');
+          if (filePath && !isNaN(lineStart) && !isNaN(lineEnd)) {
+            vscode.postMessage({
+              command: 'openFile',
+              filePath: filePath,
+              lineStart: lineStart,
+              lineEnd: lineEnd,
+              dirPath: dirPath
+            });
+          }
+          
+        });
+      });
+    });
+
+  </script>           
 </body>
 </html>
