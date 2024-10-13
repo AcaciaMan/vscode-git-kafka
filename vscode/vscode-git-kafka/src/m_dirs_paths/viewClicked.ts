@@ -45,7 +45,8 @@ export class ViewClicked {
           switch (message.command) {
             case "showGitLog":
               await this.showGitLog(
-                message.clickedFiles
+                message.clickedFiles,
+                message.gitLogCommand
               );
               break;
           }
@@ -115,7 +116,7 @@ export class ViewClicked {
     }
 
 
-  private async showGitLog(clickedFiles: (string | undefined)[]) {
+  private async showGitLog(clickedFiles: (string | undefined)[], gitLogCommand: string) {
                const fullPath = this.m_global.workspaceFolder?.uri.fsPath;
                if (!fullPath) {
                  vscode.window.showErrorMessage("Workspace folder is undefined.");
@@ -128,7 +129,12 @@ export class ViewClicked {
                   sPath = `-- ${clickedFiles.join(" ")}`;
                };
 
-               const command = `git log --reverse ${sPath}`;
+               let command = "";
+                if (gitLogCommand.length > 1) {
+                  command = `${gitLogCommand} ${sPath}`;
+                } else {
+                  command = `git log --reverse ${sPath}`;
+                }
                const { stdout, stderr } = await exec(command, {
                  cwd: fullPath,
                });

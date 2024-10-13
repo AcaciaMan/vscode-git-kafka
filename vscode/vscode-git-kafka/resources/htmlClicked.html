@@ -28,6 +28,11 @@
 </head>
 <body>
     <button id="showGitLog" tabindex="1">Show git log</button>
+    <p>* - custom git log command</p>
+    <label for="gitLogCommand">git log command:</label>
+    <input type="text" id="gitLogCommand" placeholder="e.g. git log --oneline --graph --all" size="60"></input>
+    <p>** - all checked files will be added at the end of the git log command</p>
+
     <div class="checkbox-container">
         <input type="checkbox" id="masterCheckbox" checked="true"> Check/Uncheck All
     </div>
@@ -39,6 +44,8 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const showGitLog = document.getElementById('showGitLog');
+            const gitLogCommand = document.getElementById('gitLogCommand');
+
             showGitLog.addEventListener('click', () => {
                 const clickedFiles = Array.from(document.querySelectorAll('.childCheckbox'))
                     .filter(checkbox => checkbox.checked)
@@ -47,7 +54,8 @@
 
                 vscode.postMessage({
                     command: 'showGitLog',
-                    clickedFiles: clickedFiles
+                    clickedFiles: clickedFiles,
+                    gitLogCommand: gitLogCommand.value
                 });
             });
 
