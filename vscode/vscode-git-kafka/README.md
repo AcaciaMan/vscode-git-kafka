@@ -29,3 +29,6 @@ bin\solr.cmd start
 Make new Solr core "vscodegit", do schema and solrconfig [config](/vscode/vscode-git-kafka/config)
 
 Now You have set up vscode-git-kafka extension!
+
+## v1.1.0 Added git log command
+![Screenshot_git_log](https://github.com/user-attachments/assets/2e2ac73d-7a10-4475-a3cf-b4cac7c0f33b)
