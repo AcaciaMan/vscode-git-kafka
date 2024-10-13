@@ -59,7 +59,7 @@ export class ViewClicked {
 
 
     private getClickedFiles(): string {
-        let sClickedFiles = "<ul>";
+        let sClickedFiles = "";
 
         // sort clicked files by most clicked directories and then by file name ascending
         const dictSorted = Object.entries(this.mClicks.dictClicksFiles).sort((a, b) => {
@@ -82,10 +82,10 @@ export class ViewClicked {
 
         // iterate over all clicked files from dictSorted
         for (const [key, value] of dictSorted) {
-            sClickedFiles += `<li>${value.getRelativePath()}</li>`;
+            sClickedFiles += `<div class="checkbox-container">
+            <input type="checkbox" class="childCheckbox" checked="true">${value.getRelativePath()}
+            </div>\n`;
         };
-    
-        sClickedFiles += "</ul>";
     
         return sClickedFiles;
     }

@@ -3,11 +3,28 @@
 <html>
 <head>
     <title>Clicked Files</title>
-
+    <style>
+        .checkbox-container {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-        <!-- clickedFiles -->
+    <div class="checkbox-container">
+        <input type="checkbox" id="masterCheckbox" checked="true"> Check/Uncheck All
+    </div>
 
+    <hr>
+        <!-- clickedFiles -->
+    <script>
+        document.getElementById('masterCheckbox').addEventListener('change', function() {
+            const isChecked = this.checked;
+            const checkboxes = document.querySelectorAll('.childCheckbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+        });
+    </script>
          
 </body>
 </html>
