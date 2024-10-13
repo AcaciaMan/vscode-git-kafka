@@ -43,7 +43,7 @@ export class M_Solr {
   }
 
   async commit() {
-    if (!this.hasSolrClient()) {
+    if (!await this.hasSolrClient()) {
       return;
     }
     try {
@@ -67,7 +67,7 @@ export class M_Solr {
   }
 
   async addDoc() {
-    if (!this.hasSolrClient()) {
+    if (!await this.hasSolrClient()) {
       return;
     }
     try {
@@ -137,6 +137,7 @@ export class M_Solr {
     // try to ping solr
     if (this.bCheckFirstTime) {
       this.bCheckFirstTime = false;
+      this.bSolrReachable = false;
       try {
         const pingResponse = await this.solrClient.ping();
         console.log(pingResponse);
@@ -148,6 +149,7 @@ export class M_Solr {
             "Solr has more than 1,000,000 documents. Please delete some documents."
           );
         }
+        this.bSolrReachable = true;
       } catch (error) {
         if ((error as { code: string }).code === "ECONNREFUSED") {
           vscode.window.showErrorMessage(

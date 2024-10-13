@@ -36,6 +36,7 @@
                 <input id="pathSpec" type="text" placeholder="e.g. *.ts" />
                 <br>
                 <button id="setDirsPaths">Set</button>
+                <button id="clicked">Clicked</button>
                 <script>
                     const vscode = acquireVsCodeApi();
                     const setDirsPaths = document.getElementById('setDirsPaths');
@@ -50,6 +51,12 @@
                                 "excludeDirs": excludeDirs,
                                 "pathSpec": pathSpec
                             }
+                        });
+                    });
+                    const clicked = document.getElementById('clicked');
+                    clicked.addEventListener('click', () => {
+                        vscode.postMessage({
+                            type: 'clicked'
                         });
                     });
 
