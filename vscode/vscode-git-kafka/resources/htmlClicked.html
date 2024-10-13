@@ -4,12 +4,30 @@
 <head>
     <title>Clicked Files</title>
     <style>
+        /* Emphasize the showGitLog button */
+        #showGitLog {
+            background-color: #28a745; /* GitHub green */
+            color: white;
+            font-size: 1.2em;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 10px; /* Add bottom margin */
+        }
+
+        #showGitLog:focus {
+            outline: 2px solid #0056b3; /* Blue outline on focus */
+        }
+
+
+
         .checkbox-container {
             margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
+    <button id="showGitLog" tabindex="1">Show git log</button>
     <div class="checkbox-container">
         <input type="checkbox" id="masterCheckbox" checked="true"> Check/Uncheck All
     </div>
@@ -17,6 +35,28 @@
     <hr>
         <!-- clickedFiles -->
     <script>
+        const vscode = acquireVsCodeApi();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const showGitLog = document.getElementById('showGitLog');
+            showGitLog.addEventListener('click', () => {
+                const clickedFiles = Array.from(document.querySelectorAll('.childCheckbox'))
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.getAttribute('data-file-path'));
+
+
+                vscode.postMessage({
+                    command: 'showGitLog',
+                    clickedFiles: clickedFiles
+                });
+            });
+
+
+        });
+
+
+
+
         document.getElementById('masterCheckbox').addEventListener('change', function() {
             const isChecked = this.checked;
             const checkboxes = document.querySelectorAll('.childCheckbox');

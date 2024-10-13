@@ -1,5 +1,8 @@
 import * as vscode from "vscode";
 import { M_Clicks } from "../m_results/m_clicks";
+import { M_Global } from "../m_util/m_global";
+const util = require("node:util");
+const exec = util.promisify(require("node:child_process").exec);
 
 export class ViewClicked {
   private _panel: vscode.WebviewPanel | undefined;
@@ -7,6 +10,7 @@ export class ViewClicked {
   context: vscode.ExtensionContext;
   htmlContent: string = "";
   mClicks: M_Clicks = M_Clicks.getInstance();
+  m_global: M_Global = M_Global.getInstance();
 
   constructor(context: vscode.ExtensionContext) {
     this.context = context;
@@ -33,6 +37,22 @@ export class ViewClicked {
       this._panel.onDidDispose(() => {
         this._panel = undefined;
       });
+
+
+      // Handle messages from the webview
+      this._panel.webview.onDidReceiveMessage(
+        async (message) => {
+          switch (message.command) {
+            case "showGitLog":
+              await this.showGitLog(
+                message.clickedFiles
+              );
+              break;
+          }
+        },
+        undefined,
+        this.context.subscriptions
+      );
 
       // load HTML content from htmlResults.html
       const fs = require("fs");
@@ -87,10 +107,43 @@ export class ViewClicked {
         // iterate over all clicked files from dictSorted
         for (const [key, value] of dictSorted) {
             sClickedFiles += `<div class="checkbox-container">
-            <input type="checkbox" class="childCheckbox" checked="true">${value.getRelativePath()}
+            <input type="checkbox" class="childCheckbox" checked="true" data-file-path="${value.getRelativePath()}">${value.getRelativePath()}
             </div>\n`;
         };
     
         return sClickedFiles;
     }
+
+
+  private async showGitLog(clickedFiles: (string | undefined)[]) {
+               const fullPath = this.m_global.workspaceFolder?.uri.fsPath;
+               if (!fullPath) {
+                 vscode.window.showErrorMessage("Workspace folder is undefined.");
+                 return;
+               }
+               let sPath = "";
+               if (!clickedFiles || clickedFiles.length === 0) {
+                 sPath = "";
+               } else {
+                  sPath = `-- ${clickedFiles.join(" ")}`;
+               };
+
+               const command = `git log --reverse ${sPath}`;
+               const { stdout, stderr } = await exec(command, {
+                 cwd: fullPath,
+               });
+
+               if (stderr) {
+                 vscode.window.showErrorMessage(`Error: ${stderr}`);
+                 // this promise rejected
+                 return undefined;
+               }
+
+                const outputChannel = vscode.window.createOutputChannel("Git Log");
+
+                outputChannel.clear();
+                outputChannel.append(stdout);
+                outputChannel.show(true);
+
+}
 }
