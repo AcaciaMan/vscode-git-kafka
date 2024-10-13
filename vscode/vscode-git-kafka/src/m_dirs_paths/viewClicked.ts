@@ -48,7 +48,11 @@ export class ViewClicked {
       );
       this.htmlContent = fs.readFileSync(htmlPath.fsPath, "utf8");
 
-      const sClickedFiles = this.getClickedFiles();
+      let sClickedFiles = this.getClickedFiles();
+
+      if (sClickedFiles === "") {
+        sClickedFiles = "<div>No clicked files, please do git grep Execute Dirs and click on the file or line number.</div>";
+      };
 
       this._panel.webview.html = this.htmlContent.replace(
         "<!-- clickedFiles -->",
