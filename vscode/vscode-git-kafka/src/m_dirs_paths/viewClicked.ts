@@ -61,13 +61,29 @@ export class ViewClicked {
     private getClickedFiles(): string {
         let sClickedFiles = "<ul>";
 
-        // iterate over all clicked files from mClicks dictClicks
-        for (const [key, value] of Object.entries(this.mClicks.dictClicks)) {
-            sClickedFiles += `<li>${key}: ${value}</li>`;
+        // sort clicked files by most clicked directories and then by file name ascending
+        const dictSorted = Object.entries(this.mClicks.dictClicksFiles).sort((a, b) => {
+            const aDir = a[1].dir.getId();
+            const bDir = b[1].dir.getId();
+            const aDirClicks = this.mClicks.getClicks(aDir);
+            const bDirClicks = this.mClicks.getClicks(bDir);
+
+            if (aDir === bDir) {
+                return a[0].localeCompare(b[0]);
+            } else {
+              if (aDirClicks === bDirClicks) {
+                return aDir.localeCompare(bDir);
+               } else {  
+                return bDirClicks - aDirClicks;
+              }  
+            }
+
+        });
+
+        // iterate over all clicked files from dictSorted
+        for (const [key, value] of dictSorted) {
+            sClickedFiles += `<li>${value.getRelativePath()}</li>`;
         };
-
-    
-
     
         sClickedFiles += "</ul>";
     

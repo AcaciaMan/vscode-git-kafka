@@ -62,4 +62,9 @@ export class M_File {
         return "";
     }
 
+    public getRelativePath(): string {
+        // concatenate dir id and file name
+        return path.join(this.dir.getId(), this.name);
+    }
+
 }

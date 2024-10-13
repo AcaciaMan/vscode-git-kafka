@@ -234,7 +234,7 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
     const m_search: M_Search = M_Search.getInstance();
     m_search.processSearchResults(this.mCalcGrep, this.m_global.sortType);
     const m_results = ViewResults.getInstance();
-    m_results.showResultsInNewTab(m_search.aSearchResults, this.context);
+    //m_results.showResultsInNewTab(m_search.aSearchResults, this.context);
   }
 
 }

@@ -50,7 +50,7 @@ export class ViewSolrDirsResults {
                 message.lineStart,
                 message.lineEnd
               );
-              this.mClicks.incrementClicks(message.dirPath);
+              this.mClicks.incrementClicks(message.dirPath, message.fileName);
               break;
           }
         },
@@ -99,9 +99,9 @@ export class ViewSolrDirsResults {
           mItem.mItem
         )}" data-line-end="${mItem.mFile.getLineEnd(
           mItem.mItem
-        )}" data-dir="${mItem.mFile.file.dir.getId()}">${mItem.mFile.file.toString(
-          false
-        )}</h1>
+        )}" data-dir="${mItem.mFile.file.dir.getId()}" data-file-name="${
+          mItem.mFile.file.name
+        }">${mItem.mFile.file.toString(false)}</h1>
                 <pre>${resultText}</pre>`;
       }
     }

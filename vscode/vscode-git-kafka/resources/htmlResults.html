@@ -72,7 +72,9 @@
           };
           vscode.postMessage({
             command: 'clickFileName',
-            dirPath: element.getAttribute('data-dir')
+            dirPath: element.getAttribute('data-dir'),
+            fileName: element.getAttribute('data-file-name')
+
           });
         });
       });
@@ -83,13 +85,15 @@
           const lineStart = parseInt(element.getAttribute('data-line-start'), 10);
           const lineEnd = parseInt(element.getAttribute('data-line-end'), 10);
           const dirPath = element.getAttribute('data-dir');
+          const fileName = element.getAttribute('data-file-name');
           if (filePath && !isNaN(lineStart) && !isNaN(lineEnd)) {
             vscode.postMessage({
               command: 'openFile',
               filePath: filePath,
               lineStart: lineStart,
               lineEnd: lineEnd,
-              dirPath: dirPath
+              dirPath: dirPath,
+              fileName: fileName
             });
           }
           
@@ -117,7 +121,8 @@
           };
           vscode.postMessage({
             command: 'clickFileName',
-            dirPath: element.getAttribute('data-dir')
+            dirPath: element.getAttribute('data-dir'),
+            fileName: element.getAttribute('data-file-name')
           });
         });
       });
@@ -128,13 +133,15 @@
           const lineStart = parseInt(element.getAttribute('data-line-start'), 10);
           const lineEnd = parseInt(element.getAttribute('data-line-end'), 10);
           const dirPath = element.getAttribute('data-dir');
+                    const fileName = element.getAttribute('data-file-name');
           if (filePath && !isNaN(lineStart) && !isNaN(lineEnd)) {
             vscode.postMessage({
               command: 'openFile',
               filePath: filePath,
               lineStart: lineStart,
               lineEnd: lineEnd,
-              dirPath: dirPath
+              dirPath: dirPath,
+              fileName: fileName
             });
           }
           

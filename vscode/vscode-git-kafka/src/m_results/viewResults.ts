@@ -70,10 +70,10 @@ export class ViewResults {
               message.lineStart,
               message.lineEnd
             );
-            mClicks.incrementClicks(message.dirPath);
+            mClicks.incrementClicks(message.dirPath, message.fileName);
             return;
           case "clickFileName":
-            mClicks.incrementClicks(message.dirPath);
+            mClicks.incrementClicks(message.dirPath, message.fileName);
             return;
         }
       },
@@ -153,7 +153,9 @@ export class ViewResults {
 
       const box = `
       <div class="box">
-        <div class="file-name" data-dir="${resultFile.file.dir.getId()}">${fileName}</div>
+        <div class="file-name" data-dir="${resultFile.file.dir.getId()}" data-file-name="${
+        resultFile.file.name
+      }">${fileName}</div>
         <div class="file-line">${line}</div>
         <div class="line-content">${content}</div>
       </div>
@@ -166,6 +168,7 @@ export class ViewResults {
 
   }
 
+  /*
   // show results in new tab
   public showResultsInNewTab(
     results: {
@@ -238,6 +241,7 @@ export class ViewResults {
       context.subscriptions
     );
   }
+    */
 
   // open file in editor and go to specific line
   private openFileInEditor(
