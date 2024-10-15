@@ -73,7 +73,9 @@ export class M_ResultFile {
         // add the line number from the first line
         s += `<span class="line-number" data-file-path="${this.file.getPath()}" data-line-start="${lineStart}" data-line-end="${lineEnd}" data-dir="${this.file.dir.getId()}" data-file-name="${
           this.file.name
-        }">~~~${lineStart}</span>\n`;
+        }">~~~${lineStart}</span><span class="blame" data-line-start="${lineStart}" data-line-end="${lineEnd}" data-dir="${this.file.dir.getId()}" data-file-name="${
+          this.file.name
+        }"> ===blame</span>\n`;
         for (let j = resultItem.iStartLine; j <= resultItem.iEndLine; j++) {
             s += `${this.m_result.aResultParsed[j].text}\n`;
         }

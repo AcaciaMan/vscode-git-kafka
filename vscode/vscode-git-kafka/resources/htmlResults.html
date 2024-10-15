@@ -83,6 +83,9 @@
             text-decoration: none;
             cursor: pointer;
         }
+        #blameText {
+            white-space: pre-wrap; /* Preserve whitespaces and line endings */
+        }
         </style>
       </head>
       <body>
@@ -144,6 +147,27 @@
           
         });
       });
+
+      document.querySelectorAll('.blame').forEach(element => {
+
+
+        element.addEventListener('click', (event) => {
+          const lineStart = parseInt(element.getAttribute('data-line-start'), 10);
+          const lineEnd = parseInt(element.getAttribute('data-line-end'), 10);
+          const dirPath = element.getAttribute('data-dir');
+          const fileName = element.getAttribute('data-file-name');
+          if (fileName && !isNaN(lineStart) && !isNaN(lineEnd)) {
+            vscode.postMessage({
+              command: 'blame',
+              lineStart: lineStart,
+              lineEnd: lineEnd,
+              dirPath: dirPath,
+              fileName: fileName
+            });
+          }
+    
+        });
+      });
     });
 
     window.addEventListener('message', event => {
@@ -192,9 +216,69 @@
           
         });
       });
+
+
+            box.querySelectorAll('.blame').forEach(element => {
+
+
+        element.addEventListener('click', (event) => {
+          const lineStart = parseInt(element.getAttribute('data-line-start'), 10);
+          const lineEnd = parseInt(element.getAttribute('data-line-end'), 10);
+          const dirPath = element.getAttribute('data-dir');
+          const fileName = element.getAttribute('data-file-name');
+          if (fileName && !isNaN(lineStart) && !isNaN(lineEnd)) {
+            vscode.postMessage({
+              command: 'blame',
+              lineStart: lineStart,
+              lineEnd: lineEnd,
+              dirPath: dirPath,
+              fileName: fileName
+            });
+          }
+
+         
+        });
+      });
           break;
       }
+
+            // Get the modal
+            const modal = document.getElementById("blameModal");
+
+            // Get the <span> element that closes the modal
+            const span = document.getElementsByClassName("close")[0];
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
     });
+
+            // Function to update Git blame information
+        function updateGitBlame(blameText) {
+            const modal = document.getElementById("blameModal");
+            const blameTextElement = document.getElementById("blameText");
+            blameTextElement.textContent = blameText;
+            modal.style.display = "block";
+        }
+
+        // Listen for messages from the extension
+        window.addEventListener('message', event => {
+            const message = event.data;
+            switch (message.command) {
+                case 'blame':
+                    updateGitBlame(message.stdout);
+                    break;
+            }
+        });
   </script>        
       </body>
       </html>

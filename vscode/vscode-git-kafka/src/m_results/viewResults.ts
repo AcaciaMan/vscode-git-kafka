@@ -4,6 +4,10 @@ import { M_Result } from "./m_result";
 import { M_Chunks } from "../m_grep/m_chunks";
 import { M_CalcGrep } from "../m_grep/m_calc_grep";
 import { M_Global } from "../m_util/m_global";
+import { M_Dir } from "../m_grep/m_dir";
+import { M_File } from "../m_grep/m_file";
+const util = require("node:util");
+const exec = util.promisify(require("node:child_process").exec);
 
 // class to show results in new tab
 export class ViewResults {
@@ -62,7 +66,7 @@ export class ViewResults {
 
     // Handle messages from the webview
     this.panel.webview.onDidReceiveMessage(
-      (message) => {
+      async (message) => {
         switch (message.command) {
           case "openFile":
             this.openFileInEditor(
@@ -75,6 +79,13 @@ export class ViewResults {
           case "clickFileName":
             mClicks.incrementClicks(message.dirPath, message.fileName);
             return;
+          case "blame":
+            const stdout = await this.getBlame(message.fileName, message.dirPath, message.lineStart, message.lineEnd);
+            this.panel?.webview.postMessage({
+              command: "blame",
+              stdout: stdout
+            });
+            return;  
         }
       },
       undefined,
@@ -166,6 +177,24 @@ export class ViewResults {
       });
     }
 
+  }
+
+  public async getBlame(fileName: string, dirPath: string, lineStart: number, lineEnd: number): Promise<string> {
+    const fullPath = this.m_global.workspaceFolder?.uri.fsPath;
+    const mDir = new M_Dir(undefined, dirPath, 0, 0);
+    const mFile = new M_File(fileName, 0, mDir);
+
+    const command = `git blame -L ${lineStart},${lineEnd} -- ${mFile.getRelativePath()}`;
+    const { stdout, stderr } = await exec(command, {
+      cwd: fullPath,
+    });
+
+    if (stderr) {
+      vscode.window.showErrorMessage(`Error: ${stderr}`);
+      return "";
+    }
+
+    return stdout;
   }
 
   /*
