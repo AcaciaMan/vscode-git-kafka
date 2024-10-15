@@ -33,3 +33,6 @@ Now You have set up vscode-git-kafka extension!
 ## v1.1.0 Added git log command
 ![Screenshot_git_log](https://github.com/user-attachments/assets/2e2ac73d-7a10-4475-a3cf-b4cac7c0f33b)
 
+## v1.3.0 Added d3 and d3-cloud project word cloud
+![Screenshot_word_cloud](https://github.com/user-attachments/assets/ab74be71-561a-459f-84ca-e038c49eacd6)
+
