@@ -37,6 +37,7 @@
                 <br>
                 <button id="setDirsPaths">Set</button>
                 <button id="clicked">Clicked</button>
+                <button id="clearButton">Clear clicks</button>
                 <script>
                     const vscode = acquireVsCodeApi();
                     const setDirsPaths = document.getElementById('setDirsPaths');
@@ -57,6 +58,13 @@
                     clicked.addEventListener('click', () => {
                         vscode.postMessage({
                             type: 'clicked'
+                        });
+                    });
+
+                                        const clearButton = document.getElementById('clearButton');
+                    clearButton.addEventListener('click', () => {
+                        vscode.postMessage({
+                            type: 'clearClicks'
                         });
                     });
 

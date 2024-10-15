@@ -36,7 +36,7 @@
                 <button id="biggestFiles">Find largest 50 files</button>
                 -->
                 <!-- add dashed line seperator -->
-                 <button id="clearButton">Clear clicks</button>
+                 
                  <button id="wordCloud">Word Cloud</button>
                 <br>
                 <label for="sortDropdown">Sort:</label>
@@ -81,12 +81,7 @@
                         });
                     });
                     */
-                    const clearButton = document.getElementById('clearButton');
-                    clearButton.addEventListener('click', () => {
-                        vscode.postMessage({
-                            type: 'clearClicks'
-                        });
-                    });
+
 
                     const wordCloud = document.getElementById('wordCloud');
                     wordCloud.addEventListener('click', () => {

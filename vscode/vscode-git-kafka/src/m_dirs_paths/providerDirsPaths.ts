@@ -3,6 +3,7 @@
 import * as vscode from "vscode";
 import { M_Global } from "../m_util/m_global";
 import { ViewClicked } from "./viewClicked";
+import { M_Clicks } from "../m_results/m_clicks";
 
 export class ProviderDirsPaths implements vscode.WebviewViewProvider {
   public static readonly viewType = "myExtension.DirsPaths";
@@ -35,6 +36,10 @@ export class ProviderDirsPaths implements vscode.WebviewViewProvider {
           break;
         case "clicked":
           this._showClickedFiles();
+          break;
+        case "clearClicks":
+          const mClicks = M_Clicks.getInstance();
+          mClicks.clearClicks();
           break;
         case "webviewReady":
           // send includeDirs, excludeDirs, and pathSpec to webview
