@@ -37,6 +37,7 @@
                 -->
                 <!-- add dashed line seperator -->
                  <button id="clearButton">Clear clicks</button>
+                 <button id="wordCloud">Word Cloud</button>
                 <br>
                 <label for="sortDropdown">Sort:</label>
             <select id="sortDropdown">
@@ -84,6 +85,13 @@
                     clearButton.addEventListener('click', () => {
                         vscode.postMessage({
                             type: 'clearClicks'
+                        });
+                    });
+
+                    const wordCloud = document.getElementById('wordCloud');
+                    wordCloud.addEventListener('click', () => {
+                        vscode.postMessage({
+                            type: 'wordCloud'
                         });
                     });
 

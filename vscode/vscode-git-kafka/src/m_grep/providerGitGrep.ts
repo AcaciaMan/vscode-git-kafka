@@ -14,6 +14,7 @@ import { M_Util } from "../m_util/m_util";
 import { M_Task } from "../m_tasks/m_task";
 import { TaskExecute, TaskExecuteDirs } from "../m_tasks/m_task_executor";
 import { M_Status } from "../m_tasks/m_status";
+import { WordCloudProvider } from "./wordCloudProvider";
 
 export class ProviderGitGrep implements vscode.WebviewViewProvider {
   public static readonly viewType = "myExtension.myWebview";
@@ -84,6 +85,9 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
         case "clearClicks":
           const mClicks = M_Clicks.getInstance();
           mClicks.clearClicks();
+          break;  
+        case "wordCloud":
+          this.wordCloud();
           break;  
         
         }
@@ -235,6 +239,12 @@ export class ProviderGitGrep implements vscode.WebviewViewProvider {
     m_search.processSearchResults(this.mCalcGrep, this.m_global.sortType);
     const m_results = ViewResults.getInstance();
     //m_results.showResultsInNewTab(m_search.aSearchResults, this.context);
+  }
+
+  private wordCloud() {
+
+    WordCloudProvider.createOrShow(this.context);
+    
   }
 
 }

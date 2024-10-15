@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Cloud</title>
+    <style>
+         #wordCloudContainer {
+            width: 800px;
+            height: 400px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="wordCloudContainer"></div>
+    <button id="generateWordCloud">Generate Word Cloud</button>
+
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.min.js"></script>
+    <script>
+        const vscode = acquireVsCodeApi();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add event listener for the generate word cloud button
+            const generateWordCloudButton = document.getElementById('generateWordCloud');
+            generateWordCloudButton.addEventListener('click', () => {
+                vscode.postMessage({
+                    command: 'generateWordCloud'
+                });
+            });
+        });
+
+        // Listen for messages from the extension
+        window.addEventListener('message', event => {
+            const message = event.data;
+            switch (message.command) {
+                case 'generateWordCloud':
+                    generateWordCloud(message.data);
+                    break;
+            }
+        });
+
+        // Function to generate word cloud
+        function generateWordCloud(words) {
+            const layout = d3.layout.cloud()
+                .size([800, 400])
+                .words(words)
+                .padding(5)
+                .rotate(() => ~~(Math.random() * 2) * 90)
+                .font("Impact")
+                .fontSize(d => d.size)
+                .on("end", draw);
+
+            layout.start();
+
+            function draw(words) {
+                d3.select("#wordCloudContainer").html(""); // Clear previous word cloud
+                d3.select("#wordCloudContainer").append("svg")
+                    .attr("width", layout.size()[0])
+                    .attr("height", layout.size()[1])
+                    .append("g")
+                    .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+                    .selectAll("text")
+                    .data(words)
+                    .enter().append("text")
+                    .style("font-size", d => d.size + "px")
+                    .style("font-family", "Impact")
+                    .style("fill", (d, i) => d3.schemeCategory10[i % 10])
+                    .attr("text-anchor", "middle")
+                    .attr("transform", d => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")")
+                    .text(d => d.text);
+            }
+        }
+    </script>
+</body>
+</html>
