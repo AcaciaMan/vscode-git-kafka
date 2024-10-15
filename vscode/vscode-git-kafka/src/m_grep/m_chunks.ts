@@ -100,4 +100,45 @@ export class M_Chunks {
       }
     }
   }
+
+  getWordsCount(): { [key: string]: number } {
+    const dWordsCount: { [key: string]: number } = {};
+    for (const mResult of this.aResult) {
+      for (const mFile of mResult.aResultFile) {
+        for (const mItem of mFile.aResultItem) {
+          const sText = mFile.toStringItemText(mItem);
+          // tokenize text into words
+          const aWords: string[] = [];
+          for (let j = 0; j < sText.length; j++) {
+            // if sText[j] is a letter or a number or _, it is part of a word
+            let sWord = "";
+            while (
+              (j < sText.length) &&
+              ((sText[j] >= "a" && sText[j] <= "z") ||
+                (sText[j] >= "A" && sText[j] <= "Z") ||
+                (sText[j] >= "0" && sText[j] <= "9") ||
+                sText[j] === "_")
+            ) {
+              sWord += sText[j];
+              j++;
+            }
+            if (sWord.length === 0) {
+              continue;
+            }
+            aWords.push(sWord);
+          }
+          for (const sWord of aWords) {
+            if (dWordsCount[sWord] === undefined) {
+              dWordsCount[sWord] = 1;
+            } else {
+              dWordsCount[sWord]++;
+            }
+          }
+        }
+      }
+    }
+    return dWordsCount;
+  }
+
+
 }

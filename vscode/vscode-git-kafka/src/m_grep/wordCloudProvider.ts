@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
+import { M_Status } from "../m_tasks/m_status";
 
 export class WordCloudProvider {
   private static readonly viewType = "wordCloud";
@@ -65,16 +66,35 @@ export class WordCloudProvider {
 
   private getDataForWordCloud(): any {
     // Replace with actual data retrieval logic
-    return [
-      { text: "Visual", size: 40 },
-      { text: "Studio", size: 30 },
-      { text: "Code", size: 20 },
-      { text: "extension", size: 50 },
-      { text: "git", size: 60 },
-      { text: "commands", size: 25 },
-      { text: "store", size: 35 },
-      { text: "results", size: 45 },
-      { text: "Solr", size: 55 },
-    ];
+    const mStatus = M_Status.getInstance();
+    const tExecutor = mStatus.getExecutor();
+    if (tExecutor) {
+      const mChunks = tExecutor.mCalcGrep.mChunks;
+      const dWords = mChunks.getWordsCount();
+
+      // Find the minimum and maximum word frequencies
+      const frequencies = Object.values(dWords);
+      const minFreq = Math.min(...frequencies);
+      const maxFreq = Math.max(...frequencies);
+
+      // Define the desired size range
+      const minSize = 30;
+      const maxSize = 60;
+
+      let diff = maxFreq - minFreq;
+        if (diff === 0) {
+            diff = 1;
+        }
+
+      // Normalize the sizes
+      return Object.keys(dWords).map((key) => {
+        const frequency = dWords[key];
+        const size =
+          minSize +
+          ((frequency - minFreq) / diff) * (maxSize - minSize);
+        return { text: key, size: size };
+      });
+    }
+    return [];
   }
 }
