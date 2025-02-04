@@ -19,10 +19,6 @@ SOLR Search - do SOLR search in git Excute command output text, Search Dirs - do
 Execution results are stored in Solr search server. 
 
 ```cmd
-npm install solr-client 
-```
-
-```cmd
 bin\solr.cmd start 
 ```
 
