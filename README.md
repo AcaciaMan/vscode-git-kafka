@@ -1,5 +1,11 @@
 # vscode-git-kafka
-Visual Studio Code extension to invoke git commands and store results in SOLR search index server
+Visual Studio Code extension to invoke git commands and store results in SOLR search index server.
+
+For example, git grep search can return many rows before and after search text
+```cmd
+git grep -i -A 50 -B 50 import
+```
+, and then with SOLR search is easy to find all sleep imports.
 
 Git is great version control system with good commands in scripts. Visual Studio extension to publish commands results in windows UI and and store results in SOLR search index server.
 
@@ -8,10 +14,10 @@ Execute - run git command in current workspace folder, Execute Dirs - run git co
 SOLR Search - do SOLR search in git Excute command output text, Search Dirs - do SOLR search in Execute Dirs command output text.
 
 ## v0.0.3 Added results sorting
-![Screenshot_added_sorts](https://github.com/user-attachments/assets/d81ee4ec-cbeb-489a-b514-64803a9144cc)
+![Screenshot 2025-02-05 121000](https://github.com/user-attachments/assets/214bad36-21e0-4919-9763-94cda66274ce)
 
 ## v1.0.0 Added git commands results store in Solr
-![Screenshot_solr_search](https://github.com/user-attachments/assets/d2f79d75-1662-4755-91e1-eff3b6f0710c)
+![Screenshot 2025-02-05 121200](https://github.com/user-attachments/assets/39d4a354-3820-411e-b233-c7b4785bccaa)
 
 ![Screenshot_solr_admin](https://github.com/user-attachments/assets/d3389d33-c866-45eb-84ce-dfb28359394f)
 
