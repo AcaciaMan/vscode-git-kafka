@@ -7,6 +7,9 @@ git grep -i -A 50 -B 50 import
 ```
 , and then with SOLR search is easy to find all sleep imports.
 
+When in Solr config schema.xml replace fields type from text_general to text_en_splitting and removed stopwords checking, Solr search results return much wider results as can be seen in picture bellow for "childProcess" to find child_process, ChildProcess, child process.
+This is implemented starting from version 1.3.3.
+
 Git is great version control system with good commands in scripts. Visual Studio extension to publish commands results in windows UI and and store results in SOLR search index server.
 
 Execute - run git command in current workspace folder, Execute Dirs - run git command recursively in subdirectories set in DIRS PATHS.
@@ -17,7 +20,7 @@ SOLR Search - do SOLR search in git Excute command output text, Search Dirs - do
 ![Screenshot 2025-02-05 121000](https://github.com/user-attachments/assets/214bad36-21e0-4919-9763-94cda66274ce)
 
 ## v1.0.0 Added git commands results store in Solr
-![Screenshot 2025-02-05 121200](https://github.com/user-attachments/assets/39d4a354-3820-411e-b233-c7b4785bccaa)
+![Screenshot 2025-02-07 224032](https://github.com/user-attachments/assets/ca733719-d9f5-4f42-9b1f-4e6eff7831f9)
 
 ![Screenshot_solr_admin](https://github.com/user-attachments/assets/d3389d33-c866-45eb-84ce-dfb28359394f)
 
