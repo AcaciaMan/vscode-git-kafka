@@ -2,7 +2,7 @@
   "name": "vscode-git-kafka",
   "displayName": "vscode-git-kafka",
   "description": "Visual Studio Code extension to invoke git commands and store results in Solr",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "publisher": "manacacia",
   "repository": {
     "type": "git",

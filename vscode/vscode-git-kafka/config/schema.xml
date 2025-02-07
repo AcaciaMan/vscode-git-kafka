@@ -120,7 +120,7 @@
     <!-- for nested documents (relationship tracking) -->
     <field name="_nest_path_" type="_nest_path_" /><fieldType name="_nest_path_" class="solr.NestPathField" />
 
-    <field name="_text_" type="text_general" indexed="true" stored="true" multiValued="true"/>
+    <field name="_text_" type="text_en_splitting" indexed="true" stored="true" multiValued="true"/>
     <field name="resultPath" type="url" indexed="true" stored="true" multiValued="true"/>
 
 	<field name="workspaceUUID" type="uuid" indexed="true" stored="true" required="true" multiValued="false"/>
@@ -130,8 +130,8 @@
   <field name="pathSpec" type="url" indexed="true" stored="true" multiValued="false"/>
 	<field name="created" type="pdate" indexed="true" stored="true" required="true" multiValued="false"/>
   <field name="taskId" type="string" indexed="true" stored="true" multiValued="false"/>
-  <field name="searchTerm" type="text_general" indexed="true" stored="true" multiValued="false"/>
-  <field name="resultText" type="text_general" indexed="true" stored="true" multiValued="false"/>
+  <field name="searchTerm" type="text_en_splitting" indexed="true" stored="true" multiValued="false"/>
+  <field name="resultText" type="text_en_splitting" indexed="true" stored="true" multiValued="false"/>
   <field name="resultDir" type="url" indexed="true" stored="true" multiValued="false"/>
   <field name="resultFile" type="url" indexed="true" stored="true" multiValued="false"/>
   <field name="resultLine" type="pint" indexed="true" stored="true" multiValued="false"/>
@@ -418,12 +418,6 @@
         <!-- in this example, we will only use synonyms at query time
         <filter class="solr.SynonymGraphFilterFactory" synonyms="index_synonyms.txt" ignoreCase="true" expand="false"/>
         -->
-        <!-- Case insensitive stop word removal.
-        -->
-        <filter class="solr.StopFilterFactory"
-                ignoreCase="true"
-                words="lang/stopwords_en.txt"
-        />
         <filter class="solr.WordDelimiterGraphFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="1" catenateNumbers="1" catenateAll="0" splitOnCaseChange="1"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
@@ -433,10 +427,6 @@
       <analyzer type="query">
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
         <filter class="solr.SynonymGraphFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
-        <filter class="solr.StopFilterFactory"
-                ignoreCase="true"
-                words="lang/stopwords_en.txt"
-        />
         <filter class="solr.WordDelimiterGraphFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="0" catenateNumbers="0" catenateAll="0" splitOnCaseChange="1"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
