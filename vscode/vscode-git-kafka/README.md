@@ -38,3 +38,4 @@ Now You have set up vscode-git-kafka extension!
 ## v1.3.0 Added d3 and d3-cloud project word cloud
 ![Screenshot_word_cloud](https://github.com/user-attachments/assets/ab74be71-561a-459f-84ca-e038c49eacd6)
 
+## v1.3.3  Updated solr config text_en_splitting
